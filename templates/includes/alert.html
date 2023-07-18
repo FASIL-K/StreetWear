@@ -1,0 +1,23 @@
+{% if messages %}
+{% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        {% comment %} <button type="button" class="close" data-dismiss="alert" >
+            <span aria-hidden="true">&times;</span>
+        </button> {% endcomment %}
+    </div>
+{% endfor %}
+{% endif %}
+
+<script>
+    setTimeout(function() {
+        document.querySelectorAll('.alert').forEach(function(alert) {
+            alert.classList.remove('show');
+            alert.classList.add('hide');
+            setTimeout(function() {
+                alert.remove();
+            }, 550); // Adjust the duration of the fade-out effect
+        });
+    }, 5000); // Adjust the delay before the alert disappears
+</script>
+

@@ -1,0 +1,72 @@
+{% extends 'user/home/base.html' %}
+{% block title %}Signup{% endblock title %}
+{% block body %}
+{% load static %}
+
+<section class="login_box_area section_gap">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="login_box_img" >
+                    <img class="img-fluid" src="{% static '/user/img/login.jpg' %}" alt="">
+                    <div class="hover">
+                        <h4>New to our website?</h4>
+                        <p>There are advances being made in science and technology everyday, and a good example of this is the</p>
+                        <a class="primary-btn" href="{% url 'signin' %}">Already have an account?</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="login_form_inner">
+                    {% if otp %}
+                    <h3>Verify otp</h3>
+                    <form class="row login_form mt-5" action="{%url 'signup'%}" method="post" id="contactForm" novalidate="novalidate">
+                        {% csrf_token %}
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="name" name="otp" placeholder="otp" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
+                        </div>
+                        <input type="hidden" value="{{usr.email}}" name='email'>
+                        <div class="col-md-12 form-group">
+                            <button type="submit" value="submit" class="primary-btn">Sign In</button>
+                            <a href="{% url 'signin' %}">Something wrong? Login</a>
+                        </div>
+                    </form>
+                    {% else %}
+
+                    {% include 'includes/alert.html' %}
+
+                    <h3>Register</h3>
+                    <form class="row login_form mt-5" action="{%url 'signup'%}" method="post" id="contactForm" novalidate="novalidate">
+                        {% csrf_token %}
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="name" name="firstname" placeholder="First name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'First name'">
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="name" name="lastname" placeholder="Last name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Last name'">
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="name" name="email" placeholder="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'email'">
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="name" name="password1" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="name" name="password2" placeholder="Conform Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Conform Password'">
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <button type="submit" value="submit" class="primary-btn">Sign In</button>
+                            <a href="{% url 'signin' %}">Something wrong? Login</a>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--================End Login Box Area =================-->
+{% endblock body %}

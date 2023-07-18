@@ -1,0 +1,52 @@
+{% extends 'adminside/adminbase.html' %}
+
+{% block content %}
+        <section class="content-main">
+            <div class="row">
+                <div class="col-6">
+                    <div class="content-header">
+                        <h2 class="content-title">Edit Category</h2>
+                        <div>
+                            <a href="{% url 'category_management' %}">
+                            <button class="btn btn-md rounded font-sm hover-up">Back</button>
+                            </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        
+                        {% include 'includes/alert.html' %}
+
+                        <div class="card-body">
+                            <form method="POST">
+                                {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h6>General info</h6>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="mb-4">
+                                        <label class="form-label">Category Name</label>
+                                        <input type="text" placeholder="Type here" name="category_name" value=" {{category.name}} " class="form-control" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Description</label>
+                                        <textarea placeholder="Type here" name="description" class="form-control" rows="4" required>{{category.description}}</textarea>
+                                    </div>
+                        
+                                </div> <!-- col.// -->
+                            </div> <!-- row.// -->
+                            
+                            <hr class="mb-4 mt-0">
+                            <div>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section> <!-- content-main end// -->
+{% endblock %}

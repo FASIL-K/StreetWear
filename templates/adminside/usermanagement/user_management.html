@@ -1,0 +1,96 @@
+{% extends 'adminside/adminbase.html' %}
+{% block content %}
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                      {% include 'includes/alert.html' %}
+                        <h2 class="content-title card-title">User List</h2>
+                        <p>Street Wear.</p>
+                    </div>
+                    
+                </div>
+                <div class="card mb-4">
+                    <header class="card-header">
+                        <div class="row gx-3">
+                            <div class="col-lg-4 col-md-6 me-auto">
+                                <input type="text" placeholder="Search..." class="form-control" />
+                            </div>
+                            <div class="col-lg-2 col-6 col-md-3">
+                                <select class="form-select">
+                                    <option>status</option>
+                                    <option>Blocked</option>
+                                    <option>Verified</option>
+                                </select>
+                            </div>
+                            {% comment %} <div class="col-lg-2 col-6 col-md-3">
+                                <select class="form-select">
+                                    <option>Show 20</option>
+                                    <option>Show 30</option>
+                                    <option>Show 40</option>
+                                </select>
+                            </div>
+                        </div> {% endcomment %}
+                    </header>
+                    <!-- card-header end// -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th>#ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Date</th>
+                                <th scope="col" class="text-end">Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                              <tr>
+                                <td>{{user.id}}</td>
+                                <td><b>{{ user.first_name|default:'' }} {{ user.last_name|default:'' }}</b></td>
+
+                                <td>{{user.email}}</td>
+                                <td>{% if user.is_blocked %}
+                                    <span class="badge rounded-pill alert-warning">Blocked</span>
+                                  {% else %}
+                                    <span class="badge rounded-pill alert-success">Active</span>
+                                  {% endif %}</td>
+                                <td>{{ user.date_joined }}</td>
+                                <td class="text-end">
+                                    {% if user.is_blocked %}
+                                    <a href="{% url 'user_block' user.id %}" class="btn btn-md rounded font-sm" style="background-color: green; color: white;">Unblock</a>
+                                    {% else %}
+                                    <a href="{% url 'user_block' user.id %}" class="btn btn-md rounded font-sm" style="background-color: red; color: white;">Block</a>
+                                    {% endif %}
+                                  
+                                </td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                        <!-- table-responsive //end -->
+                      </div>
+                      <!-- card-body end// -->
+                      </div>
+                      <!-- card end// -->
+                    
+                <div class="pagination-area mt-15 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                            <li class="page-item"><a class="page-link" href="#">02</a></li>
+                            <li class="page-item"><a class="page-link" href="#">03</a></li>
+                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                            <li class="page-item"><a class="page-link" href="#">16</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+            
+{% endblock %}            

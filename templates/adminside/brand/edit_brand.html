@@ -1,0 +1,48 @@
+{% extends 'adminside/adminbase.html' %}
+
+{% block content %}
+        <section class="content-main">
+            <div class="row">
+                <div class="col-6">
+                    <div class="content-header">
+                        <h2 class="content-title">Edit Brand</h2>
+                        <div>
+                            <a href="{% url 'brand_management' %}">
+                            <button class="btn btn-md rounded font-sm hover-up">Back</button>
+                            </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        
+                        {% include 'includes/alert.html' %}
+
+                        <div class="card-body">
+                            <form method="POST">
+                                {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h6>General info</h6>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="mb-4">
+                                        <label class="form-label">Brand Name</label>
+                                        <input type="text" placeholder="Type here" name="brand_name" value="{{brand.name}}" class="form-control" required>
+                                    </div>
+                                
+                                </div> <!-- col.// -->
+                            </div> <!-- row.// -->
+                            
+                            <hr class="mb-4 mt-0">
+                            <div>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section> <!-- content-main end// -->
+{% endblock %}
