@@ -42,8 +42,8 @@ INSTALLED_APPS = [
     'account',
     'adminside',
     'category',
+    'products',
     
-
 ]
 
 MIDDLEWARE = [

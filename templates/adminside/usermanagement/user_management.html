@@ -52,17 +52,17 @@
                                 <td><b>{{ user.first_name|default:'' }} {{ user.last_name|default:'' }}</b></td>
 
                                 <td>{{user.email}}</td>
-                                <td>{% if user.is_blocked %}
-                                    <span class="badge rounded-pill alert-warning">Blocked</span>
+                                <td>{% if user.is_active %}
+                                  <span class="badge rounded-pill alert-success">Active</span>
                                   {% else %}
-                                    <span class="badge rounded-pill alert-success">Active</span>
+                                  <span class="badge rounded-pill alert-warning">Blocked</span> 
                                   {% endif %}</td>
                                 <td>{{ user.date_joined }}</td>
                                 <td class="text-end">
-                                    {% if user.is_blocked %}
-                                    <a href="{% url 'user_block' user.id %}" class="btn btn-md rounded font-sm" style="background-color: green; color: white;">Unblock</a>
+                                    {% if user.is_active %}
+                                    <a href="{% url 'user_block' user.id %}" class="btn btn-md rounded font-sm" style="background-color: red ; color: white;">Block</a>
                                     {% else %}
-                                    <a href="{% url 'user_block' user.id %}" class="btn btn-md rounded font-sm" style="background-color: red; color: white;">Block</a>
+                                    <a href="{% url 'user_block' user.id %}" class="btn btn-md rounded font-sm" style="background-color: green ; color: white;">Unblock</a>
                                     {% endif %}
                                   
                                 </td>

@@ -64,23 +64,24 @@ def signup(request):
         return redirect('home') 
     """ OTP VERIFICATION """
 
-    if request.method=='POST':
-        get_otp=request.POST.get('otp')
+    if request.method == 'POST':
+        # Check if 'otp' field is present in the form data
+        get_otp = request.POST.get('otp')
         if get_otp:
-            get_email=request.POST.get('email')
-            if int(get_otp)==UserOTP.objects.filter(email=get_email).last().otp:
+            # Handle OTP verification
+            get_email = request.POST.get('email')
+            if int(get_otp) == UserOTP.objects.filter(email=get_email).last().otp:
                 userotp = UserOTP.objects.get(email=get_email)
-                user = User.objects.create_user(username=userotp.username,first_name=userotp.first_name,last_name=userotp.last_name,email=userotp.email,password=userotp.password)
+                user = User.objects.create_user(username=userotp.username, first_name=userotp.first_name, last_name=userotp.last_name, email=userotp.email, password=userotp.password)
                 user.save()
-                auth.login(request,user)
-                # messages.success(request,f'Account is created for {usr.email}')
+                auth.login(request, user)
                 UserOTP.objects.filter(email=get_email).delete()
                 return redirect('home')
             else:
-                messages.warning(request,f'You Entered a wrong OTP')
-                return render(request,'user/accounts/registration.html',{'otp':True,'usr':usr})
-            
-        # User rigistration validation
+                messages.warning(request, 'You entered a wrong OTP')
+                return render(request, 'user/accounts/registration.html', {'otp': True, 'usr': usr})
+
+        # User registration validation
         else:
             firstname = request.POST['firstname']   
             lastname = request.POST['lastname']  
@@ -88,98 +89,90 @@ def signup(request):
             email = request.POST['email']
             password1 = request.POST['password1']
             password2 = request.POST['password2']
-            # null values checking
-            check = [name,email,password1,password2]
-            for values in check:
-                if values == '':
-                    context ={
-                        'pre_firstname' :firstname,
-                        'pre_lastname' :lastname,
-                        'pre_name':name,
-                        'pre_email':email,
+
+            # Null values checking
+            check = [name, email, password1, password2]
+            for value in check:
+                if not value:
+                    context = {
+                        'pre_firstname': firstname,
+                        'pre_lastname': lastname,
+                        'pre_name': name,
+                        'pre_email': email,
                     }
-                    messages.info(request,'some fields are empty')
-                    return render(request,'user/accounts/registration.html',context)
-                else:
-                    pass
-            
+                    messages.info(request, 'Some fields are empty')
+                    return render(request, 'user/accounts/registration.html', context)
+
+            # Validate name
             result = validate_name(name)
             if result is not False:
-                context ={
-                        'pre_firstname' :firstname,
-                        'pre_lastname' :lastname,
-                        'pre_name':name,
-                        'pre_email':email,
-                    }
-                messages.info(request,result)
-                return render(request,'user/accounts/registration.html',context)
-            else:
-                pass
+                context = {
+                    'pre_firstname': firstname,
+                    'pre_lastname': lastname,
+                    'pre_name': name,
+                    'pre_email': email,
+                }
+                messages.info(request, result)
+                return render(request, 'user/accounts/registration.html', context)
 
-            result = validateEmail(email)
-            if result is False:
-                context ={
-                        'pre_firstname' :firstname,
-                        'pre_lastname' :lastname,
-                        'pre_name':name,
-                        'pre_email':email,
-                    }
-                messages.info(request,'Enter valid email')
-                return render(request,'user/accounts/registration.html',context)
-            else:
-                pass
-            
-            Pass = ValidatePassword(password1)
-            if Pass is False:
-                context ={
-                        'pre_firstname' :firstname,
-                        'pre_lastname' :lastname,
-                        'pre_name':name,
-                        'pre_email':email,
-                    }
-                messages.info(request,'Enter Strong Password')
-                return render(request,'user/accounts/registration.html',context)
-            else:
-                pass
-            if password1 == password2:
-          
-                if email:
-                    if UserOTP.objects.filter(email=email).exists():
-                        exuser = UserOTP.objects.get(email=email)
-                        exuser.delete()
-                    
-                    user_otp=random.randint(100000,999999)
-                    usr = UserOTP.objects.create(first_name=firstname, last_name=lastname, username=name,email=email,password=password1,otp=user_otp)
-                    usr.save()
-                    mess=f'Hello\t{usr.username},\nYour OTP to verify your account for Street Wear is {user_otp}\nThanks!'
-                    send_mail(
-                            "welcome to Streetwear Verify your Email",
-                            mess,
-                            settings.EMAIL_HOST_USER,
-                            [usr.email],
-                            fail_silently=False
-                        )
-                    return render(request,'user/accounts/registration.html',{'otp':True,'usr':usr})
-                else:
-                    context ={
-                        'pre_firstname' :firstname,
-                        'pre_lastname' :lastname,
-                        'pre_name':name,
-                        'pre_email':email,
-                    }
-                    messages.error(request,'Email already exist')
-                    return render(request,'user/accounts/registration.html',context)
-            else:
-                context ={
-                        'pre_firstname' :firstname,
-                        'pre_lastname' :lastname,
-                        'pre_name':name,
-                        'pre_email':email,
-                    }
-                messages.error(request,'password mismatch')
-                return render(request,'user/accounts/registration.html',context)
-    else:      
-        return render(request,'user/accounts/registration.html')
+            # Validate email
+            if not validateEmail(email):
+                context = {
+                    'pre_firstname': firstname,
+                    'pre_lastname': lastname,
+                    'pre_name': name,
+                    'pre_email': email,
+                }
+                messages.info(request, 'Enter a valid email')
+                return render(request, 'user/accounts/registration.html', context)
+
+            # Validate password
+            if not ValidatePassword(password1):
+                context = {
+                    'pre_firstname': firstname,
+                    'pre_lastname': lastname,
+                    'pre_name': name,
+                    'pre_email': email,
+                }
+                messages.info(request, 'Enter a strong password')
+                return render(request, 'user/accounts/registration.html', context)
+
+            # Check if the email already exists in the User model
+            if User.objects.filter(email=email).exists():
+                context = {
+                    'pre_firstname': firstname,
+                    'pre_lastname': lastname,
+                    'pre_name': name,
+                    'pre_email': email,
+                }
+                messages.error(request, 'Email already exists')
+                return render(request, 'user/accounts/registration.html', context)
+
+            # If everything is valid, proceed with OTP generation and sending
+            user_otp = random.randint(100000, 999999)
+            usr = UserOTP.objects.create(
+                first_name=firstname,
+                last_name=lastname,
+                username=name,
+                email=email,
+                password=password1,
+                otp=user_otp
+            )
+            usr.save()
+
+            # Send the OTP to the user's email
+            mess = f'Hello\t{usr.username},\nYour OTP to verify your account for Street Wear is {user_otp}\nThanks!'
+            send_mail(
+                "Welcome to Streetwear! Verify your Email",
+                mess,
+                settings.EMAIL_HOST_USER,
+                [usr.email],
+                fail_silently=False
+            )
+
+            return render(request, 'user/accounts/registration.html', {'otp': True, 'usr': usr})
+    else:
+        return render(request, 'user/accounts/registration.html')
 
 
 @cache_control(no_cache=True, must_revalidate=True,no_store=True)
