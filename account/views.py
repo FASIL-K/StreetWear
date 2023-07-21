@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 # verification email
 from .models import UserOTP
 from django.contrib import auth
@@ -20,16 +21,20 @@ def signin(request):
     if request.user.is_authenticated:
         return redirect('home')
     
-    if request.method=="POST":
-        username=request.POST['username']
-        password=request.POST['password']
-        user=authenticate(username=username,password=password)
-        print(user)
-        if user is not None:
-            login(request,user)
-            return redirect('home')
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request, 'Invalid username or password')
+                return render(request, 'user/accounts/registration.html')
 
-    return render(request, 'user/accounts/login.html')
+    return render(request, 'user/accounts/registration.html')
 
 def validateEmail(email):
     from django.core.validators import validate_email
@@ -70,16 +75,26 @@ def signup(request):
         if get_otp:
             # Handle OTP verification
             get_email = request.POST.get('email')
-            if int(get_otp) == UserOTP.objects.filter(email=get_email).last().otp:
-                userotp = UserOTP.objects.get(email=get_email)
-                user = User.objects.create_user(username=userotp.username, first_name=userotp.first_name, last_name=userotp.last_name, email=userotp.email, password=userotp.password)
-                user.save()
-                auth.login(request, user)
-                UserOTP.objects.filter(email=get_email).delete()
-                return redirect('home')
-            else:
-                messages.warning(request, 'You entered a wrong OTP')
-                return render(request, 'user/accounts/registration.html', {'otp': True, 'usr': usr})
+            try:
+                userotp = UserOTP.objects.filter(email=get_email).last()
+                if int(get_otp) == userotp.otp:
+                    user = User.objects.create_user(
+                        username=userotp.username,
+                        first_name=userotp.first_name,
+                        last_name=userotp.last_name,
+                        email=userotp.email,
+                        password=userotp.password
+                    )
+                    user.save()
+                    auth.login(request, user)
+                    userotp.delete()  # Remove the used OTP record
+                    return redirect('home')
+                else:
+                    messages.warning(request, 'You entered a wrong OTP')
+                    return render(request, 'user/accounts/registration.html', {'otp': True, 'usr': userotp})
+            except ObjectDoesNotExist:
+                messages.warning(request, 'User not found')
+                return render(request, 'user/accounts/registration.html')
 
         # User registration validation
         else:
@@ -147,6 +162,17 @@ def signup(request):
                 }
                 messages.error(request, 'Email already exists')
                 return render(request, 'user/accounts/registration.html', context)
+            
+            if password1 != password2:
+                context = {
+                    'pre_firstname': firstname,
+                    'pre_lastname': lastname,
+                    'pre_name': name,
+                    'pre_email': email,
+                }
+                messages.error(request, 'Passwords do not match')
+                return render(request, 'user/accounts/registration.html', context)
+
 
             # If everything is valid, proceed with OTP generation and sending
             user_otp = random.randint(100000, 999999)

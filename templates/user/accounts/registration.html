@@ -3,22 +3,22 @@
 {% block body %}
 {% load static %}
 
-<section class="login_box_area section_gap">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="login_box_img" >
-                    <img class="img-fluid" src="{% static '/user/img/login.jpg' %}" alt="">
-                    <div class="hover">
-                        <h4>New to our website?</h4>
-                        <p>There are advances being made in science and technology everyday, and a good example of this is the</p>
-                        <a class="primary-btn" href="{% url 'signin' %}">Already have an account?</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="login_form_inner">
+<main class="main">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Login</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('assets/images/backgrounds/login-bg.jpg')">
+        <div class="container">
+            <div class="form-box">
+                <div class="form-tab">
                     {% if otp %}
+                    {% include 'includes/alert.html' %}
                     <h3>Verify otp</h3>
                     <form class="row login_form mt-5" action="{%url 'signup'%}" method="post" id="contactForm" novalidate="novalidate">
                         {% csrf_token %}
@@ -27,46 +27,135 @@
                         </div>
                         <input type="hidden" value="{{usr.email}}" name='email'>
                         <div class="col-md-12 form-group">
-                            <button type="submit" value="submit" class="primary-btn">Sign In</button>
+                            <button type="submit" value="submit" class="btn btn-outline-primary-2">Sign In</button>
                             <a href="{% url 'signin' %}">Something wrong? Login</a>
                         </div>
                     </form>
                     {% else %}
-
                     {% include 'includes/alert.html' %}
+                    <ul class="nav nav-pills nav-fill" role="tablist">
+                       
+                        <li class="nav-item">
+                            <a class="nav-link" id="signin-tab-2" data-toggle="tab" href="#signin-2" role="tab" aria-controls="signin-2" aria-selected="false">Sign In</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" id="register-tab-2" data-toggle="tab" href="#register-2" role="tab" aria-controls="register-2" aria-selected="true">Register</a>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content">
 
-                    <h3>Register</h3>
-                    <form class="row login_form mt-5" action="{%url 'signup'%}" method="post" id="contactForm" novalidate="novalidate">
-                        {% csrf_token %}
-                        <div class="col-md-12 form-group">
-                            <input type="text" class="form-control" id="name" name="firstname" placeholder="First name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'First name'">
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <input type="text" class="form-control" id="name" name="lastname" placeholder="Last name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Last name'">
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <input type="text" class="form-control" id="name" name="email" placeholder="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'email'">
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <input type="Password" class="form-control" id="name" name="password1" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <input type="Password" class="form-control" id="name" name="password2" placeholder="Conform Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Conform Password'">
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <button type="submit" value="submit" class="primary-btn">Sign In</button>
-                            <a href="{% url 'signin' %}">Something wrong? Login</a>
-                        </div>
-                    </form>
+                        <div class="tab-pane fade" id="signin-2" role="tabpanel" aria-labelledby="signin-tab-2">
+                            
+                            <form action="{%url 'signin'%}" method="Post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="singin-email-2">Username *</label>
+                                    <input type="text" class="form-control" id="singin-email-2" name="username" required>
+                                </div><!-- End .form-group -->
+
+                                <div class="form-group">
+                                    <label for="singin-password-2">Password *</label>
+                                    <input type="password" class="form-control" id="singin-password-2" name="password" required>
+                                </div><!-- End .form-group -->
+
+                                <div class="form-footer">
+                                    <button type="submit" class="btn btn-outline-primary-2">
+                                        <span>LOG IN</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </button>
+
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="signin-remember-2">
+                                        <label class="custom-control-label" for="signin-remember-2">Remember Me</label>
+                                    </div><!-- End .custom-checkbox -->
+
+                                    <a href="#" class="forgot-link">Forgot Your Password?</a>
+                                </div><!-- End .form-footer -->
+                            </form>
+                            <div class="form-choice">
+                                <p class="text-center">or sign in with</p>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <a href="#" class="btn btn-login btn-g">
+                                            <i class="icon-google"></i>
+                                            Login With Google
+                                        </a>
+                                    </div><!-- End .col-6 -->
+                                    <div class="col-sm-6">
+                                        <a href="#" class="btn btn-login btn-f">
+                                            <i class="icon-facebook-f"></i>
+                                            Login With Facebook
+                                        </a>
+                                    </div><!-- End .col-6 -->
+                                </div><!-- End .row -->
+                            </div><!-- End .form-choice -->
+                        </div><!-- .End .tab-pane -->
+
+                        <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
+                            <form action="{%url 'signup'%}" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="register-email-2">FirstName *</label>
+                                    <input type="text" class="form-control" id="register-email-2" name="firstname" required>
+                                </div><!-- End .form-group -->
+                                <div class="form-group">
+                                    <label for="register-email-2">Last Name *</label>
+                                    <input type="text" class="form-control" id="register-email-2" name="lastname" required>
+                                </div><!-- End .form-group -->
+                                <div class="form-group">
+                                    <label for="register-email-2">Username *</label>
+                                    <input type="text" class="form-control" id="register-email-2" name="name" required>
+                                </div><!-- End .form-group -->
+                                <div class="form-group">
+                                    <label for="register-email-2">Your email address *</label>
+                                    <input type="email" class="form-control" id="register-email-2" name="email" required>
+                                </div><!-- End .form-group -->
+
+                                <div class="form-group">
+                                    <label for="register-password-2">Password *</label>
+                                    <input type="password" class="form-control" id="register-password-2" name="password1" required>
+                                </div><!-- End .form-group -->
+                                <div class="form-group">
+                                    <label for="register-password-2">Confirm Password *</label>
+                                    <input type="password" class="form-control" id="register-password-2" name="password2" required>
+                                </div><!-- End .form-group -->
+
+                                <div class="form-footer">
+                                    <button type="submit" value="submit" class="btn btn-outline-primary-2">
+                                        <span>SIGN UP</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </button>
+
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="register-policy-2" required>
+                                        <label class="custom-control-label" for="register-policy-2">I agree to the <a href="#">privacy policy</a> *</label>
+                                    </div><!-- End .custom-checkbox -->
+                                </div><!-- End .form-footer -->
+                            </form>
                     {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!--================End Login Box Area =================-->
+                            <div class="form-choice">
+                                <p class="text-center">or sign in with</p>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <a href="#" class="btn btn-login btn-g">
+                                            <i class="icon-google"></i>
+                                            Login With Google
+                                        </a>
+                                    </div><!-- End .col-6 -->
+                                    <div class="col-sm-6">
+                                        <a href="#" class="btn btn-login  btn-f">
+                                            <i class="icon-facebook-f"></i>
+                                            Login With Facebook
+                                        </a>
+                                    </div><!-- End .col-6 -->
+                                </div><!-- End .row -->
+                            </div><!-- End .form-choice -->
+                        </div><!-- .End .tab-pane -->
+                    </div><!-- End .tab-content -->
+                </div><!-- End .form-tab -->
+            </div><!-- End .form-box -->
+        </div><!-- End .container -->
+    </div><!-- End .login-page section-bg -->
+</main><!-- End .main -->
 {% endblock body %}
