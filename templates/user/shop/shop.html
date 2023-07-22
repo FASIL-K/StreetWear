@@ -48,7 +48,7 @@
                         <div class="product">
                             <figure class="product-media">
                                 <span class="product-label label-new">New</span>
-                                <a href="product.html">
+                                <a href="{% url 'product_detalis' product.id %}">
                                     <img src="{{product.image1.url}}" alt="Product image" class="product-image">
                                 </a>
 

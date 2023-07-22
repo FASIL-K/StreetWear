@@ -8,7 +8,10 @@
                         
                     </div>
                     <div>
-                        <a href="" class="btn btn-primary btn-sm rounded">Add product</a>
+                        <a type="button" class="btn btn-md rounded font-sm hover-up" style="margin-left: 10px;"
+                            data-bs-toggle="modal" data-bs-target="#addproductsModal">
+                            <i title="Add Category" class="fa fa-plus">Add Products</i>
+                        </a>
                     </div>
                 </div>
                 <div class="card mb-4">
@@ -60,11 +63,21 @@
                                         <a class="itemside" href="#">
                                             <div class="left">
                                                 
-                                                <img src="{{product.image1.url}}" class="img-sm img-thumbnail" alt="Item" />
-                                                <img src="{{product.image1.url}}" class="img-sm img-thumbnail" alt="Item" />
-                                                <img src="{{product.image1.url}}" class="img-sm img-thumbnail" alt="Item" />
-
-                                                
+                                            {% if product.image1 %}
+                                                <img src="{{ product.image1.url }}" class="img-sm img-thumbnail" alt="Item" />
+                                            {% else %}
+                                                <img src="" class="img-sm img-thumbnail" alt="No Image" />
+                                            {% endif %}  
+                                            {% if product.image2 %}
+                                                <img src="{{ product.image2.url }}" class="img-sm img-thumbnail" alt="Item" />
+                                            {% else %}
+                                             <img src="" class="img-sm img-thumbnail" alt="No Image" />  
+                                            {% endif %}
+                                            {% if product.image3 %}
+                                             <img src="{{ product.image3.url }}" class="img-sm img-thumbnail" alt="Item" />
+                                            {% else %}
+                                            <img src="" class="img-sm img-thumbnail" alt="No Image" /> 
+                                            {% endif %}
                                             </div>
                                             <div class="info">
                                                 <h6 class="mb-0">{{product.product_name}}</h6>
@@ -82,9 +95,13 @@
                                     </td>
                                     
                                     <td>{% if product.is_available %}
-                                        <a href="" class="btn btn-sm font-sm rounded btn-brand">
-                                            <i class="material-icons md-edit"></i> Edit
-                                        </a>
+                                        <div>
+                                        <a type="button" class="btn btn-md rounded font-sm hover-up" style="margin-left: 10px;"
+                                      data-bs-toggle="modal" data-bs-target="#editproductsModal_{{ product.id }}">
+                                         <i title="Edit Product" class="fa fa-plus">Edit</i>
+                                      </a>
+
+                                        </div>
                                         {% endif %}
                                         <a href="{% url 'delete_product' product.id %}" class="btn btn-sm font-sm rounded btn-brand" style="background-color: red; color: white;" onclick="return confirm('Are you sure you want to delete this item?');">
                                             <i class="material-icons md-delete_forever"></i>{% if product.is_available %}Block {% else %}Unblock {% endif %}
@@ -95,7 +112,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
 
 
                     <!-- card-body end// -->
@@ -104,4 +121,208 @@
   
             </section>
             <!-- content-main end// -->
+            
+<!-- Add Product Modal -->
+<div class="modal fade" id="addproductsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'add_product' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>General info</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Product Name</label>
+                                <input type="text" placeholder="Type here" name="product_name"
+                                    class="form-control" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" name="product_description"
+                                    class="form-control" rows="4" required></textarea>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3cg">Product Price</label>
+                                <input name='product_price' value=""  type="text" id="form3Example3cg" class="form-control form-control-lg" placeholder='Type here' />
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3cg">Brand</label>
+                                <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="brand" placeholder='Type here'>
+                                  {% for b in brand %}
+                                  <option value="{{b.name}}" >{{b.name}}</option>
+                                  {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3cg">Category</label>
+                                <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="category" placeholder='Type here'>
+                                  {% for c in category %}
+                                  <option value="{{ c.id }}">{{ c.name}}</option>
+                                  {% endfor %}
+                              </select>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="image1-input">Image1</label>
+                                <input name="image1" type="file" accept="image/png, image/jpeg, image/svg+xml, image/avif"
+                                    class="form-control" id="image1-input" />
+                                <small id="image1-error" class="text-danger text-center"></small>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="image2-input">Image2</label>
+                                <input name="image2" type="file" accept="image/png, image/jpeg, image/svg+xml, image/avif"
+                                    class="form-control" id="image2-input" />
+                                <small id="image2-error" class="text-danger text-center"></small>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="image3-input">Image3</label>
+                                <input name="image3" type="file" accept="image/png, image/jpeg, image/svg+xml, image/avif"
+                                    class="form-control" id="image3-input" />
+                                <small id="image3-error" class="text-danger text-center"></small>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3cg">Stock</label>
+                                <input name='stock' value=""  type="number" id="form3Example3cg" class="form-control form-control-lg" />
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label">Is Availble</label>
+                                <input type="checkbox" name='checkbox'>
+                              </div>
+                            <hr class="mb-4 mt-0">
+                            <div>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit" name="add_category">Create</button>
+                            </div>
+                        </div> <!-- col.// -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Add product Modal -->
+{% for product in products %}
+<!-- Edit product Modal -->
+<div class="modal fade" id="editproductsModal_{{ product.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'edit_product' product.id %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>General info</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <!-- Rest of the form fields -->
+
+                            <div class="mb-4">
+                                <label class="form-label">Product Name</label>
+                                <input type="text" placeholder="Type here" name="product_name" class="form-control" value="{{ product.product_name }}" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" name="product_description" class="form-control" rows="4" required>{{ product.product_description }}</textarea>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="product_price">Product Price</label>
+                                <input name="product_price" type="number" step="0.01" class="form-control" id="product_price" value="{{ product.product_price }}" />
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3cg">Brand</label>
+                                <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="brand">
+                                  {% for b in brand %}
+                                  <option value="{{b.name}}" {% if b.name == product.brand.name %}selected{% endif %}>{{b.name}}</option>
+                                  {% endfor %}
+                                </select>
+                              </div>
+                              <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3cg">Category</label>
+                                <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="category">
+                                  {% for c in category %}
+                                  <option value="{{ c.id }}" {% if c.id == product.category.id %}selected{% endif %}>{{ c.name }}</option>
+                                  {% endfor %}
+                              </select>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="stock">Stock</label>
+                                <input name="stock" type="number" class="form-control" id="stock" value="{{ product.stock }}" />
+                            </div>
+
+                            <!-- Image 1 -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="image1-input">Image1</label>
+                                <input name="image1" type="file" accept="image/png, image/jpeg, image/svg+xml, image/avif"
+                                    class="form-control" id="image1-input" />
+                                {% if product.image1 %}
+                                
+                                <img id="image1-preview" src="{{ product.image1.url }}" alt="Product Image 1" class="img-fluid mt-2" />
+                                <input type="checkbox" name="delete_image1"> Delete Image 1
+                                {% endif %}
+                                <small id="image1-error" class="text-danger text-center"></small>
+                            </div>
+
+                            <!-- Image 2 -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="image2-input">Image2</label>
+                                <input name="image2" type="file" accept="image/png, image/jpeg, image/svg+xml, image/avif"
+                                    class="form-control" id="image2-input" />
+                                {% if product.image2 %}
+                                <img id="image2-preview" src="{{ product.image2.url }}" alt="Product Image 2" class="img-fluid mt-2" />
+                                <input type="checkbox" name="delete_image2"> Delete Image 2
+                                {% endif %}
+                                <small id="image2-error" class="text-danger text-center"></small>
+                            </div>
+
+                            <!-- Image 3 -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="image3-input">Image3</label>
+                                <input name="image3" type="file" accept="image/png, image/jpeg, image/svg+xml, image/avif"
+                                    class="form-control" id="image3-input" />
+                                {% if product.image3 %}
+                                <img id="image3-preview" src="{{ product.image3.url }}" alt="Product Image 3" class="img-fluid mt-2" />
+                                <input type="checkbox" name="delete_image3"> Delete Image 3
+                                {% endif %}
+                                <small id="image3-error" class="text-danger text-center"></small>
+                            </div>
+
+                            <!-- ... (rest of the image fields) ... -->
+
+                            <!-- ... (rest of the form fields) ... -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label">Is Available</label>
+                                <input type="checkbox" name='checkbox' {% if product.is_available %}checked{% endif %}>
+                            </div>
+
+                            <hr class="mb-4 mt-0">
+                            <div>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit" name="edit_product">Save Changes</button>
+                            </div>
+                        </div> <!-- col.// -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Edit Product Modal -->
+{% endfor %}
+
+{% comment %} <script>
+    function removeImage(imagePreviewId) {
+        const imagePreview = document.getElementById(imagePreviewId);
+        imagePreview.src = ''; // Clear the image source to remove the image
+    }
+</script> {% endcomment %}
 {% endblock %}

@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'account',
     'adminside',
     'category',
-    'products',
+    'product',
+    'shop',
     
 ]
 

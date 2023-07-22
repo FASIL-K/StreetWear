@@ -18,6 +18,7 @@ class Product(models.Model):
     product_description = models.TextField(blank=True)
     is_available = models.BooleanField(default=False)
     slug = models.SlugField(max_length=250,unique=True)
+    
 
     def save(self, *args, **kwargs):
         # generate slug field from name field if slug is empty
