@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from category.models import *
-from product.models import *
+from products.models import *
 
 # Create your views here.
 def home(request):

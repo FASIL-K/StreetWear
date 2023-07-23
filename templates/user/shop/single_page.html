@@ -4,7 +4,13 @@
 {% load static %}
 
 
-<main class="main">
+<!-- ajax -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+
+<main class="main  product_data">
     <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
         <div class="container d-flex align-items-center">
             <ol class="breadcrumb">
@@ -23,12 +29,12 @@
 <div class="page-content">
     <div class="container">
    
-        <div class="product-details-top mb-2">
+        <div class="product-details-top mb-2   ">
             <div class="row">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="product-gallery">
-                            <figure class="product-main-image">
+                            <figure class="product-main-image"  style="width: 70%;" >
                                 <img id="product-zoom" src="{{ product.image1.url }}" data-zoom-image="{{ product.image1.url }}" alt="product image">
                                 <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                     <i class="icon-arrows"></i>
@@ -55,37 +61,27 @@
                     <div class="product-details">
                         <h1 class="product-title"> {{product.product_name}} </h1><!-- End .product-title -->
 
-                        <div class="ratings-container">
+                        {% comment %} <div class="ratings-container">
                             <div class="ratings">
                                 <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
                             </div><!-- End .ratings -->
                             <a class="ratings-text" href="#product-review-link" id="review-link">( 2 Reviews )</a>
-                        </div><!-- End .rating-container -->
+                        </div><!-- End .rating-container --> {% endcomment %}
 
                         <div class="product-price">
-                            $70.00
+                            ₹ {{product.product_price}}
                         </div><!-- End .product-price -->
 
                         <div class="product-content">
                             <p>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing. Sed lectus. </p>
                         </div><!-- End .product-content -->
 
-                        <div class="details-filter-row details-row-size">
-                            <label>Color:</label>
-
-                            <div class="product-nav product-nav-dots">
-                                <a href="#" class="active" style="background: #eab656;"><span class="sr-only">Color name</span></a>
-                                <a href="#" style="background: #333333;"><span class="sr-only">Color name</span></a>
-                                <a href="#" style="background: #3a588b;"><span class="sr-only">Color name</span></a>
-                                <a href="#" style="background: #caab97;"><span class="sr-only">Color name</span></a>
-                            </div><!-- End .product-nav -->
-                        </div><!-- End .details-filter-row -->
+                        
 
                         <div class="details-filter-row details-row-size">
                             <label for="size">Size:</label>
                             <div class="select-custom">
                                 <select name="size" id="size" class="form-control">
-                                    <option value="#" selected="selected">Select a size</option>
                                     <option value="s">Small</option>
                                     <option value="m">Medium</option>
                                     <option value="l">Large</option>
@@ -93,18 +89,21 @@
                                 </select>
                             </div><!-- End .select-custom -->
 
-                            <a href="#" class="size-guide"><i class="icon-th-list"></i>size guide</a>
                         </div><!-- End .details-filter-row -->
 
                         <div class="details-filter-row details-row-size">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{product.id}}"class="prod_id" >
                             <label for="qty">Qty:</label>
                             <div class="product-details-quantity">
-                                <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
+                                <input type="number" id="quantityInput" class="form-control qty-input" name="num-product " value="1" min="1" max="10" step="1" data-decimals="0" required>
                             </div><!-- End .product-details-quantity -->
                         </div><!-- End .details-filter-row -->
 
                         <div class="product-details-action">
-                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                            <input type="hidden" value="{{product.id}}" class="prod_id" >
+
+                            <a href="#" class="btn-product btn-cart addToCartBtn"><span>{% if product.stock > 0  %}Add to cart {% else %}Out of stok{% endif %}</span></a>
 
                             <div class="details-action-wrapper">
                                 <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
@@ -303,9 +302,21 @@
 </div><!-- End .page-content -->
 </main><!-- End .main -->
 
+{% comment %} <!--===============================================================================================-->	
+ <script src="{%static 'single/vendor/jquery/jquery-3.2.1.min.js'%}"></script>
+<!--===============================================================================================-->
+ <script src="{%static 'single/vendor/animsition/js/animsition.min.js'%}"></script>
+<!--===============================================================================================-->
+ <script src="{%static 'single/vendor/bootstrap/js/popper.js'%}"></script>
+ <script src="{%static 'single/vendor/bootstrap/js/bootstrap.min.js'%}"></script>
+<!--===============================================================================================-->
+ <script src="{%static 'single/vendor/select2/select2.min.js'%}"></script> {% endcomment %}
+ 
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+{% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  {% endcomment %}
 <script>
     $(document).ready(function() {
         // Function to update the main product image when an additional image is clicked
@@ -321,4 +332,50 @@
     });
 </script>
 
+{% comment %} <script src="{%static 'single/vendor/perfect-scrollbar/perfect-scrollbar.min.js'%}"></script> {% endcomment %}
+
+
+
+
+<script>
+    $('.addToCartBtn').click(function (e) {
+        e.preventDefault();
+    
+        var prod_id = $(this).closest('.product_data').find('.prod_id').val();
+        var product_qty = $(this).closest('.product_data').find('.qty-input').val();
+        $.ajax({
+            method: "POST",
+            url: "{% url 'addtocart' %}",
+            data: {
+                'product_qty': product_qty,
+                'prod_id': prod_id,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+    
+            success: function (response) {
+                console.log(response);
+    
+                switch (response.status) {
+                    case 'Product already in Cart':
+                    case 'No such product found':
+                    case 'Only few quantity available':
+                        alertify.error(response.status);
+                        break;
+                    case 'Product added successfully':
+                        alertify.success(response.status);
+                        $('.cartdata').load(location.href + " .cartdata");
+                        break;
+                    default:
+                        alertify.error('An error occurred while adding the product to the cart.');
+                        break;
+                }
+            },
+            error: function (xhr, status, error) {
+                alertify.error('An error occurred while processing the request. Please try again later.');
+                console.log(xhr.responseText);
+            }
+        });
+    });
+    
+</script>
 {% endblock body %}

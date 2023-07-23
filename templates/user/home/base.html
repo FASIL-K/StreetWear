@@ -93,13 +93,15 @@
                         <a href="{% url 'profile' %}" class="wishlist-link">
                             <i class="bi bi-person" ></i>
                         </a>
-                        <div class="dropdown cart-dropdown">
-                            <a href="{% url 'profile' %}" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                        <a href="{% url 'cart' %}" class="wishlist-link">
+                            <i class="icon-shopping-cart" ></i>
+                        </a>
+                    
+                            {% comment %} <a href="{% url 'cart' %}" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                                 
                                 <i class="icon-shopping-cart"></i>
                                 
-                            </a>
-                        </div><!-- End .cart-dropdown -->
+                            </a> {% endcomment %}
                         
                     </div><!-- End .header-right -->
                 </div><!-- End .container -->

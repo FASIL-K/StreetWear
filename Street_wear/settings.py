@@ -42,8 +42,10 @@ INSTALLED_APPS = [
     'account',
     'adminside',
     'category',
-    'product',
+    'products',
     'shop',
+    'cart',
+    'mathfilters',
     
 ]
 
