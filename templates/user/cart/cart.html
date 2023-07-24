@@ -3,6 +3,39 @@
 {% block body %}
 {% load static %}
 {% load mathfilters %}
+
+<<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- SweetAlert CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+<!-- Add this at the end of the body section of your HTML -->
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<style>
+    /* Add this to your CSS */
+    .wrap-num-product {
+        display: flex;
+        align-items: center;
+    }
+
+    .wrap-num-product button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .num-product {
+        width: 50px;
+        text-align: center;
+    }
+</style>
+
 <main class="main">
     <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
         <div class="container">
@@ -52,17 +85,30 @@
                                     </td>
                                     <td class="price-col">₹{{cart_item.product.product_price}}</td>
                                     <td class="quantity-col">
-                                        <div class="cart-product-quantity changeQuantity">
-                                            <input type="number" class="form-control" value="{{cart_item.product_qty}}" min="1" max="10" step="1" data-variantid="{{ cart_item.product.id }}" required>
-                                        </div><!-- End .cart-product-quantity -->
+                                        <div class="wrap-num-product">
+                                            <div class="btn-num-product-down changeQuantity" data-productid="{{cart_item.product.id}}" data-price="{{cart_item.product.product_price}}">
+                                                <i class="fa fa-minus"></i>
+                                            </div>
+                                            <input readonly class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="{{cart_item.product_qty}}" id="pro_qty{{cart_item.product.id}}">
+                                            <div class="btn-num-product-up changeQuantity" data-productid="{{cart_item.product.id}}" data-price="{{cart_item.product.product_price}}">
+                                                <i class="fa fa-plus"></i>
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td class="total-col changeQuantity" id="single_product_total{{cart_item.product.id}}">₹{{cart_item.product.product_price | mul:cart_item.product_qty }}</td>
-                                    <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
+                                    {% with counter=forloop.counter %}
+                                    <td class="column-5 cart__price total">₹
+                                        <span class="changeQuantity" id="single_product_total{{cart_item.product.id}}">{{ cart_item.product.product_price | mul:cart_item.product_qty | floatformat:2 }}</span>
+                                    </td>
+                                    {% endwith %}
+                                    
+                                    <td class="cart__close">
+                                        <a class="text-danger" href="{% url 'deletecartitem' cart_item.product.id %}" >Remove</a> 
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table><!-- End .table table-wishlist -->
-
+a
                         <div class="cart-bottom">
                             <div class="cart-discount">
                                 <form action="#">
@@ -85,52 +131,21 @@
                             <table class="table table-summary">
                                 <tbody>
                                     <tr class="summary-subtotal">
-                                        <td>Subtotal:</td>
-                                        <td>$160.00</td>
+                                        <td >Subtotal:</td>
+                                        <td id='sub_total'>  ₹  {{total_price | floatformat:2}}</td>
                                     </tr><!-- End .summary-subtotal -->
                                     <tr class="summary-shipping">
-                                        <td>Shipping:</td>
-                                        <td>&nbsp;</td>
+                                        <td >Tax:</td>
+
+                                        <td>&nbsp;  ₹  {{tax| floatformat:2}}</td>
                                     </tr>
 
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="free-shipping" name="shipping" class="custom-control-input">
-                                                <label class="custom-control-label" for="free-shipping">Free Shipping</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$0.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
+                                    
 
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="standart-shipping" name="shipping" class="custom-control-input">
-                                                <label class="custom-control-label" for="standart-shipping">Standart:</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$10.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
-
-                                    <tr class="summary-shipping-row">
-                                        <td>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="express-shipping" name="shipping" class="custom-control-input">
-                                                <label class="custom-control-label" for="express-shipping">Express:</label>
-                                            </div><!-- End .custom-control -->
-                                        </td>
-                                        <td>$20.00</td>
-                                    </tr><!-- End .summary-shipping-row -->
-
-                                    <tr class="summary-shipping-estimate">
-                                        <td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
-                                        <td>&nbsp;</td>
-                                    </tr><!-- End .summary-shipping-estimate -->
 
                                     <tr class="summary-total">
                                         <td>Total:</td>
-                                        <td>$160.00</td>
+                                        <td id='grand_total'>₹  {{grand_total | floatformat:2}}</td>
                                     </tr><!-- End .summary-total -->
                                 </tbody>
                             </table><!-- End .table table-summary -->
@@ -146,40 +161,130 @@
     </div><!-- End .page-content -->
 </main><!-- End .main -->
 
-<<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 <script>
-    $('.changeQuantity input').on('change', function () {
-        var input = $(this);
-        var variant_id = input.data('variantid');
-        var product_qty = input.val();
+    $('.quantity button').on('click', function () {
+        var button = $(this);
+        var input = button.parent().parent().find('input');
+        var oldValue = parseFloat(input.val());
+        var newVal;
+    
+        if (button.hasClass('btn-plus')) {
+            newVal = (oldValue < 10) ? oldValue + 1 : 10;  // Increment if less than 10, otherwise keep it as 10
+        } else {
+            newVal = (oldValue > 1) ? oldValue - 1 : 1;  // Decrement if greater than 1, otherwise keep it as 1
+        }
+    
+        input.val(newVal);
+    });
+    
+</script>
+{% comment %} <script>
+    function changeQuantity(product_id, newQty) {
+        var data = {
+            'product_id': product_id,
+            'product_qty': newQty,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        };
 
-        $.ajax({
-            method: "POST",
-            url: "update_cart/",
-            data: {
-                'variant_id': variant_id,
-                'product_qty': product_qty,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-
-            success: function (response) {
-                console.log(response);
+        $.post("{% url 'update_cart' %}", data)
+            .done(function (response) {
                 if (response.status === 'Not allowed this Quantity') {
                     swal("Error!", response.status, "error");
                 } else {
-                    var newTotal = parseFloat(response.product_price) * parseInt(response.quantity);
-                    $('#single_product_total' + variant_id).text('₹' + newTotal.toFixed(2));
+                    // Update the cart prices and totals here
+                    var subTotal = parseFloat(response.sub_total).toFixed(2);
+                    var tax = parseFloat(response.tax).toFixed(2);
+                    var grandTotal = parseFloat(response.grand_total).toFixed(2);
+
+                    document.getElementById('sub_total').textContent = subTotal;
+                    document.getElementById('tax').textContent = tax;
+                    document.getElementById('grand_total').textContent = grandTotal;
+                    document.getElementById('single_product_total' + product_id).textContent = parseFloat(response.product_price * response.quantity).toFixed(2);
                 }
+            })
+            .fail(function () {
+                swal("Error!", "Something went wrong, please try again later.", "error");
+            });
+    }
+</script>
+<script>
+    $('.btn-num-product-down').on('click', function(){
+        var numProduct = Number($(this).next().val());
+        if(numProduct > 1) $(this).next().val(numProduct - 1);
+    });
 
-                var sub_total = parseFloat(response.sub_total);
-                var tax = sub_total * 0.18;
-                var grand_total = sub_total + tax;
+    $('.btn-num-product-up').on('click', function(){
+        var numProduct = Number($(this).prev().val());
+        $(this).prev().val(numProduct + 1);
+    });
+    
+      
+</script> {% endcomment %}
+<script>
 
-                $('#sub_total').text('₹' + sub_total.toFixed(2));
-                $('#tax_field').text('₹' + tax.toFixed(2));
-                $('#grand_total').text('₹' + grand_total.toFixed(2));
+    $('.changeQuantity').click(function(e) {
+        e.preventDefault();
+        var product_id = $(this).data('productid')
+        
+    
+        var product_qty = $('#pro_qty' + product_id).val() 
+        console.log(product_qty,"daxoooooooo")
+        $.ajax({                                                            
+            method: "POST",
+            url: "{% url 'update_cart' %}",
+            data: {
+                'product_id': product_id,
+                'product_qty': product_qty,
+                csrfmiddlewaretoken: '{{csrf_token}}'
+            },
+         
+            success: function(response) {
+                console.log(response);
+                if (response.status === 'Not allowed this Quantity') {
+                    swal("Error!", response.status, "error")
+                    var checkoutLink = '<a href="#" class="primary-btn">Not allowed this quantity</a>';
+                     $("a.primary-btn").replaceWith(checkoutLink);
+                }else{
+                var checkoutLink = '<a href="#" class="primary-btn">Proceed to checkout</a>';
+                $("a.primary-btn").replaceWith(checkoutLink);
+                }
+                sub_total = parseInt(response.sub_total)
+                gtotal = sub_total+(sub_total *0.18)
+                console.log(gtotal)
+                document.getElementById('sub_total').textContent = sub_total.toFixed(2)
+                
+                document.getElementById('grand_total').textContent = gtotal.toFixed(2)
+                document.getElementById('single_product_total'+product_id).textContent = parseInt(response.product_price) * parseInt(response.quantity).toFixed(2)
+               
+                
             }
         });
     });
+    </script>
+  
+
+<script>
+    $('.btn-num-product-down').on('click', function () {
+        var input = $(this).parent().find('input');
+        var oldValue = parseInt(input.val(), 10);
+        if (oldValue > 1) {
+            var newQty = oldValue - 1;
+            input.val(newQty);
+            var product_id = input.data('productid');
+            updateCartItemQuantity(product_id, newQty);
+        }
+    });
+
+    $('.btn-num-product-up').on('click', function () {
+        var input = $(this).parent().find('input');
+        var oldValue = parseInt(input.val(), 10);
+        var newQty = oldValue + 1;
+        input.val(newQty);
+        var product_id = input.data('productid');
+        updateCartItemQuantity(product_id, newQty);
+    });
 </script>
+
+
 {% endblock body %}

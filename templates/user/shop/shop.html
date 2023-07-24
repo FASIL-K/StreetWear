@@ -99,26 +99,29 @@
                         <label><i class="icon-close"></i>Filters</label>
                         <a href="#" class="sidebar-filter-clear">Clean All</a>
                     </div><!-- End .widget -->
+                    
                     <div class="widget widget-collapsible">
+                        
                         <h3 class="widget-title">
                             <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
                                 Category
                             </a>
                         </h3><!-- End .widget-title -->
-
+                        {% for category in categories %}
                         <div class="collapse show" id="widget-1">
                             <div class="widget-body">
                                 <div class="filter-items filter-items-count">
                                     <div class="filter-item">
                                         <div class="custom-control custom-checkbox">
                                             <input type="checkbox" class="custom-control-input" id="cat-1">
-                                            <label class="custom-control-label" for="cat-1">Dresses</label>
+                                            <label class="custom-control-label" for="cat-1"> {{category.name}} </label>
                                         </div><!-- End .custom-checkbox -->
-                                        <span class="item-count">3</span>
+                                        {% comment %} <span class="item-count">3</span> {% endcomment %}
                                     </div><!-- End .filter-item -->
                                 </div><!-- End .filter-items -->
                             </div><!-- End .widget-body -->
                         </div><!-- End .collapse -->
+                        {% endfor %}
                     </div><!-- End .widget -->
 
                     <div class="widget widget-collapsible">
@@ -142,7 +145,7 @@
                         </div><!-- End .collapse -->
                     </div><!-- End .widget -->
 
-                    <div class="widget widget-collapsible">
+                    {% comment %} <div class="widget widget-collapsible">
                         <h3 class="widget-title">
                             <a data-toggle="collapse" href="#widget-3" role="button" aria-expanded="true" aria-controls="widget-3">
                                 Colour
@@ -157,7 +160,7 @@
                                 </div><!-- End .filter-colors -->
                             </div><!-- End .widget-body -->
                         </div><!-- End .collapse -->
-                    </div><!-- End .widget -->
+                    </div><!-- End .widget --> {% endcomment %}
 
                     <div class="widget widget-collapsible">
                         <h3 class="widget-title">
@@ -165,20 +168,23 @@
                                 Brand
                             </a>
                         </h3><!-- End .widget-title -->
-
+                        
                         <div class="collapse show" id="widget-4">
                             <div class="widget-body">
                                 <div class="filter-items">
                                     <div class="filter-item">
+                                        {% for item in brands %}
                                         <div class="custom-control custom-checkbox">
                                             <input type="checkbox" class="custom-control-input" id="brand-1">
-                                            <label class="custom-control-label" for="brand-1">Next</label>
+                                            <label class="custom-control-label" for="brand-1"> {{item.name}} </label>
                                         </div><!-- End .custom-checkbox -->
+                                        {% endfor %}
                                     </div><!-- End .filter-item -->
 
                                 </div><!-- End .filter-items -->
                             </div><!-- End .widget-body -->
                         </div><!-- End .collapse -->
+                        
                     </div><!-- End .widget -->
 
                     <div class="widget widget-collapsible">

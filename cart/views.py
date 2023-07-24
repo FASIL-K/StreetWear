@@ -5,30 +5,26 @@ from products.models import Product
 from django.http.response import JsonResponse
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 
 # Create your views here.
 
+
+
 def cart(request):
-    cart = Cart.objects.filter(user = request.user).order_by('id')
-    total_price = 0
-    tax = 0
-    grand_total = 0
-    single_product_total = [0]
-    for item in cart:
-        total_price = total_price + item.product.product_price * item.product_qty
-        single_product_total.append(item.product.product_price * item.product_qty)
-        tax = total_price * 0.18
-        grand_total = total_price + tax
+    cart = Cart.objects.filter(user=request.user).order_by('id')
+    total_price = sum(item.product.product_price * item.product_qty for item in cart)
+    tax = total_price * 0.18
+    grand_total = total_price + tax
 
     context = {
-        'cart':cart,
-        'total_price':total_price,
-        'tax':tax,
-        'grand_total':grand_total,
-        'single_product_total' : single_product_total,
+        'cart': cart,
+        'total_price': total_price,
+        'tax': tax,
+        'grand_total': grand_total,
     }
-    return render(request,'user/cart/cart.html',context)
+    return render(request, 'user/cart/cart.html', context)
 
 def addtocart(request):
     if request.method=='POST':
@@ -59,32 +55,41 @@ def addtocart(request):
 @login_required(login_url='signin')
 def update_cart(request):
     if request.method == 'POST':
-        prod_id = request.POST.get('product_id')
-        if (Cart.objects.filter(user=request.user,product=prod_id)):
+        product_id = request.POST.get('product_id')
+        if (Cart.objects.filter(user=request.user, product_id=product_id)):
             prod_qty = request.POST.get('product_qty')
-            cart = Cart.objects.get(product=prod_id, user=request.user)
-            cartes = cart.product_qty
+            cart = Cart.objects.get(product_id=product_id, user=request.user)
+            cartes = cart.product.stock
             if int(cartes) >= int(prod_qty):
                 cart.product_qty = prod_qty
                 cart.save()
 
-                carts = Cart.objects.filter(user = request.user).order_by('id')
-                total_price = 0
-                for item in carts:
-                    total_price = total_price + item.product.product_price * item.product_qty
-                    
-                return JsonResponse({'status': 'Updated successfully','sub_total':total_price,'product_price':cart.product.product_price,'quantity':prod_qty})
+                carts = Cart.objects.filter(user=request.user).order_by('id')
+                total_price = sum(item.product.product_price * item.product_qty for item in carts)
+                tax = total_price * 0.18
+                grand_total = total_price + tax
+
+                return JsonResponse({
+                    'status': 'Updated successfully',
+                    'sub_total': total_price,
+                    'tax': tax,
+                    'grand_total': grand_total,
+                    'product_price': cart.product.product_price,
+                    'quantity': prod_qty
+                })
             else:
                 return JsonResponse({'status': 'Not allowed this Quantity'})
-    return JsonResponse('something went wrong, reload page',safe=False)
+    return HttpResponse('Something went wrong, reload page')
+
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='signin')
-def deletecartitem(request):
-    if request.method == 'POST':
-        prod_id = int(request.POST.get('product_id'))
-        cart_items = Cart.objects.filter(user=request.user,product =prod_id)
-        if cart_items.exists():
-            cart_items.delete()
+def deletecartitem(request,product_id):
+    
+    
+    product_id = product_id
+    cart_items = Cart.objects.filter(user=request.user, product=product_id)
+    if cart_items.exists():
+        cart_items.delete()
     return redirect('cart')
 

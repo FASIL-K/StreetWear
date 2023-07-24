@@ -28,11 +28,12 @@
 
 <div class="page-content">
     <div class="container">
-   
+        
         <div class="product-details-top mb-2   ">
             <div class="row">
                 <div class="row">
                     <div class="col-md-6">
+                        
                         <div class="product-gallery">
                             <figure class="product-main-image"  style="width: 70%;" >
                                 <img id="product-zoom" src="{{ product.image1.url }}" data-zoom-image="{{ product.image1.url }}" alt="product image">
@@ -40,21 +41,35 @@
                                     <i class="icon-arrows"></i>
                                 </a>
                             </figure><!-- End .product-main-image -->
-
+                            
                             <div id="product-zoom-gallery" class="product-image-gallery align-items center">
+                                {% if product.image1 %}
                                 <a class="product-gallery-item" href="#" data-image="{{ product.image1.url }}" data-zoom-image="{{ product.image1.url }}">
                                     <img src="{{ product.image1.url }}" alt="product main">
                                 </a>
+                                {% else %}
+                               
 
+                                {% endif %}
+                                {% if product.image2 %}
                                 <a class="product-gallery-item" href="#" data-image="{{ product.image2.url }}" data-zoom-image="{{ product.image2.url }}">
-                                    <img src="{{ product.image2.url }}" alt="product side">
+                                    <img src="{{ product.image2.url }}" alt="">
                                 </a>
-
+                                {% else %}
+                                
+                                {% endif %}
+                                {% if product.image3 %}
                                 <a class="product-gallery-item" href="#" data-image="{{ product.image3.url }}" data-zoom-image="{{ product.image3.url }}">
                                     <img src="{{ product.image3.url }}" alt="product cross">
                                 </a>
+                                {% else %}
+                                <a class="" href="#" data-image="" >
+                                    
+                                </a>
+                                {% endif %}
                             </div><!-- End .product-image-gallery -->
                         </div><!-- End .product-gallery -->
+                        
                     </div><!-- End .col-md-6 -->
 
                 <div class="col-md-6">
@@ -366,7 +381,7 @@
                         $('.cartdata').load(location.href + " .cartdata");
                         break;
                     default:
-                        alertify.error('An error occurred while adding the product to the cart.');
+                        alertify.error('Product Already in Cart.');
                         break;
                 }
             },
