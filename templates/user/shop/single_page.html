@@ -92,18 +92,15 @@
                         </div><!-- End .product-content -->
 
                         
-
                         <div class="details-filter-row details-row-size">
                             <label for="size">Size:</label>
                             <div class="select-custom">
                                 <select name="size" id="size" class="form-control">
-                                    <option value="s">Small</option>
-                                    <option value="m">Medium</option>
-                                    <option value="l">Large</option>
-                                    <option value="xl">Extra Large</option>
+                                    {% for size in product.sizes.all %}
+                                        <option value="{{ size.id }}">{{ size.name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div><!-- End .select-custom -->
-
                         </div><!-- End .details-filter-row -->
 
                         <div class="details-filter-row details-row-size">
@@ -355,21 +352,23 @@
 <script>
     $('.addToCartBtn').click(function (e) {
         e.preventDefault();
-    
+
         var prod_id = $(this).closest('.product_data').find('.prod_id').val();
         var product_qty = $(this).closest('.product_data').find('.qty-input').val();
+        var selected_size = $(this).closest('.product_data').find('#size').val(); // Get the selected size value
+
         $.ajax({
             method: "POST",
             url: "{% url 'addtocart' %}",
             data: {
                 'product_qty': product_qty,
                 'prod_id': prod_id,
+                'size': selected_size, // Include the selected size in the data
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
-    
             success: function (response) {
                 console.log(response);
-    
+
                 switch (response.status) {
                     case 'Product already in Cart':
                     case 'No such product found':
@@ -377,8 +376,8 @@
                         alertify.error(response.status);
                         break;
                     case 'Product added successfully':
+                        // Show a success notification without redirecting
                         alertify.success(response.status);
-                        $('.cartdata').load(location.href + " .cartdata");
                         break;
                     default:
                         alertify.error('Product Already in Cart.');
@@ -391,6 +390,5 @@
             }
         });
     });
-    
 </script>
 {% endblock body %}

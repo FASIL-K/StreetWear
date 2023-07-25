@@ -4,7 +4,11 @@ from django.utils.text import slugify
 from django.urls import reverse
 
 # Create your models here.
+class Size(models.Model):
+    name = models.CharField(max_length=20)
 
+    def __str__(self):
+        return self.name
 # product
 class Product(models.Model):
     image1 = models.ImageField(upload_to='media/products',default="no images")
@@ -12,6 +16,7 @@ class Product(models.Model):
     image3 = models.ImageField(upload_to='media/products',default="no images")
     product_name = models.CharField(unique=True,max_length=50)
     product_price = models.IntegerField()
+    sizes = models.ManyToManyField(Size)
     brand = models.ForeignKey(Brand,on_delete=models.CASCADE)
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
     stock = models.PositiveIntegerField()

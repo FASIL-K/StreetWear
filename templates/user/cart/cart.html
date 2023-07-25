@@ -62,6 +62,7 @@
                                 <tr>
                                     <th>Product</th>
                                     <th>Price</th>
+                                    <th>Size</th> <!-- Add the Size column -->
                                     <th>Quantity</th>
                                     <th>Total</th>
                                     <th></th>
@@ -84,6 +85,10 @@
                                         </div><!-- End .product -->
                                     </td>
                                     <td class="price-col">₹{{cart_item.product.product_price}}</td>
+                                    <td class="size-col">
+                                        <!-- Display the selected size -->
+                                        {{ cart_item.selected_size }}
+                                    </td>
                                     <td class="quantity-col">
                                         <div class="wrap-num-product">
                                             <div class="btn-num-product-down changeQuantity" data-productid="{{cart_item.product.id}}" data-price="{{cart_item.product.product_price}}">
@@ -108,7 +113,7 @@
                                 {% endfor %}
                             </tbody>
                         </table><!-- End .table table-wishlist -->
-a
+
                         <div class="cart-bottom">
                             <div class="cart-discount">
                                 <form action="#">
@@ -162,6 +167,35 @@ a
 </main><!-- End .main -->
 
 
+
+<script>
+    $(document).on('submit', '#add-to-cart-form', function (event) {
+        event.preventDefault(); // Prevent the form submission
+        var form = $(this);
+
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (response) {
+                // Handle the response here
+                if (response.status === 'Product added successfully') {
+                    // Optionally, show a success message to the user
+                    Swal.fire('Success', response.status, 'success');
+                } else {
+                    // Show an error message to the user if the product could not be added
+                    Swal.fire('Error', response.status, 'error');
+                }
+            },
+            error: function () {
+                // Handle errors, if any
+                Swal.fire('Error', 'Something went wrong', 'error');
+            }
+        });
+    });
+</script>
+
 <script>
     $('.quantity button').on('click', function () {
         var button = $(this);
@@ -178,6 +212,19 @@ a
         input.val(newVal);
     });
     
+</script>
+<script>
+    $(document).ready(function () {
+        // Listen for changes in the size dropdown
+        $('.select-size').on('change', function () {
+            var selectedSize = $(this).val();
+            var product_id = $(this).data('productid');
+            var selectedSizeSpan = $('span[data-productid="' + product_id + '"]');
+            selectedSizeSpan.text(selectedSize); // Update the <span> element with the selected size
+        });
+
+        // Rest of your existing JavaScript code...
+    });
 </script>
 {% comment %} <script>
     function changeQuantity(product_id, newQty) {
