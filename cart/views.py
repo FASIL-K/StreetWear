@@ -40,14 +40,17 @@ def addtocart(request):
             prod_id = int(request.POST.get('prod_id'))
             product_check = Product.objects.get(id=prod_id)
             if product_check:
-                if Cart.objects.filter(user=request.user.id, product_id=prod_id):
+                prod_qty = int(request.POST.get('product_qty'))
+                selected_size = int(request.POST.get('size'))  # Get the selected size from the POST data
+
+                # Check if the same product with the same size already exists in the cart
+                cart_item = Cart.objects.filter(user=request.user, product_id=prod_id, selected_size=selected_size).first()
+
+                if cart_item:
                     return JsonResponse({'status': "Product Already in Cart"})
                 else:
-                    prod_qty = int(request.POST.get('product_qty'))
-                    selected_size = int(request.POST.get('size')) # Get the selected size from the POST data
-
+                    # If the product with the selected size is not in the cart, create a new cart item
                     if product_check.stock >= prod_qty:
-                        # Save the cart item with the selected size
                         Cart.objects.create(
                             user=request.user,
                             product_id=prod_id,
@@ -69,9 +72,14 @@ def addtocart(request):
 def update_cart(request):
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
-        if (Cart.objects.filter(user=request.user, product_id=product_id)):
+        selected_size = request.POST.get('selected_size')
+        cart_id = request.POST.get('cart_id')
+        print(cart_id,'sifandaxo')
+        
+        if (Cart.objects.get(id=cart_id)):
+
             prod_qty = request.POST.get('product_qty')
-            cart = Cart.objects.get(product_id=product_id, user=request.user)
+            cart = Cart.objects.get(id=cart_id)
             cartes = cart.product.stock
             if int(cartes) >= int(prod_qty):
                 cart.product_qty = prod_qty
@@ -79,6 +87,7 @@ def update_cart(request):
 
                 carts = Cart.objects.filter(user=request.user).order_by('id')
                 total_price = sum(item.product.product_price * item.product_qty for item in carts)
+                print(total_price,'ssssssssssssssssssss')
                 tax = total_price * 0.18
                 grand_total = total_price + tax
 
@@ -97,12 +106,11 @@ def update_cart(request):
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='signin')
-def deletecartitem(request,product_id):
-    
-    
-    product_id = product_id
-    cart_items = Cart.objects.filter(user=request.user, product=product_id)
+def deletecartitem(request, id):
+    print(id,"daxoooooooooooooooo")
+    # Get the selected size from the POST data
+    cart_id = request.POST.get(id)
+    cart_items = Cart.objects.filter(id=id)
     if cart_items.exists():
         cart_items.delete()
     return redirect('cart')
-
