@@ -169,6 +169,15 @@
                               </select>
                             </div>
                             <div class="form-outline mb-4">
+                                <label class="form-label">Available Sizes</label>
+                                {% for size in available_sizes %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="sizes" value="{{ size.id }}" id="size_{{ size.id }}">
+                                        <label class="form-check-label" for="size_{{ size.id }}">{{ size.name }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="form-outline mb-4">
                                 <label class="form-label" for="image1-input">Image1</label>
                                 <input name="image1" type="file" accept="image/png, image/jpeg, image/svg+xml, image/avif"
                                     class="form-control" id="image1-input" />
@@ -254,6 +263,15 @@
                                   <option value="{{ c.id }}" {% if c.id == product.category.id %}selected{% endif %}>{{ c.name }}</option>
                                   {% endfor %}
                               </select>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label">Available Sizes</label>
+                                {% for size in available_sizes %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="sizes" value="{{ size.id }}" id="size_{{ size.id }}" {% if size in product.sizes.all %}checked{% endif %}>
+                                        <label class="form-check-label" for="size_{{ size.id }}">{{ size.name }}</label>
+                                    </div>
+                                {% endfor %}
                             </div>
                             <div class="form-outline mb-4">
                                 <label class="form-label" for="stock">Stock</label>

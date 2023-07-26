@@ -16,27 +16,52 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <style>
-    /* Add this to your CSS */
     .wrap-num-product {
         display: flex;
         align-items: center;
-    }
-
-    .wrap-num-product button {
-        background-color: transparent;
-        border: none;
+      }
+      
+      /* Styling the minus and plus buttons */
+      .changeQuantity {
+        width: 30px;
+        height: 30px;
+        background-color: #f1f1f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
+        border: 1px solid #ddd;
+      }
+      
+      /* Styling the minus and plus icons */
+      .changeQuantity i {
         font-size: 14px;
-        padding: 10px;
-    }
-
-    .num-product {
+      }
+      
+      /* Styling the input field for quantity */
+      .num-product {
         width: 50px;
+        padding: 5px 10px;
         text-align: center;
-    }
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      
+      /* Remove default arrows on number input field */
+      .num-product::-webkit-inner-spin-button,
+      .num-product::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      
+      /* Add hover and active effects on buttons */
+      .changeQuantity:hover,
+      .changeQuantity:active {
+        background-color: #ddd;
+      }
 </style>
 
-<main class="main">
+<main class="main" >
     <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
         <div class="container">
             <h1 class="page-title">Shopping Cart<span>Shop</span></h1>
@@ -45,12 +70,36 @@
     <nav aria-label="breadcrumb" class="breadcrumb-nav">
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'shop' %}">Shop</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
             </ol>
         </div><!-- End .container -->
     </nav><!-- End .breadcrumb-nav -->
+
+    
+{% if not cart %}
+    <br>
+    <br>
+    <br>
+    <h4 class="text-center font-weight-bold" style="color: #060000;" >Your Shopping Cart is Empty</h4>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="col-sm-10 col-lg-7 col-xl-5" style="display: flex; justify-content: center; margin:auto;">
+        <button class="btn btn-outline-primary-2 btn-order btn-block">
+            <a href="{% url 'home' %}">Continue Shopping</a>
+        </button>
+    </div>
+    
+    <br>
+    <br>
+    <br>
+{% else %}
+    
+
 
     <div class="page-content">
         <div class="cart">
@@ -125,7 +174,7 @@
                                 </form>
                             </div><!-- End .cart-discount -->
 
-                            <a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
+                            <a href="{% url 'cart' %}" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
                         </div><!-- End .cart-bottom -->
                     </div><!-- End .col-lg-9 -->
                     <aside class="col-lg-3">
@@ -154,17 +203,17 @@
                                 </tbody>
                             </table><!-- End .table table-summary -->
 
-                            <a href="checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
+                            <a href="{% url 'checkout' %}" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
                         </div><!-- End .summary -->
 
-                        <a href="category.html" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+                        <a href="{% url 'shop' %}" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
                     </aside><!-- End .col-lg-3 -->
                 </div><!-- End .row -->
             </div><!-- End .container -->
         </div><!-- End .cart -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->
-
+{% endif %}
 
 
 <script>
