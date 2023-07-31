@@ -304,7 +304,7 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                        {% comment %} <form action="{%url 'orderreturn' order_item.id%}" enctype="multipart/form-data" method="POST"> {% endcomment %}
+                        <form action="{%url 'orderreturn' order_item.id%}" enctype="multipart/form-data" method="POST">
                           {% csrf_token %}
                           <div class="form-outline mb-4">
                             <select class="form-select mb-1" aria-label="Default select example" name="options">

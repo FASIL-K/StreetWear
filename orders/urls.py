@@ -8,6 +8,7 @@ urlpatterns = [
     path('orderdetails_admin/<int:track_id>/',views.orderdetails_admin, name='orderdetails_admin'),
     path('changestatus',views.changestatus, name='changestatus'),
     path('ordercancel',views.ordercancel, name='ordercancel'),
+    path('orderreturn/<int:return_id>/',views.orderreturn, name='orderreturn'),
 
   
 ]

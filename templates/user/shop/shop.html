@@ -49,7 +49,11 @@
                             <figure class="product-media">
                                 <span class="product-label label-new">New</span>
                                 <a href="{% url 'product_detalis' product.id %}">
+                                    {% if product.image1 %}
                                     <img src="{{product.image1.url}}" alt="Product image" class="product-image">
+                                    {% else %}
+                                    <img src="" alt="Product image" class="product-image">
+                                    {% endif %}
                                 </a>
 
                                 <div class="product-action-vertical">

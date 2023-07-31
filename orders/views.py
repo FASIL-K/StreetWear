@@ -7,6 +7,7 @@ from userprofile.models import Address
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http.response import JsonResponse
 from products.models import Size,Product
+from .models import *
 
 
 
@@ -44,25 +45,7 @@ def vieworderdetail(request,orderitem_id):
     }
     return render(request, 'user/orders/vieworder.html',context)
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
-@login_required(login_url='signin')
-def ordercancel(request):
-    ordrderid = int(request.POST.get('order_id'))
-    orderitem_id = request.POST.get('orderitem_id')
-    print(ordrderid,orderitem_id,'daxoooooooooooooooooo')
-    orderitem = OrderItem.objects.filter(id=orderitem_id).first()
 
-    order = Order.objects.filter(id=ordrderid).first()
-    qty = orderitem.quantity
-    pid = orderitem.selected_size.id
-    product = Product.objects.filter(id=pid).first()
-
-    product.stock = product.stock + qty
-    product.save()
-    orderitem.quantity = 0
-    orderitem.status = 'Cancelled'
-    orderitem.save()
-    return redirect('orders')
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -109,3 +92,63 @@ def changestatus(request):
 
     orderitems.save()
     return JsonResponse({'status': "Updated"+ str(order_status)+"successfuly"})
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+@login_required(login_url='signin')
+def ordercancel(request):
+    ordrderid = int(request.POST.get('order_id'))
+    orderitem_id = request.POST.get('orderitem_id')
+    print(ordrderid,orderitem_id,'daxoooooooooooooooooo')
+    orderitem = OrderItem.objects.filter(id=orderitem_id).first()
+
+    order = Order.objects.filter(id=ordrderid).first()
+    qty = orderitem.quantity
+    pid = orderitem.selected_size.id
+    product = Product.objects.filter(id=pid).first()
+
+    product.stock = product.stock + qty
+    product.save()
+    orderitem.quantity = 0
+    orderitem.status = 'Cancelled'
+    orderitem.save()
+    return redirect('orders')
+
+
+def orderreturn(request,return_id):
+    if request.method == 'POST':
+        options = request.POST.get('options')
+        reason = request.POST.get('reason')
+
+        if options.strip() == '':
+            messages.error(request,"enter valid Options")
+            return redirect('vieworderdetail')
+        
+        try:
+            orderitem_id = OrderItem.objects.get(id=return_id)
+        except :
+            return redirect('orders')
+        
+        qty = orderitem_id.quantity
+        pid = orderitem_id.selected_size.id
+        order_id = Order.objects.get(id = orderitem_id.order.id)
+        tracking_id = order_id.tracking_no
+        product = Product.objects.filter(id=pid).first()
+        product.stock = product.stock + qty
+        product.save()
+        orderitem_id.status = 'Return'
+        total_p = orderitem_id.price
+        print(total_p)
+        orderitem_id.save()
+        returnorder = Orderreturn.objects.create(user = request.user, order = order_id, options=options, reason=reason)
+        
+        orderitem_id.quantity = 0
+        orderitem_id.price = 0
+        orderitem_id.save()
+        return redirect('vieworderdetail',tracking_id)
+
+
+
+
+
+
+
