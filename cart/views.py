@@ -11,7 +11,8 @@ from django.http import HttpResponse
 # Create your views here.
 
 
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+@login_required(login_url='signin')
 def cart(request):
     cart = Cart.objects.filter(user=request.user).order_by('id')
     
@@ -34,6 +35,8 @@ def cart(request):
     }
     return render(request, 'user/cart/cart.html', context)
 
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+@login_required(login_url='signin')
 def addtocart(request):
     if request.method == 'POST':
         if request.user.is_authenticated:

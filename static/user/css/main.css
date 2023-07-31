@@ -4297,7 +4297,7 @@ label {
   vertical-align: top; }
 .cart_inner .table tbody tr.shipping_area .shipping_box {
   margin-left: -250px;
-  text-align: right; }
+  text-align: center; }
   .cart_inner .table tbody tr.shipping_area .shipping_box .list li {
     margin-bottom: 12px; }
     .cart_inner .table tbody tr.shipping_area .shipping_box .list li:last-child {

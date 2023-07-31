@@ -4,11 +4,12 @@ from .models import Category,Brand
 from django.contrib import messages
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 
 # Create your views here.
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='admin_login')
+@staff_member_required(login_url='admin_login')
 def category_management(request):
     if request.method == 'POST':
         if 'add_category' in request.POST:
@@ -46,7 +47,7 @@ def category_management(request):
     return render(request, 'adminside/category/category_management.html', {'categories': categories})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='admin_login')
+@staff_member_required(login_url='admin_login')
 def delete_category(request, category_id):
     category = Category.objects.get(id=category_id)
     category_name = str(category)
@@ -56,13 +57,13 @@ def delete_category(request, category_id):
 
 #---------------------------Brand management-----------------------------------------
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='admin_login')
+@staff_member_required(login_url='admin_login')
 def brand_management(request):
     brands=Brand.objects.all().order_by('id')
     return render(request,'adminside/brand/brand_management.html',{'brands':brands})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='admin_login')
+@staff_member_required(login_url='admin_login')
 def add_brand(request):
     if request.method == 'POST':
         name = request.POST['brand_name']
@@ -80,8 +81,9 @@ def add_brand(request):
         return HttpResponseRedirect(request.path_info)
     
     return redirect('brand_management')
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='admin_login')
+@staff_member_required(login_url='admin_login')
 def edit_brand(request,brand_id):
     brand = Brand.objects.get(id=brand_id)
     if request.method =='POST':
@@ -99,7 +101,7 @@ def edit_brand(request,brand_id):
 
    
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='admin_login')
+@staff_member_required(login_url='admin_login')
 def delete_brand(request,brand_id):
     brand = Brand.objects.get(id=brand_id)
     brandname=str(brand)

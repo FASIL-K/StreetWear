@@ -23,14 +23,14 @@
       
       /* Styling the minus and plus buttons */
       .changeQuantity {
-        width: 30px;
+        width: 69px;
         height: 30px;
-        background-color: #f1f1f1;
+        background-color: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        border: 1px solid #ddd;
+        {% comment %} border: 1px solid #ddd; {% endcomment %}
       }
       
       /* Styling the minus and plus icons */
@@ -65,6 +65,7 @@
     <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
         <div class="container">
             <h1 class="page-title">Shopping Cart<span>Shop</span></h1>
+            {% include 'includes/alert.html' %}
         </div><!-- End .container -->
     </div><!-- End .page-header -->
     <nav aria-label="breadcrumb" class="breadcrumb-nav">
@@ -112,7 +113,7 @@
                                     <th>Product</th>
                                     <th>Price</th>
                                     <th>Size</th> <!-- Add the Size column -->
-                                    <th>Quantity</th>
+                                    <th style="text-align: center;">Quantity</th>
                                     <th>Total</th>
                                     <th></th>
                                 </tr>
@@ -150,8 +151,8 @@
                                         </div>
                                     </td>
                                     {% with counter=forloop.counter %}
-                                    <td class="column-5 cart__price total">₹
-                                        <span class="changeQuantity" id="single_product_total{{cart_item.product.id}}{{cart_item.selected_size}}">{{ cart_item.product.product_price | mul:cart_item.product_qty | floatformat:2 }}</span>
+                                    <td class="column-5 cart__price total">
+                                        <span class="changeQuantity" id="single_product_total{{cart_item.product.id}}{{cart_item.selected_size}}">₹{{ cart_item.product.product_price | mul:cart_item.product_qty | floatformat:2 }}</span>
                                     </td>
                                     {% endwith %}
                                     <td class="cart__close">

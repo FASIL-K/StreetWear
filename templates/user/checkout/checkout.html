@@ -4,7 +4,7 @@
 {% load static %}
 
 
-<main class="main">
+<main class="main" style="padding-bottom: 150px;">
     <div class="page-header text-center" style="background-image: url('{% static '/user/assets/images/page-header-bg.jpg' %}')">
         <div class="container">
             <h1 class="page-title">Checkout<span>Shop</span></h1>
@@ -20,7 +20,7 @@
             </ol>
         </div><!-- End .container -->
     </nav><!-- End .breadcrumb-nav -->
-    <!-- <h3>Apply Coupon</h3> -->
+    <!-- <h3>Apply Coupon</h3> --> 
     {% if not cartitems %}
     <h2 class="text-center"> Thank you, Your order has been successfully placed</h2>
     <br>
@@ -188,7 +188,7 @@
       
                                           <br><br>
                                       <div class="mb-4">
-                                          <h4 class="font-weight-semi-bold mb-4">Select Address</h4>
+                                          <h4 class=" mb-4" style="font-weight: 300;">Select Address</h4>
                                           
                                           {% for adrs in address %}
                                                   <div class="card mb-3">
@@ -429,7 +429,7 @@
                                                 {% else %}
                                                 <tr>
                                                     <td colspan="3" class="text-end">Total:</td>
-                                                    <td>₹{{ grand_total }}</td>
+                                                    <td>₹{{grand_total | floatformat:2}}</td>
                                                 </tr>
                                                 {% endif %}
                                                 <input type="hidden" class="grand_total" id="grand_total_display" value="{{ grand_total }}">
@@ -476,7 +476,7 @@
                                       <div class="card my-2">
                                           <div class="card-header" id="heading-4">
                                               <h2 class="card-title">
-                                                <input type="radio" value="razer_pay" name='payment_method'>    Razerpay
+                                                {% comment %} <input type="radio" value="razer_pay" name='payment_method'>    Razerpay {% endcomment %}
 
                                               </h2>
                                           </div><!-- End .card-header -->
@@ -489,7 +489,7 @@
                                       <div class="card my-2">
                                         <div class="card-header" id="heading-111">
                                             <h2 class="card-title">
-                                              <input type="radio" value="wallet" name='payment_method'>   wallet
+                                              {% comment %} <input type="radio" value="wallet" name='payment_method'>   wallet {% endcomment %}
 
                                             </h2>
                                         </div><!-- End .card-header -->
@@ -524,7 +524,7 @@
                                         
                                     </button>
                                     <br><br>
-                                    <a href="" class="btn btn-outline-primary-2 btn-order btn-block"  > cancel order</a>
+                                    
                                     
                                  
                                   </div><!-- End .summary -->
