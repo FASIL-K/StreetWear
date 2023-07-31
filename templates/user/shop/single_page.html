@@ -36,7 +36,12 @@
                         
                         <div class="product-gallery">
                             <figure class="product-main-image"  style="width: 70%;" >
+                                {% if product.image1 %}
                                 <img id="product-zoom" src="{{ product.image1.url }}" data-zoom-image="{{ product.image1.url }}" alt="product image">
+                                {% else %}
+                                <img id="product-zoom" src="{% static '/user/img/no-image-icon-15.png' %}" data-zoom-image="{% static '/user/img/no-image-icon-15.png' %}" alt="product image">
+                                {% endif %}
+
                                 <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                     <i class="icon-arrows"></i>
                                 </a>
