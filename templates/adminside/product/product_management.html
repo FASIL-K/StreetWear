@@ -87,7 +87,7 @@
                                     <td>{{product.product_price}}</td>
                                     <td>{{product.stock}}</td>
                                     <td>
-                                        {% if product.is_available %}
+                                        {% if product.is_available and product.stock > 0 %}
                                         <span class="badge rounded-pill alert-success">Available</span>
                                         {% else %}
                                         <span class="badge rounded-pill alert-danger">Out of Stock</span>

@@ -75,85 +75,85 @@
                   <div class="container">
       
       
-                       <!-- Modal -->
-                  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">Billing Details</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div class="modal-body" style="margin-left:35px; ">
-      
-                          <form action="{% url 'addcheckoutaddr' %}" method="post">
-                                  {% csrf_token %}
-                              <div class="row">
-                              <div class="col-lg-9">
-                                  <h3 class="checkout-title">Billing Details</h3><!-- End .checkout-title -->
-                                  
-                                      <div class="row">
-                                          <div class="col-sm-6 col-xl-6">
-                                              <label>First Name *</label>
-                                              <input type="text" class="form-control" name="firstname" required>
-                                          </div><!-- End .col-sm-6 -->
-      
-                                          <div class="col-sm-6 col-xl-6">
-                                              <label>Last Name *</label>
-                                              <input type="text" class="form-control" name="lastname" required>
-                                          </div><!-- End .col-sm-6 -->
-                                      </div><!-- End .row -->
-      
-      
-                                      <label>Country *</label>
-                                      <input type="text" class="form-control" name="country" required>
-      
-                                      <label>Street address *</label>
-                                      <input type="text" class="form-control" name="address" placeholder="House number and Street name" required>
-                                      <input type="text" class="form-control" name="address" placeholder="Appartments, suite, unit etc ..." required>
-      
-                                      <div class="row">
-                                          <div class="col-sm-6">
-                                              <label>Town / City *</label>
-                                              <input type="text" class="form-control" name="city" required>
-                                          </div><!-- End .col-sm-6 -->
-      
-                                          <div class="col-sm-6">
-                                              <label>State *</label>
-                                              <input type="text" class="form-control" name="state" required>
-                                          </div><!-- End .col-sm-6 -->
-                                      </div><!-- End .row -->
-      
-                                      <div class="row">
-                                          <div class="col-sm-6">
-                                              <label>Postcode / ZIP *</label>
-                                              <input type="number" class="form-control" name="pincode" required>
-                                          </div><!-- End .col-sm-6 -->
-      
-                                          <div class="col-sm-6">
-                                              <label>Phone *</label>
-                                              <input type="tel" class="form-control" name="phone" required>
-                                          </div><!-- End .col-sm-6 -->
-                                      </div><!-- End .row -->
-      
-                                      <label>Email address *</label>
-                                      <input type="email" class="form-control" name="email" required>
-      
-                                     
-                              
-                                      <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
-                                          <span class="btn-text">Save</span>
-                                          <span class="btn-hover-text">Save Address</span>
-                                      </button>
-                              
-                                  </div><!-- End .col-lg-9 -->
-      
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h4 class="modal-title fs-5" id="exampleModalLabel">Add Address</h4>
+                                <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                  <i class="fa fa-times"></i>
+                                </button>
                               </div>
-                              </form>
-      
+                              <div class="modal-body " style="margin-left: 18px;">
+                                <form action="{% url 'addcheckoutaddr' %}" enctype="multipart/form-data" method="POST">
+                                  {% csrf_token %}
+                                  <div class="row mb-1">
+                                      <div class="col-lg-6">
+                                          <div class="checkout__input">
+                                          <p>First Name<span>*</span></p>
+                                          <input type="text" name="firstname" class="form-control">
+                                          </div>
+                                      </div>
+                                      <div class="col-lg-6">
+                                          <div class="checkout__input">
+                                          <p>Last Name<span>*</span></p>
+                                          <input type="text" name="lastname" class="form-control">
+                                          </div>
+                                      </div>
+                                      </div>
+                  
+                                      <div class="checkout__input mb-1">
+                                          <p>Country<span>*</span></p>
+                                          <input type="text" name="country" class="form-control">
+                                          </div>
+                                          <div class="checkout__input mb-1">
+                                          <p>Address<span>*</span></p>
+                                          <input type="text" class="checkout__input__add form-control" name="address">
+                                          </div>
+                                          <div class="checkout__input mb-1">
+                                          <p>Town/City<span>*</span></p>
+                                          <input type="text" name="city" class="form-control">
+                                          </div>
+                                          <div class="checkout__input mb-1">
+                                          <p>State<span>*</span></p>
+                                          <input type="text" name="state" class="form-control">
+                                          </div>
+                                          <div class="checkout__input mb-1">
+                                          <p>Postcode / ZIP<span>*</span></p>
+                                          <input type="text" name="pincode" class="form-control">
+                                          </div>
+                                          <div class="row mb-1">
+                                          <div class="col-lg-6">
+                                              <div class="checkout__input">
+                                              <p>Phone<span>*</span></p>
+                                              <input type="text" name="phone" class="form-control">
+                                              </div>
+                                          </div>
+                                          <div class="col-lg-6">
+                                              <div class="checkout__input">
+                                              <p>Email<span>*</span></p>
+                                              <input type="text" name="email" class="form-control">
+                                              </div>
+                                          </div>
+                                          </div>
+                                          <div class="checkout__input mb-1">
+                                          <p>Order notes<span>*</span></p>
+                                          <input type="text" placeholder="Notes about your order, e.g. special notes for delivery." name="ordernote" class="form-control">
+                                          </div>
+                                  <div class="d-flex justify-content-center">
+                                    <button type="submit"
+                                      class="btn btn-success btn-lg gradient-custom-4 w-50 text-light" style="margin-bottom: 23px;">Save </button>
+                                  </div>
+                                </form>
                           </div>
+                        </div>
                       </div>
-                  </div>
-              </div>
+                    </div>
+
+                       <!-- Modal -->
+                 
                       <!-- saved address -->
       
                           <form action="{% url 'placeorder' %}" method="post" id="orderform">
@@ -178,10 +178,9 @@
                                               </a>
                                           </div><!-- End .card-header -->
                                           <div id="collapse-11" class="collapse" aria-labelledby="heading-11" data-parent="#accordion-payment">
-                                              <button type="button" class="site-btn mb-3 btn btn-primary " data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                  New Address
-                                             
-                                              </button>
+                                            <button type="button" style="font-size: 16px;" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                              Add New Address
+                                            </button>   
                                           </div><!-- End .collapse -->
                                       </div>
       

@@ -201,10 +201,7 @@ def signup(request):
         return render(request, 'user/accounts/registration.html')
 
 
-@cache_control(no_cache=True, must_revalidate=True,no_store=True)
-@login_required(login_url='signin')
-def profile(request):
-    return render(request,'user/accounts/profile.html')
+
   
 
 @cache_control(no_cache=True, must_revalidate=True,no_store=True)
@@ -241,3 +238,12 @@ def admin_login(request):
 def admin_logout(request):
     logout(request)
     return redirect('admin_login')
+
+
+
+def forgot_password(request):
+    if request.method == ' POST':
+        return
+      
+
+    return()

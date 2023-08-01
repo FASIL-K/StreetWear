@@ -83,21 +83,69 @@ def placeorder(request):
             prod.save()
         Cart.objects.filter(user=request.user).delete()
     return redirect('checkout')
+
+
+
+
 def addcheckoutaddr(request):
     if request.method == 'POST':
-        address = Address()
-        address.user = request.user
-        address.first_name = request.POST.get('firstname')
-        address.last_name = request.POST.get('lastname')
-        address.country = request.POST.get('country')
-        address.address = request.POST.get('address')
-        address.city = request.POST.get('city')
-        address.pincode = request.POST.get('pincode')
-        address.phone = request.POST.get('phone')
-        address.email = request.POST.get('email')
-        address.state = request.POST.get('state')
-        address.order_note = request.POST.get('ordernote')
-        address.save()
+        first_name = request.POST.get('firstname')
+        last_name = request.POST.get('lastname')
+        country = request.POST.get('country')
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        pincode = request.POST.get('pincode')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        state = request.POST.get('state')
+        order_note = request.POST.get('ordernote')
+        
+        if request.user is None:
+            return 
+        if first_name.strip() == '' or last_name.strip() == '':
+            messages.error(request, 'First name or Last name is empty!')
+            return redirect('checkout')
+        if country.strip() =='':
+            messages.error(request, 'Country is empty!')
+            return redirect('checkout')
+        if city.strip() =='':
+            messages.error(request, 'City is empty!')
+            return redirect('checkout')
+        if address.strip() =='':
+            messages.error(request, 'Address is empty!')
+            return redirect('checkout')
+        if pincode.strip() =='':
+            messages.error(request, 'Pincode is empty!')
+            return redirect('checkout')
+        if phone.strip() =='':
+            messages.error(request, 'Phone is empty!')
+            return redirect('checkout')
+        if email.strip() =='':
+            messages.error(request, 'Email is empty!')
+            return redirect('checkout')
+        if state.strip() =='':
+            messages.error(request, 'State is empty!')
+            return redirect('checkout')
+        
+        adrs = Address()
+        adrs.user = request.user
+        adrs.first_name = first_name
+        adrs.last_name = last_name
+        adrs.country = country
+        adrs.address = address
+        adrs.city = city
+        adrs.pincode = pincode
+        adrs.phone = phone
+        adrs.email = email
+        adrs.state = state
+        adrs.order_note = order_note
+        adrs.save()
 
-        return redirect('checkout')
     return redirect('checkout')
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+@login_required(login_url='signin')
+def deleteaddresscheckout(requst,delete_id):
+    address = Address.objects.filter(id=delete_id)
+    address.delete()
+    return redirect('placeorder')

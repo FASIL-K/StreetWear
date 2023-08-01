@@ -5,7 +5,7 @@ urlpatterns = [
     path('checkout/',views.checkout, name='checkout'),
     path('placeorder/',views.placeorder, name='placeorder'),
     path('addcheckoutaddr/',views.addcheckoutaddr, name='addcheckoutaddr'),
-    # path('deleteaddresscheckout/<int:delete_id>/',views.deleteaddresscheckout, name='deleteaddresscheckout'),
+    path('deleteaddresscheckout/<int:delete_id>/',views.deleteaddresscheckout, name='deleteaddresscheckout'),
 
 
 ]
