@@ -242,8 +242,77 @@ def admin_logout(request):
 
 
 def forgot_password(request):
-    if request.method == ' POST':
-        return
-      
-
-    return()
+    if request.method=='POST':
+        get_otp=request.POST.get('otp')
+        
+        if get_otp:
+            get_email=request.POST.get('email')
+            user=User.objects.get(email=get_email)
+            if not re.search(re.compile(r'^\d{6}$'), get_otp): 
+                messages.error(request,'OTP should only contain numeric!')
+                return render(request,'user/accounts/password_forgot.html',{'otp':True,'user':user}) 
+            session_otp=request.session.get('otp')
+            if int(get_otp) == session_otp:
+                password1 = request.POST.get('password1')
+                password2 = request.POST.get('password2')
+                context ={
+                                'pre_otp':get_otp,
+                            }
+                if password1.strip()==''or password2.strip()=='':
+                    messages.error(request,'field cannot empty !')
+                    return render(request,'user/accounts/password_forgot.html',{'otp':True,'user':user,'pre_otp':get_otp})
+                
+                elif password1 != password2:
+                    messages.error(request,'Password does not match!')
+                    return render(request,'user/accounts/password_forgot.html',{'otp':True,'user':user,'pre_otp':get_otp})
+                    
+                Pass = ValidatePassword(password1)
+                if Pass is False:
+                    messages.error(request,'Please enter Strong password!')
+                    return render(request,'user/accounts/password_forgot.html',{'otp':True,'user':user,'pre_otp':get_otp})
+                user.set_password(password1)
+                user.save()
+                del request.session['otp']
+                messages.success(request,'Your password is changed!')
+                return redirect('signin')
+            else:
+                messages.warning(request,'You Entered a wrong OTP!')
+                return render(request,'user/accounts/password_forgot.html',{'otp':True,'user':user})  
+        else:
+            
+            get_otp=request.POST.get('otp1')
+            email=request.POST.get('user1')
+            if get_otp:
+                user=User.objects.get(email=email)
+                messages.error(request,'field cannot empty!')
+                return render(request,'user/accounts/password_forgot.html',{'otp':True,'user':user})
+                
+            else:   
+                email=request.POST['email']
+                
+                if email.strip()=='':
+                    messages.error(request,'field cannot empty!')
+                    return render(request,'user/accounts/password_forgot.html')
+                
+                email_check=validateEmail(email)
+                if email_check is False:
+                    messages.error(request,'email not valid!')
+                    return render(request,'user/accounts/password_forgot.html')
+            
+                if User.objects.filter(email=email):
+                    user=User.objects.get(email=email)
+                    user_otp=random.randint(100000,999999)
+                    request.session['otp']=user_otp
+                    message=f'Hello\t{user.first_name},\n Your OTP to verify your account for Coot is {user_otp}\n Thanks' 
+                    send_mail(
+                        "welcome to Coot Verify Email",
+                        message,
+                        settings.EMAIL_HOST_USER,
+                        [user.email],
+                        fail_silently=False
+                    )
+                    return render (request,'user/accounts/password_forgot.html',{'otp':True,'user':user}) 
+                else:
+                    messages.error(request,'email does not exist!')
+                    return render(request,'user/accounts/password_forgot.html')
+    return render (request,'user/accounts/password_forgot.html')  
