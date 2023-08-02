@@ -149,6 +149,7 @@ def edit_product(request, editproduct_id):
         pprice = request.POST.get('product_price')
         pdescription = request.POST.get('product_description')
         brandname = request.POST.get('brand')
+        stock = request.POST.get('stock')
         category_id = request.POST.get('category')
         is_availables = request.POST.get('checkbox', False) == 'on'
 
@@ -160,6 +161,8 @@ def edit_product(request, editproduct_id):
         product.product_price = pprice
         product.product_description = pdescription
         product.is_available = is_availables
+        product.stock = stock
+
 
         brand_obj = Brand.objects.get(name=brandname)
         category_obj = Category.objects.get(id=category_id)

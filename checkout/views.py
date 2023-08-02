@@ -47,20 +47,19 @@ def placeorder(request):
         neworder.address = address
         payment_method = request.POST.get('payment_method')
         if payment_method is None:
-            messages.error(request,'Please select any Payment option')
+            messages.error(request, 'Please select any Payment option')
             return redirect('checkout')
 
-        neworder.payment_mode =payment_method
+        neworder.payment_mode = payment_method
         neworder.payment_id = request.POST.get('payment_id')
         cart = Cart.objects.filter(user=request.user)
         cart_total_price = 0
         tax = 0
         for item in cart:
-           
             cart_total_price += item.product.product_price * item.product_qty
             tax = cart_total_price * 0.18
-            cart_total_price +=tax
-            
+            cart_total_price += tax
+
         neworder.total_price = cart_total_price
         trackno = random.randint(1111111, 9999999)
         while Order.objects.filter(tracking_no=trackno).exists():
@@ -81,19 +80,19 @@ def placeorder(request):
                 product=item.product,
                 price=item.product.product_price,
                 quantity=item.product_qty,
-                selected_size = size,
+                selected_size=size,
             )
 
             # To decrease the product quantity from available stock
             prod = Product.objects.filter(id=item.product.id).first()
             prod.stock = prod.stock - item.product_qty
             prod.save()
+
         payment_mode = request.POST.get('payment_method')
-        print(payment_mode,'daxoooooooooooooo')
-        if (payment_mode):
-            print(payment_mode)
+        if payment_mode == 'cod':
             Cart.objects.filter(user=request.user).delete()
-            return JsonResponse({'status' : "Yout order has been placed successfully"})
+            return JsonResponse({'status': 'Your order has been placed successfully'})
+
         Cart.objects.filter(user=request.user).delete()
     return redirect('checkout')
 
