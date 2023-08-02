@@ -10,6 +10,7 @@ from products.models import *
 from checkout.models import Order, OrderItem
 from django.shortcuts import render, redirect
 import random
+import string
 # Create your views here.
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def checkout(request):
@@ -48,6 +49,7 @@ def placeorder(request):
         if payment_method is None:
             messages.error(request,'Please select any Payment option')
             return redirect('checkout')
+
         neworder.payment_mode =payment_method
         neworder.payment_id = request.POST.get('payment_id')
         cart = Cart.objects.filter(user=request.user)
@@ -64,6 +66,11 @@ def placeorder(request):
         while Order.objects.filter(tracking_no=trackno).exists():
             trackno = random.randint(1111111, 9999999)
         neworder.tracking_no = trackno
+
+        neworder.payment_id = generate_random_payment_id(10)
+        while Order.objects.filter(payment_id=neworder.payment_id).exists():
+            neworder.payment_id = generate_random_payment_id(10)
+
         neworder.save()
 
         neworderitems = Cart.objects.filter(user=request.user)
@@ -81,6 +88,12 @@ def placeorder(request):
             prod = Product.objects.filter(id=item.product.id).first()
             prod.stock = prod.stock - item.product_qty
             prod.save()
+        payment_mode = request.POST.get('payment_method')
+        print(payment_mode,'daxoooooooooooooo')
+        if (payment_mode):
+            print(payment_mode)
+            Cart.objects.filter(user=request.user).delete()
+            return JsonResponse({'status' : "Yout order has been placed successfully"})
         Cart.objects.filter(user=request.user).delete()
     return redirect('checkout')
 
@@ -149,3 +162,19 @@ def deleteaddresscheckout(requst,delete_id):
     address = Address.objects.filter(id=delete_id)
     address.delete()
     return redirect('placeorder')
+
+
+def generate_random_payment_id(length):
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choices(characters, k=length))
+
+def razarypaycheck(request):
+    cart = Cart.objects.filter(user=request.user)
+    total_price = 0
+    for item in cart:
+        total_price = total_price + item.product.product_price * item.product_qty
+        tax = total_price * 0.18
+        total_price = total_price + tax
+        
+    
+    return JsonResponse({'total_price': total_price})

@@ -457,63 +457,69 @@
                                       
       
                                       <div class="accordion-summary" id="accordion-payment">
-                                        <!-- <div class="card">
-                                          <div class="card-header" id="heading-1">
-                                              <h2 class="card-title">
-                                                  <a role="button" data-toggle="collapse" data-payment-method="banktransfer" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
-                                                      Net Banking
-                                                  </a>
-                                              </h2>
-                                          </div>
-                                          <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment">
-                                              <div class="card-body">
-                                                  Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
-                                              </div>
-                                          </div>
-                                      </div> -->
-                                      
-                                      <div class="card my-2">
-                                          <div class="card-header" id="heading-4">
-                                              <h2 class="card-title">
-                                                {% comment %} <input type="radio" value="razer_pay" name='payment_method'>    Razerpay {% endcomment %}
-
-                                              </h2>
-                                          </div><!-- End .card-header -->
-                                          <div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
-                                              <div class="card-body">
-                                                  Nullam malesuada erat ut turpis. Suspendis.
-                                              </div>
-                                           </div>
-                                      </div><!-- End .card -->
-                                      <div class="card my-2">
-                                        <div class="card-header" id="heading-111">
-                                            <h2 class="card-title">
-                                              {% comment %} <input type="radio" value="wallet" name='payment_method'>   wallet {% endcomment %}
-
-                                            </h2>
-                                        </div><!-- End .card-header -->
-                                        <div id="collapse-111" class="collapse" aria-labelledby="heading-111" data-parent="#accordion-payment">
-                                            <div class="card-body">
-                                                Nullam malesuada erat ut turpis. Suspendisse urna ni
-                                            </div>
-                                         </div>
-                                    </div><!-- End .card -->
-                                      
-                                      
-                                      <div class="card">
-                                          <div class="card-header" id="heading-3">
-                                              <h2 class="card-title">
-                                                
-                                                  <input type="radio" value="cod" name='payment_method'>    Cash on delivery
-                                              </h2>
-                                          </div><!-- End .card-header -->
-                                          <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
-                                              <div class="card-body">Quisque volutpat mattis e
-                                              </div><!-- End .card-body -->
-                                          </div>
-                                      </div><!-- End .card -->
-                                      
-                                      
+                                   
+                                        <div class="card">
+                                            <div class="card-header" id="heading-3">
+                                                <h2 class="card-title">
+                                                    <a class="collapsed" role="button" data-toggle="collapse"
+                                                    href="#collapse-3" aria-expanded="false" aria-controls="collapse-5" data-payment-method="cod" role="button"  >
+                                                    Cash on delivery
+                                                 
+                                                    
+                                                </a>
+                                                       
+                                                </h2>
+                                            </div><!-- End .card-header -->
+                                            <div id="collapse-3" class="collapse" aria-labelledby="heading-3"
+                                                data-parent="#accordion-payment">
+                                                <div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit
+                                                    amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis
+                                                    eros.
+                                                </div><!-- End .card-body -->
+                                            </div><!-- End .collapse -->
+                                        </div><!-- End .card -->
+    
+                                        <div class="card">
+                                            <div class="card-header" id="payment" data-payment-method="razorpay">
+                                                <h2 class="card-title">
+                                                   
+                                                    <a class="collapsed" role="button" data-toggle="collapse"
+                                                    href="#collapse-4" aria-expanded="false" aria-controls="collapse-5"   id="payment" data-payment-method="razorpay" role="button"   >
+                                                    Razor pay
+                                                 
+                                                    
+                                                </a> 
+                                                </h2>
+                                            </div><!-- End .card-header -->
+                                            <div id="collapse-4" class="collapse" aria-labelledby="heading-4"
+                                                data-parent="#accordion-payment">
+                                                <div class="card-body">
+                                                    Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non,
+                                                    semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis
+                                                    fermentum.
+                                                </div><!-- End .card-body -->
+                                            </div><!-- End .collapse -->
+                                        </div><!-- End .card -->
+    
+                                        <div class="card">
+                                            <div class="card-header" id="heading-5">
+                                                <h2 class="card-title">
+                                                    <a class="collapsed" role="button" data-toggle="collapse"
+                                                        href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
+                                                        Credit Card 
+                                                        <img src="{% static 'cart/payments-summary.png' %}"
+                                                            alt="payments cards">
+                                                    </a>
+                                                </h2>
+                                            </div><!-- End .card-header -->
+                                            <div id="collapse-5" class="collapse" aria-labelledby="heading-5"
+                                                data-parent="#accordion-payment">
+                                                <div class="card-body"> Donec nec justo eget felis facilisis fermentum.Lorem
+                                                    ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque
+                                                    volutpat mattis eros. Lorem ipsum dolor sit ame.
+                                                </div><!-- End .card-body -->
+                                            </div><!-- End .collapse -->
+                                        </div><!-- End .card -->
                                     </div><!-- End .accordion -->
                                     
                                     <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block purchase placeorder" id="orderform">
@@ -540,18 +546,156 @@
               </div><!-- End .checkout -->
           </div><!-- End .page-content -->
           {% endif %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  <script>
-{% for msg in messages %}
-  swal({
-    title: "Error!",
-    text: "{{msg}}",
-    icon: "error",
-    button: "ok",
-  });
-  {% endfor %}
-  </script>
+
+          <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+          <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+          <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+          <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.all.min.js"></script>
+          <script>
+            $(document).ready(function() {
+                $('.purchase').click(function(e) {
+                    e.preventDefault();
+          
+                    var fname = $("[name='first_name']").val();
+                    var phone = $("[name='phone']").val();
+                    var email = $("[name='email']").val();
+                    var order_note = $("[name='ordernote']").val();
+                    var token = $("[name='csrfmiddlewaretoken']").val();
+                    var selectedAddress = $("input[name='address']:checked").val();
+                    var paymentMethod = $("a[data-toggle='collapse'][aria-expanded='true']").data('payment-method');
+          
+                    if (!selectedAddress) {
+                        Swal.fire("Alert!", "Address field is mandatory!", "error");
+                        console.log('Address field is empty');
+                        return false;
+                    }if (!paymentMethod) {
+                          Swal.fire("Alert!", "payment field is mandatory!", "error");
+                          console.log('Address field is empty');
+                          return false;    
+                    } else {
+                        var data = {
+                            "payment_method": paymentMethod,
+                            "order_note": order_note,
+                            "address": selectedAddress,
+                            "csrfmiddlewaretoken": token
+                        };
+          
+                        console.log(data, '11111111111111111111111');
+          
+                        // Check the selected payment method and execute the corresponding AJAX request
+                        if (paymentMethod === "cod") {
+                          $.ajax({
+                              method: "POST",
+                              url: "{% url 'placeorder' %}",
+                              data: data,
+                              dataType: 'json'
+                          }).done(function(response) {
+                              console.log(response);
+          
+                              if (response.status === 'Address fields is mandatory!' || response.status === 'Please select any Payment option') {
+                                  Swal.fire("Error!", response.status, "error");
+                                  $('.placeorder').load(location.href + " .placeorder");
+                              } else if (response.status === 'Your order has been placed successfully') {
+                                  Swal.fire("Congratulations!", response.status, "success").then((value) => {
+                                      window.location.href = '{% url 'shop' %}';
+                                  });
+                              } else {
+                                  Swal.fire("Error!", response.status, "error");
+                                  $('.placeorder').load(location.href + " .placeorder");
+                              }
+                          }).fail(function(xhr, errmsg, err) {
+                              alert('Error: ' + errmsg);
+                              console.log(xhr.responseText);
+                              console.log(err);
+                          });
+                      }
+                        
+                        else if (paymentMethod === "razorpay") {
+                            // The Razorpay code from the second script goes here
+                            $.ajax({
+                              method:"GET",
+                              url:"{% url 'razarypaycheck' %}",
+                              success: function(response) {
+                               var options = {
+                                 "key": "rzp_test_TxRdHkYPhOq4dp", // Enter the Key ID generated from the Dashboard
+                                 "amount": 1*100,// Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                                 //"amount": 1*100,//response.total_price * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                                 "currency": "INR",
+                                 "name": "StreetWear",
+                                 "description": "Thank you for buying with us",
+                                 "image": "https://example.com/your_logo",
+                                 //"order_id": "order_IluGWxBm9U8zJ8", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                                 "handler": function (responseb){
+                                  // alert(responseb.razorpay_payment_id);
+                                     data = {
+                                       
+                                       "payment_method" : "razorpay",
+                                       "payment_id" : responseb.razorpay_payment_id,
+                                       "address": selectedAddress,
+                                       csrfmiddlewaretoken: token
+                                       
+                                     }
+          
+                                       $.ajax({
+                                         method:"POST",
+                                         url:"{% url 'placeorder' %}",
+                                         data: data,
+                                         success: function (responsec) {
+                                           
+                                           Swal.fire("Congratulations!", responsec.status,"success" ).then((value) => {
+                                           window.location.href = '{% url 'shop' %}'
+                                              
+                                           });
+                                         }
+                   
+                                     });
+                                 },
+                                 "prefill": {
+                                     "name": fname,
+                                     "email" : email,
+                                     'contact' : phone,
+                                 },
+                                 
+                                 "theme": {
+                                     "color": "#3399cc"
+                                 }
+                             };
+                             var rzp1 = new Razorpay(options);
+                             rzp1.on('payment.failed', function (response){
+                                     alert(response.error.code);
+                                     alert(response.error.description);
+                                     alert(response.error.source);
+                                     alert(response.error.step);
+                                     alert(response.error.reason);
+                                     alert(response.error.metadata.order_id);
+                                     alert(response.error.metadata.payment_id);
+                             });
+                             rzp1.open();
+                               console.log(responsec);
+                   
+                              }
+                           });
+                        } 
+                    }
+                });
+            });
+            
+          </script>  
+  
+    {% for message in messages %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    text: "{{ message }}",
+                    timer: 5000, // Adjust the timer to control how long each alert stays visible (in milliseconds)
+                });
+            });
+        </script>
+    {% endfor %}
 </main>
       
       

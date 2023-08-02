@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     
 ]
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -164,3 +166,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'fasilmlm10@gmail.com' 
 EMAIL_HOST_PASSWORD = 'etuzqanvkamffkfp'
 DEFAULT_FROM_EMAIL = 'fasilmlm10@gmail.com'
+
+
+
+razor_pay_key_id = 'rzp_test_TxRdHkYPhOq4dp'
+key_secreat = 'oYOoRDU0Y9jIFPOms366DjAi'

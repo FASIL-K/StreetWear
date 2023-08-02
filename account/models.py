@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+
 
 # Create your models here.
 class UserOTP(models.Model):
@@ -10,3 +12,5 @@ class UserOTP(models.Model):
     username = models.CharField(max_length=50)
     email = models.EmailField(max_length=50)
     password = models.CharField(max_length=50)
+
+
