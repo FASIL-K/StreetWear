@@ -42,6 +42,7 @@ def addtocart(request):
         if request.user.is_authenticated:
             prod_id = int(request.POST.get('prod_id'))
             product_check = Product.objects.get(id=prod_id)
+            print(prod_id,'daxooooooooooo')
             if product_check:
                 prod_qty = int(request.POST.get('product_qty'))
                 selected_size = int(request.POST.get('size'))  # Get the selected size from the POST data
@@ -110,10 +111,23 @@ def update_cart(request):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='signin')
 def deletecartitem(request, id):
-    print(id,"daxoooooooooooooooo")
-    # Get the selected size from the POST data
     cart_id = request.POST.get(id)
     cart_items = Cart.objects.filter(id=id)
     if cart_items.exists():
         cart_items.delete()
     return redirect('cart')
+
+def update_cart_item_size(request):
+    if request.method == 'POST':
+        cart_id = request.POST.get('cartid')
+        selected_size = request.POST.get('size')
+        if cart_id:
+            cart_item = Cart.objects.get(id=cart_id)
+            cart_item.selected_size = selected_size
+            cart_item.save()
+            size = Size.objects.get(id=cart_item.selected_size)
+            return JsonResponse({'status': 'Size updated successfully','sizename':size.name})
+        else:
+            return JsonResponse({'status': 'Cart item not found'}, status=404)
+    else:
+        return JsonResponse({'status': 'Invalid request method'}, status=400)

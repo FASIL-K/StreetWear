@@ -1,0 +1,202 @@
+{% extends 'user/home/base.html' %}
+{% block title %}Wishlist{% endblock title %}
+{% block body %}
+{% load static %}
+<main class="main product_data">
+    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+        <div class="container">
+            <h1 class="page-title">Wishlist<span>Shop</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href=" {% url 'shop' %}">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="container">
+            <table class="table table-wishlist table-mobile">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Stock Status</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% if not wishlist %}
+                    <h2 class="text-center font-weight-bold" style="color: #c5c1c1;" >Your Wishlist is Empty</h2>
+                    <br>
+                    <br>
+                    <br>
+                    {% else %}
+                    {% for item in wishlist %}
+                    <tr id="product_{{ item.product.id }}">
+                        <td class="product-col">
+                            <div class="product">
+                                <figure class="product-media">
+                                    <a href="#">
+                                        <img src="{{item.product.image1.url}}" alt="Product image">
+                                    </a>
+                                </figure>
+
+                                <h3 class="product-title">
+                                    <a href="#"> {{item.product.product_name}}  </a>
+                                </h3><!-- End .product-title -->
+                            </div><!-- End .product -->
+                        </td>
+
+                        <td class="price-col">{{item.product.product_price}}</td>
+                        <td class="stock-col"><span class="in-stock">In stock</span></td>
+                        <td class="action-col">
+                            <input type="hidden" value="{{item.product.id}}" class="prod_id" >
+                            <button class="btn btn-block btn-outline-primary-2 addToCartBtn" data-itemid="{{ item.id }}" data-productid="{{ item.product.id }}"><i class="icon-cart-plus"></i><span>{% if item.product.stock > 0 %}Add to cart{% else %}Out of stock{% endif %}</span></button>
+
+
+                        </td>
+                        <td class="remove-col">
+                            <button class="btn-remove"><i class="icon-close"></i></button>
+                            <a data-productid="{{item.product.id}}" class="deleteWishlit" href="" ><i class="icon-close"></i></a> 
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                    {% comment %} <tr>
+                        <td class="product-col">
+                            <div class="product">
+                                <figure class="product-media">
+                                    <a href="#">
+                                        <img src="assets/images/products/table/product-2.jpg" alt="Product image">
+                                    </a>
+                                </figure>
+
+                                <h3 class="product-title">
+                                    <a href="#">Blue utility pinafore denim dress</a>
+                                </h3><!-- End .product-title -->
+                            </div><!-- End .product -->
+                        </td>
+                        <td class="price-col">$76.00</td>
+                        <td class="stock-col"><span class="in-stock">In stock</span></td>
+                        <td class="action-col">
+                            <button class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>Add to Cart</button>
+                        </td>
+                        <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td class="product-col">
+                            <div class="product">
+                                <figure class="product-media">
+                                    <a href="#">
+                                        <img src="assets/images/products/table/product-3.jpg" alt="Product image">
+                                    </a>
+                                </figure>
+
+                                <h3 class="product-title">
+                                    <a href="#">Orange saddle lock front chain cross body bag</a>
+                                </h3><!-- End .product-title -->
+                            </div><!-- End .product -->
+                        </td>
+                        <td class="price-col">$52.00</td>
+                        <td class="stock-col"><span class="out-of-stock">Out of stock</span></td>
+                        <td class="action-col">
+                            <button class="btn btn-block btn-outline-primary-2 disabled">Out of Stock</button>
+                        </td>
+                        <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
+                    </tr> {% endcomment %}
+                </tbody>
+            </table><!-- End .table table-wishlist -->
+            <div class="wishlist-share">
+                <div class="social-icons social-icons-sm mb-2">
+                    <label class="social-label">Share on:</label>
+                    <a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
+                    <a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
+                    <a href="#" class="social-icon" title="Instagram" target="_blank"><i class="icon-instagram"></i></a>
+                    <a href="#" class="social-icon" title="Youtube" target="_blank"><i class="icon-youtube"></i></a>
+                    <a href="#" class="social-icon" title="Pinterest" target="_blank"><i class="icon-pinterest"></i></a>
+                </div><!-- End .soial-icons -->
+            </div><!-- End .wishlist-share -->
+        </div><!-- End .container -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.deleteWishlit', function(e) {
+                e.preventDefault();
+        
+                var prod_id = $(this).data('productid');
+                console.log(prod_id, 'daxooooooooooooooo')
+                var token = $('input[name=csrfmiddlewaretoken]').val();
+                $.ajax({
+                    method: "POST",
+                    url: "{% url 'deletewishlist' %}",
+                    data: {
+                        'prod_id': prod_id,
+                        csrfmiddlewaretoken: '{{csrf_token}}'
+                    },
+                    success: function(response) {
+                        // Remove the deleted product from the wishlist displayed on the page
+                        $('#product_' + prod_id).remove();
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).on('click', '.addToCartBtn', function(e) {
+            e.preventDefault();
+        
+            var variant_id = $(this).data('variantid');
+            var prod_id = $(this).data('productid');
+            var wishlist_item_id = $(this).data('itemid');
+            var product_qty = 1;
+            var selected_size = 1;
+            console.log(prod_id,wishlist_item_id,'daxooooooo')
+        
+            $.ajax({
+                method: "POST",
+                url: "{% url 'addtocart' %}",
+                data: {
+                    'variation_id': variant_id,
+                    'product_qty': product_qty,
+                    'size': selected_size,
+                    'prod_id': prod_id,
+                    'wishlist_item_id': wishlist_item_id,
+                    csrfmiddlewaretoken: '{{csrf_token }}'
+                },
+                success: function(response) {
+                console.log(response)
+              if (response.status === 'Product already in Cart' || response.status === 'No such product found' || response.status === 'Only few quantity available') {
+                  swal("Error!", response.status, "error")
+                  $('.cartdata').load(location.href + " .cartdata");
+              }else if (response.status === 'Product added successfully'){
+                swal("Congratulations!.", response.status, "success")
+                  $('.cartdata').load(location.href + " .cartdata");
+              }else{
+                swal("Error!.", response.status, "error")
+                $('.cartdata').load(location.href + " .cartdata");
+              }
+            }
+          });
+        });
+        
+        </script>
+
+    
+    
+    
+    
+    
+
+{% endblock body %}

@@ -129,7 +129,7 @@ def orderreturn(request,return_id):
             return redirect('orders')
         
         qty = orderitem_id.quantity
-        pid = orderitem_id.selected_size.id
+        pid = orderitem_id.product.id
         order_id = Order.objects.get(id = orderitem_id.order.id)
         tracking_id = order_id.tracking_no
         product = Product.objects.filter(id=pid).first()

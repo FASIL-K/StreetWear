@@ -123,7 +123,7 @@
                             <a href="#" class="btn-product btn-cart addToCartBtn"><span>{% if product.stock > 0  %}Add to cart {% else %}Out of stok{% endif %}</span></a>
 
                             <div class="details-action-wrapper">
-                                <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                                <a href="#" class="btn-product btn-wishlist  addToWishlist" title="Wishlist"><span>Add to Wishlist</span></a>
                                 
                             </div><!-- End .details-action-wrapper -->
                         </div><!-- End .product-details-action -->
@@ -361,7 +361,7 @@
         var prod_id = $(this).closest('.product_data').find('.prod_id').val();
         var product_qty = $(this).closest('.product_data').find('.qty-input').val();
         var selected_size = $(this).closest('.product_data').find('#size').val(); // Get the selected size value
-
+        
         $.ajax({
             method: "POST",
             url: "{% url 'addtocart' %}",
@@ -396,4 +396,49 @@
         });
     });
 </script>
+<script>
+    $('.addToWishlist').click(function (e) {
+      e.preventDefault();
+
+      var prod_id = $(this).closest('.product_data').find('.prod_id').val();
+      console.log(prod_id,'daxooooooooooo')
+
+      $.ajax({
+        method: "POST",
+        url: "{% url 'add_wishlist' %}",
+        data: {
+          'prod_id' : prod_id,
+          csrfmiddlewaretoken: '{{csrf_token }}'
+        },
+        success: function (response){
+          console.log(response)
+          if (response.status === 'Product already in wishlist' || response.status === 'No such product' || response.status === 'Login to continue') {
+            swal("Error!.", response.status, "error")
+            $('.cartdata').load(location.href + " .cartdata");
+        }else if (response.status === 'Product Added to in wishlist'){
+          swal("Congratulations!.", response.status, "success")
+            $('.cartdata').load(location.href + " .cartdata");
+        }else{
+          swal("Error!.", response.status, "error")
+          $('.cartdata').load(location.href + " .cartdata");
+        }
+      }
+       
+      });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.all.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+{% for message in messages %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    text: "{{ message }}",
+                    timer: 5000, // Adjust the timer to control how long each alert stays visible (in milliseconds)
+                });
+            });
+        </script>
+    {% endfor %}
 {% endblock body %}

@@ -7,4 +7,5 @@ class ProductAdmin(admin.ModelAdmin):
 
 admin.site.register(Product,ProductAdmin)
 admin.site.register(Size)
+admin.site.register(price_range)
 

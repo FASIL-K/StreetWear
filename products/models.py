@@ -4,6 +4,11 @@ from django.utils.text import slugify
 from django.urls import reverse
 
 # Create your models here.
+class price_range(models.Model):
+    low = models.IntegerField()
+    high = models.IntegerField()
+
+
 class Size(models.Model):
     name = models.CharField(max_length=20)
 

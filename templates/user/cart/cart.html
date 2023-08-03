@@ -112,7 +112,9 @@
                                 <tr>
                                     <th>Product</th>
                                     <th>Price</th>
-                                    <th>Size</th> <!-- Add the Size column -->
+                                     
+                                    <th></th> 
+                                    <th>Size</th>
                                     <th style="text-align: center;">Quantity</th>
                                     <th>Total</th>
                                     <th></th>
@@ -136,9 +138,19 @@
                                     </td>
                                     <td class="price-col">₹{{cart_item.product.product_price}}</td>
                                     <td class="size-col">
-                                        <!-- Display the selected size -->
-                                        {{ cart_item.selected_size }}
+                                        <div class="details-filter-row details-row-size">
+                                            <label for="size">Size:</label>
+                                            <div class="select-custom">
+                                                <select name="size" class="form-control select-size" data-cartid="{{ cart_item.id }}" data-selectedsize="{{ cart_item.selected_size.id }}">
+                                                    {% for size in cart_item.product.sizes.all %}
+                                                        <option value="{{ size.id }}" {% if size.id == cart_item.selected_size.id %}selected{% endif %}>{{ size.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                
+                                            </div><!-- End .select-custom -->
+                                        </div><!-- End .details-filter-row -->
                                     </td>
+                                    <td id='changesizename{{cart_item.id}}'>{{cart_item.selected_size}}</td>
                                     <td class="quantity-col">
                                         <div class="wrap-num-product">
                                             <div class="btn-num-product-down changeQuantity" data-productid="{{cart_item.product.id}}" data-cart_id="{{cart_item.id}}" data-price="{{cart_item.product.product_price}}">
@@ -245,23 +257,7 @@
     });
 </script>
 
-<script>
-    $('.quantity button').on('click', function () {
-        var button = $(this);
-        var input = button.parent().parent().find('input');
-        var oldValue = parseFloat(input.val());
-        var newVal;
-    
-        if (button.hasClass('btn-plus')) {
-            newVal = (oldValue < 10) ? oldValue + 1 : 10;  // Increment if less than 10, otherwise keep it as 10
-        } else {
-            newVal = (oldValue > 1) ? oldValue - 1 : 1;  // Decrement if greater than 1, otherwise keep it as 1
-        }
-    
-        input.val(newVal);
-    });
-    
-</script>
+
 {% comment %} <script>
     $(document).ready(function () {
         // Listen for changes in the size dropdown
@@ -319,6 +315,36 @@
 </script> {% endcomment %}
 
 <script>
+    $(document).ready(function() {
+        $(document).on('change', '.select-size', function(e) {
+            e.preventDefault();
+        
+            var cart_id = $(this).data('cartid');
+            var selected_size = $(this).val();
+            $.ajax({
+                method: "POST",
+                url: "{% url 'update_cart_item_size' %}",
+                data: {
+                    'cartid': cart_id,
+                    'size': selected_size,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    console.log(response);
+                    sizename = response.sizename;
+                    changesizename = document.getElementById('changesizename'+cart_id);
+                    changesizename.innerText = sizename;
+                    console.log(sizename,'daxpppp')
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr.responseText);
+                    // Handle error case
+                }
+            });
+        });
+    });
+    
+
     $(document).ready(function () {
         // Listen for changes in the size dropdown
         $('.select-size').on('change', function () {
@@ -334,7 +360,7 @@
             var cart_id = $(this).data('cart_id');
             var selected_size = $(this).siblings('input').data('size');
             var product_qty = $(this).siblings('input').val();
-            console.log(cart_id, "daxoooooooo")
+        
 
             $.ajax({
                 method: "POST",
