@@ -306,11 +306,11 @@
                                                                 <hr>
               
                                                             </div>
-                                                            <div class="modal-footer">
-                                                              <a  class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#deletaddress{{forloop.counter}}">
-                                                                delete
-                                                              </a>
-                                                  
+                                                            <div class="modal-footer" style="display: flex;align-items: baseline;justify-content: center;">
+                                                              <form method="post" action="{% url 'deleteaddresscheckout' adrs.id %}">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="btn btn-danger">Delete Address</button>
+                                                              </form>
                                                                 <!--Delete Modal -->
                                                                 <div class="modal fade" id="deletaddress{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                                   <div class="modal-dialog">

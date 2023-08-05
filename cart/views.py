@@ -78,7 +78,7 @@ def update_cart(request):
         product_id = request.POST.get('product_id')
         selected_size = request.POST.get('selected_size')
         cart_id = request.POST.get('cart_id')
-        print(cart_id,'sifandaxo')
+        
         
         if (Cart.objects.get(id=cart_id)):
 
@@ -91,7 +91,7 @@ def update_cart(request):
 
                 carts = Cart.objects.filter(user=request.user).order_by('id')
                 total_price = sum(item.product.product_price * item.product_qty for item in carts)
-                print(total_price,'ssssssssssssssssssss')
+                
                 tax = total_price * 0.18
                 grand_total = total_price + tax
 

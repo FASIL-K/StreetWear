@@ -40,7 +40,7 @@ def shop(request):
     elif pricerange:
         price_ranges = price_range.objects.get(id=pricerange)
         product = Product.objects.filter(is_available=True, product_price__gte=price_ranges.low,product_price__lte=price_ranges.high)
-        print(product,'sifandaxo')
+        
     else:
         product =Product.objects.filter(is_available = True)
 

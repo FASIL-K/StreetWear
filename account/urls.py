@@ -10,8 +10,7 @@ urlpatterns = [
     path('admin_login/',admin_login,name="admin_login"),
     path('admin_logout/',admin_logout,name="admin_logout"),
     path('forgot_password',views.forgot_password,name='forgot_password'),
-
-
+    path('mobile_login',views.mobile_login,name='mobile_login'),
 
 
     

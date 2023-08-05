@@ -11,6 +11,11 @@ from checkout.models import Order, OrderItem
 from django.shortcuts import render, redirect
 import random
 import string
+import re
+from django.forms import ValidationError
+from django.contrib.auth.password_validation import validate_password
+from django.core.validators import validate_email
+
 # Create your views here.
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def checkout(request):
@@ -138,6 +143,20 @@ def addcheckoutaddr(request):
         if state.strip() =='':
             messages.error(request, 'State is empty!')
             return redirect('checkout')
+        if not re.search(re.compile(r'^\d{6}$'),pincode ):  
+            messages.error(request,'should only 6 contain numeric!')   
+            return redirect('checkout')
+        if not re.search(re.compile(r'(\+91)?(-)?\s*?(91)?\s*?(\d{3})-?\s*?(\d{3})-?\s*?(\d{4})'),phone): 
+            messages.error(request,'Enter valid phonenumber!')
+            return redirect('checkout')
+        phonenumber_checking=len(phone)
+        if not  phonenumber_checking==10:
+            messages.error(request,'phonenumber should be must contain 10digits!')  
+            return redirect('checkout')
+        email_check=validateemail(email)
+        if email_check is False:
+            messages.error(request,'email not valid!')
+            return redirect('checkout')
         
         adrs = Address()
         adrs.user = request.user
@@ -177,3 +196,17 @@ def razarypaycheck(request):
         
     
     return JsonResponse({'total_price': total_price})
+
+def validateemail(email):
+    try:
+        validate_email(email)
+        return True
+    except ValidationError: 
+        return False
+    
+def validatepassword(new_password):
+    try:
+        validate_password(new_password)
+        return True
+    except  ValidationError:
+        return  False

@@ -98,7 +98,6 @@ def changestatus(request):
 def ordercancel(request):
     ordrderid = int(request.POST.get('order_id'))
     orderitem_id = request.POST.get('orderitem_id')
-    print(ordrderid,orderitem_id,'daxoooooooooooooooooo')
     orderitem = OrderItem.objects.filter(id=orderitem_id).first()
 
     order = Order.objects.filter(id=ordrderid).first()
@@ -137,7 +136,6 @@ def orderreturn(request,return_id):
         product.save()
         orderitem_id.status = 'Return'
         total_p = orderitem_id.price
-        print(total_p)
         orderitem_id.save()
         returnorder = Orderreturn.objects.create(user = request.user, order = order_id, options=options, reason=reason)
         

@@ -25,7 +25,6 @@ def add_wishlist(request):
         if request.user.is_authenticated:
             prod_id = request.POST.get('prod_id')
             # size_id =  request.POST.get('size_id')
-            print(prod_id,'daxoooooooooooooooooooo')
             product_check = Product.objects.get(id = prod_id)
             if(product_check):
                 if(Wishlist.objects.filter(user = request.user, product = product_check)):

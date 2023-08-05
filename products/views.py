@@ -14,7 +14,7 @@ def product_management(request):
         return redirect('admin_login')
     products = Product.objects.all()
     available_sizes = Size.objects.all()
-    print(available_sizes) 
+     
     context={
         'products' : products,
         'category' : Category.objects.all(),

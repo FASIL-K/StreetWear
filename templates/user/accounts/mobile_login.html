@@ -1,0 +1,133 @@
+{% extends 'user/home/base.html' %}
+{% block title %}login Otp{% endblock title %}
+{% block body %}
+{% load static %}
+
+
+<div class="page-wrapper">
+    <header class="header">
+        <div class="header-middle sticky-header">
+            <div class="container">
+
+            </div><!-- End .container -->
+        </div><!-- End .header-middle -->
+    </header><!-- End .header -->
+
+    <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url " >
+
+ 
+        {% if otp %} 
+        <div class="container">
+            <div class="form-box">
+                <div class="form-tab">
+                    <ul class="nav nav-pills nav-fill" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="signin-tab-2" data-toggle="tab" href="{% url 'forgot_password' %}" role="tab"
+                                aria-controls="signin-2">Verify Otp</a><br>
+                                <p>Please check your Phone   {{user.phone}}</p>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="signin-2" role="tabpanel"
+                            aria-labelledby="signin-tab-2">
+
+                            <form action="{% url 'mobile_login' %}" method="POST">
+                                {% csrf_token %}
+                                {% comment %} <div class="form-group">
+                                    <input type="hidden" value="{{user.email}}" name="user1">
+                                </div><!-- End .form-group --> {% endcomment %}
+                             
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="enter otp" name="otp" value="{{pre_otp}}" required>
+                                </div><!-- End .form-group -->
+                                
+                                <div class="form-group">
+                                    <input type="hidden" name="phone" value="{{user.phone}}">
+                                </div>
+                          
+
+                                
+                                <div class="form-footer">
+                                    <button type="submit" class="btn btn-outline-primary-2">
+                                        <span>Login</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </button>
+                                    <p class="text-center mt-4"> <a href="{% url 'signup' %}"> Return to Sign up</a></p>
+                                    <br><br>
+                                    {% for message in messages %}
+                                    <div class="message text-center {% if message.tags %}{{ message.tags }}{% endif %}">
+                                        {{ message }}
+                                    </div>
+                                    {% endfor %}
+
+                                </div><!-- End .form-footer -->
+                            </form>
+
+                        </div><!-- End .form-choice -->
+                    </div><!-- .End .tab-pane -->
+                </div><!-- End .tab-content -->
+            </div><!-- End .form-tab -->
+        </div><!-- End .form-box -->
+    </div>
+     {% else %}
+
+
+
+
+
+    <div class=" container">
+        <div class="form-box">
+            <div class="form-tab">
+                <ul class="nav nav-pills nav-fill" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="signin-tab-2" data-toggle="tab" href="{% url 'forgot_password' %}"
+                            role="tab" aria-controls="signin-2">OTP LOGIN</a>
+                    </li>
+                </ul>
+                <div class="tab-content">  
+                        <form action="{% url 'mobile_login' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <br>
+                            </div><!-- End .form-group -->
+                            <div class="form-group">
+                                <br>
+                            </div><!-- End .form-group -->
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter Phone Number" name="phone">
+
+                            </div><!-- End .form-group -->
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-block"> Verify Phone </button>
+                            </div> <!-- form-group// -->
+
+                    </div><!-- End .form-footer -->
+                    </form>
+                    <div class="form-choice">
+                        <p class="text-center mt-4">Back to <a href="{% url 'signin'%}">Log In</a></p>
+                        {% for message in messages %}
+                        <div class="message text-center {% if message.tags %}{{ message.tags }}{% endif %}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+
+                        </p>
+
+
+
+                    </div><!-- End .row -->
+                </div><!-- End .form-choice -->
+            </div><!-- .End .tab-pane -->
+        </div><!-- End .tab-content -->
+    </div><!-- End .form-tab -->
+     {% endif %} 
+</div><!-- End .form-box -->
+</div><!-- End .container -->
+</div><!-- End .login-page section-bg -->
+</div>
+</main><!-- End .main -->
+</div><!-- End .page-wrapper -->
+
+
+{% endblock body %}

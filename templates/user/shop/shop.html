@@ -32,7 +32,7 @@
                         <label for="sortby">Sort by:</label>
                         <div class="select-custom">
                             <select name="sortby" id="sortby" onchange = "window.location.href='/shop/?sort=' +this.value;" class="form-control">
-                                <option value="atoz" selected="selected">A to z</option>
+                                <option value="atoz" selected="selected">A to Z</option>
                                 <option value="ztoa">Z to A</option>
                                 <option value="ltoh">low To high</option>
                                 <option value="htol">high To low</option>
@@ -114,11 +114,11 @@
                         </h3><!-- End .widget-title -->
                         {% for category in categories %}
                         <div class="collapse show" id="widget-1">
-                            <div class="widget-body">
+                            <div class="">
                                 <div class="filter-items filter-items-count">
                                     <div class="filter-item">
                                         <div class="custom-control">
-                                           <a href="/shop/?category={{category.id}}"><label class="" for="cat-1"> {{category.name}} </label></a>
+                                           <a href="/shop/?category={{category.id}}"><span class="" for="cat-1"> {{category.name}} </spa></a>
                                         </div><!-- End .custom-checkbox -->
                                         {% comment %} <span class="item-count">3</span> {% endcomment %}
                                     </div><!-- End .filter-item -->
@@ -136,11 +136,11 @@
                         </h3><!-- End .widget-title -->
                         {% for size in size %}
                         <div class="collapse show" id="widget-2">
-                            <div class="widget-body" style="padding-bottom: 0 rem;" >
+                            <div class="" style="padding-bottom: 0 rem;" >
                                 <div class="filter-items">
                                     <div class="filter-item">
                                         <div class="custom-control ">
-                                            <a href="/shop/?size={{size.id}}"><label class="" for="size-1">{{size.name}}</label></a>
+                                            <a href="/shop/?size={{size.id}}"><span class="" for="size-1">{{size.name}}</span></a>
                                         </div><!-- End .custom-checkbox -->
                                     </div><!-- End .filter-item -->
                                 </div><!-- End .filter-items -->
@@ -180,7 +180,7 @@
                                     <div class="filter-item">
                                         {% for item in brands %}
                                         <div class="custom-control ">
-                                           <a href="/shop/?brand={{item.id}}"> <label class="custom-con" for="brand-1"> {{item.name}} </label></a>
+                                           <a href="/shop/?brand={{item.id}}"> <span class="custom-con" for="brand-1"> {{item.name}} </span></a>
                                         </div><!-- End .custom-checkbox -->
                                         {% endfor %}
                                     </div><!-- End .filter-item -->

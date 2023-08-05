@@ -7,12 +7,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 # verification email
-from .models import UserOTP
+from .models import UserOTP,Mobile_Otp
 from django.contrib import auth
 from django.core.mail import send_mail
 from django.conf import settings
 import random
 import re
+from . import mixins
 from django.core.exceptions import ValidationError
 
 # Create your views here.
@@ -83,7 +84,9 @@ def signup(request):
                         first_name=userotp.first_name,
                         last_name=userotp.last_name,
                         email=userotp.email,
-                        password=userotp.password
+                        password=userotp.password,
+                        phone = userotp.phone,
+                        
                     )
                     user.save()
                     auth.login(request, user)
@@ -101,18 +104,20 @@ def signup(request):
             firstname = request.POST['firstname']   
             lastname = request.POST['lastname']  
             name = request.POST['name']
+            phone=request.POST['phone']
             email = request.POST['email']
             password1 = request.POST['password1']
             password2 = request.POST['password2']
 
             # Null values checking
-            check = [name, email, password1, password2]
+            check = [name, email, password1, password2,phone]
             for value in check:
                 if not value:
                     context = {
                         'pre_firstname': firstname,
                         'pre_lastname': lastname,
                         'pre_name': name,
+                        'pre_phone':phone,
                         'pre_email': email,
                     }
                     messages.info(request, 'Some fields are empty')
@@ -124,6 +129,7 @@ def signup(request):
                 context = {
                     'pre_firstname': firstname,
                     'pre_lastname': lastname,
+                    'pre_phone':phone,
                     'pre_name': name,
                     'pre_email': email,
                 }
@@ -135,6 +141,7 @@ def signup(request):
                 context = {
                     'pre_firstname': firstname,
                     'pre_lastname': lastname,
+                    'pre_phone':phone,
                     'pre_name': name,
                     'pre_email': email,
                 }
@@ -146,6 +153,7 @@ def signup(request):
                 context = {
                     'pre_firstname': firstname,
                     'pre_lastname': lastname,
+                    'pre_phone':phone,
                     'pre_name': name,
                     'pre_email': email,
                 }
@@ -157,12 +165,24 @@ def signup(request):
                 context = {
                     'pre_firstname': firstname,
                     'pre_lastname': lastname,
+                    'pre_phone':phone,
                     'pre_name': name,
                     'pre_email': email,
                 }
                 messages.error(request, 'Email already exists')
                 return render(request, 'user/accounts/registration.html', context)
             
+            if User.objects.filter(phone=phone).exists():
+                context = {
+                    'pre_firstname': firstname,
+                    'pre_lastname': lastname,
+                    'pre_name': name,
+                    'pre_email': email,
+                }
+                messages.error(request, 'Phone Number is already exists')
+                return render(request, 'user/accounts/registration.html', context)
+
+
             if password1 != password2:
                 context = {
                     'pre_firstname': firstname,
@@ -172,6 +192,9 @@ def signup(request):
                 }
                 messages.error(request, 'Passwords do not match')
                 return render(request, 'user/accounts/registration.html', context)
+            
+           
+
 
 
             # If everything is valid, proceed with OTP generation and sending
@@ -181,6 +204,7 @@ def signup(request):
                 last_name=lastname,
                 username=name,
                 email=email,
+                phone=phone,
                 password=password1,
                 otp=user_otp
             )
@@ -209,6 +233,49 @@ def signup(request):
 def signout(request):
     logout(request)
     return redirect('home')
+
+
+
+def mobile_login(request):
+   
+    if request.method=='POST':
+        get_otp=request.POST.get('otp')
+        if get_otp:
+            get_phone=request.POST.get('phone')
+            user=User.objects.get(phone=get_phone)
+            if int(get_otp)==Mobile_Otp.objects.filter(user=user).last().otp:
+                auth.login(request,user)
+                Mobile_Otp.objects.filter(user=user).delete()
+                return redirect('home')   
+            else:
+                messages.warning(request,'You Entered a wrong OTP!')
+                return render(request,'user/accounts/mobile_login.html',{'otp':True,'user':user})  
+        else:
+        
+            phone=request.POST['phone']
+        
+            if phone.strip()=='':
+                messages.error(request,'field cannot empty!')
+                return redirect('mobile_login')
+        
+    
+            if not re.search(re.compile(r'(\+91)?(-)?\s*?(91)?\s*?(\d{3})-?\s*?(\d{3})-?\s*?(\d{4})'), phone):   
+                messages.error(request,'phone number should only contain numeric!')  
+                
+                return render(request,'user/accounts/mobile_login.html')
+                    
+            if User.objects.filter(phone=phone):
+                user=User.objects.get(phone=phone)
+                user_otp=random.randint(100000,999999)
+                Mobile_Otp.objects.create(user=user,otp=user_otp)
+                c_phone = '+91' + phone
+                mixins.send_otp_on_phone(c_phone,user_otp)
+            
+                return render (request,'user/accounts/mobile_login.html',{'otp':True,'user':user}) 
+            else:
+                messages.error(request,'phone  does not exist!')
+                return render(request,'user/accounts/mobile_login.html')
+    return render (request,'user/accounts/mobile_login.html') 
 
 
 #----------------------------------------Admin authenication------------------------------------------

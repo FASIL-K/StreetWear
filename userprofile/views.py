@@ -7,6 +7,10 @@ from django.contrib.auth import update_session_auth_hash
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+import re
+from django.forms import ValidationError
+from django.contrib.auth.password_validation import validate_password
+from django.core.validators import validate_email
 
 # Create your views here.
 @cache_control(no_cache=True, must_revalidate=True,no_store=True)
@@ -63,7 +67,20 @@ def addaddress(request):
         if state.strip() =='':
             messages.error(request, 'State is empty!')
             return redirect('userprofile')
-        
+        if not re.search(re.compile(r'^\d{6}$'),pincode ):  
+            messages.error(request,'should only 6 contain numeric!')   
+            return redirect('userprofile')
+        if not re.search(re.compile(r'(\+91)?(-)?\s*?(91)?\s*?(\d{3})-?\s*?(\d{3})-?\s*?(\d{4})'),phone): 
+            messages.error(request,'Enter valid phonenumber!')
+            return redirect('userprofile')
+        phonenumber_checking=len(phone)
+        if not  phonenumber_checking==10:
+            messages.error(request,'phonenumber should be must contain 10digits!')  
+            return redirect('userprofile')
+        email_check=validateemail(email)
+        if email_check is False:
+            messages.error(request,'email not valid!')
+            return redirect('userprofile')
         adrs = Address()
         adrs.user = request.user
         adrs.first_name = first_name
@@ -138,3 +155,18 @@ def deleteaddress(request,delete_id):
     address = Address.objects.get(id = delete_id)
     address.delete()
     return redirect('userprofile')
+
+
+def validateemail(email):
+    try:
+        validate_email(email)
+        return True
+    except ValidationError: 
+        return False
+    
+def validatepassword(new_password):
+    try:
+        validate_password(new_password)
+        return True
+    except  ValidationError:
+        return  False

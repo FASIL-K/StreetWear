@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from django.conf import settings
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,7 +51,8 @@ INSTALLED_APPS = [
     'checkout',
     'userprofile',
     'orders',
-    'wishlist'
+    'wishlist',
+    'twilio',
     
 ]
 
@@ -172,3 +175,6 @@ DEFAULT_FROM_EMAIL = 'fasilmlm10@gmail.com'
 
 razor_pay_key_id = 'rzp_test_TxRdHkYPhOq4dp'
 key_secreat = 'oYOoRDU0Y9jIFPOms366DjAi'
+
+TWILIO_ACCOUNT_SID = 'ACf1a1e2fec0e4dfd11d000fd751c0e3df'
+TWILIO_AUTH_TOKEN = '0240188bcd1c51bd4b27e8ffcae809f3'
