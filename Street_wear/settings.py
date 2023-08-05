@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ip5dyl668rl!a^80njc3f)iu9p(+0*xe+a@5@75pvh$12twej!'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -53,9 +53,16 @@ INSTALLED_APPS = [
     'orders',
     'wishlist',
     'twilio',
+
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
     
 ]
-
+SITE_ID = 1
 
 
 MIDDLEWARE = [
@@ -122,6 +129,16 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -168,13 +185,14 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'fasilmlm10@gmail.com' 
-EMAIL_HOST_PASSWORD = 'etuzqanvkamffkfp'
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'fasilmlm10@gmail.com'
 
 
 
-razor_pay_key_id = 'rzp_test_TxRdHkYPhOq4dp'
-key_secreat = 'oYOoRDU0Y9jIFPOms366DjAi'
+razor_pay_key_id = config('razor_pay_key_id')
+key_secreat = config('key_secreat')
 
-TWILIO_ACCOUNT_SID = 'ACf1a1e2fec0e4dfd11d000fd751c0e3df'
-TWILIO_AUTH_TOKEN = '0240188bcd1c51bd4b27e8ffcae809f3'
+
+TWILIO_ACCOUNT_SID =config('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')

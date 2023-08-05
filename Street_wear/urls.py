@@ -32,7 +32,7 @@ urlpatterns = [
     path('',include('userprofile.urls')),
     path('',include('orders.urls')),
     path('',include('wishlist.urls')),
-
+    path('accounts/', include('allauth.urls')),
 
 
 
