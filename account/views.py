@@ -15,8 +15,13 @@ import random
 import re
 from . import mixins
 from django.core.exceptions import ValidationError
+from social_core.backends.google import GoogleOAuth2
 
 # Create your views here.
+
+## this for google login 
+
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def signin(request):
     if request.user.is_authenticated:

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from .models import Address
 from django.contrib import messages
@@ -13,19 +13,16 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
 
 # Create your views here.
-@cache_control(no_cache=True, must_revalidate=True,no_store=True)
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='signin')
 def userprofile(request):
-    user = User.objects.get(email=request.user.email)
-    
-    address =Address.objects.filter(user=request.user)     
-    context={
-        'user1':user,
-        'address':address,
-            
-        }
-        
-    return render(request,'user/accounts/profile.html',context)
+    user = get_object_or_404(User, email=request.user.email)
+    address = Address.objects.filter(user=request.user)
+    context = {
+        'user1': user,
+        'address': address,
+    }
+    return render(request, 'user/accounts/profile.html', context)
 
 
 def addaddress(request):

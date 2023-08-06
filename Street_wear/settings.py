@@ -14,6 +14,9 @@ from pathlib import Path
 import os
 from django.conf import settings
 from decouple import config
+from social_core.backends.google import GoogleOAuth2
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -54,11 +57,16 @@ INSTALLED_APPS = [
     'wishlist',
     'twilio',
 
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    # 'django.contrib.sites',
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.google',
+
+    'social_django',
+
+
+    
 
     
 ]
@@ -73,6 +81,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "social_django.middleware.SocialAuthExceptionMiddleware",
+
 ]
 
 ROOT_URLCONF = 'Street_wear.urls'
@@ -88,6 +98,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+
             ],
         },
     },
@@ -132,11 +144,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
+  'social_core.backends.google.GoogleOAuth2',
+  'django.contrib.auth.backends.ModelBackend',
 ]
 
 # Internationalization
@@ -196,3 +205,16 @@ key_secreat = config('key_secreat')
 
 TWILIO_ACCOUNT_SID =config('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_URL = 'logout'
+LOGOUT_REDIRECT_URL = 'home'
+
+
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '629191591850-a3esupqi858drpe9kkg5vvivamfndili.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET ='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'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_BACKEND = 'social_core.backends.google.GoogleOAuth2'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
