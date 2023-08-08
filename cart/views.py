@@ -6,15 +6,22 @@ from django.http.response import JsonResponse
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-
+from django.contrib.auth.models import User
 
 # Create your views here.
 
+def get_or_create_anonymous_user():
+    anonymous_user, created = User.objects.get_or_create(username='anonymous_user')
+    return anonymous_user
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
-@login_required(login_url='signin')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def cart(request):
-    cart = Cart.objects.filter(user=request.user).order_by('id')
+    if request.user.is_authenticated:
+        user = request.user
+    else:
+        user = get_or_create_anonymous_user()
+
+    cart = Cart.objects.filter(user_id=user.id).order_by('id')
     
     # Fetch size names based on the IDs in the cart items
     for item in cart:
@@ -35,41 +42,41 @@ def cart(request):
     }
     return render(request, 'user/cart/cart.html', context)
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
-@login_required(login_url='signin')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def addtocart(request):
     if request.method == 'POST':
-        if request.user.is_authenticated:
-            prod_id = int(request.POST.get('prod_id'))
-            product_check = Product.objects.get(id=prod_id)
-            print(prod_id,'daxooooooooooo')
-            if product_check:
-                prod_qty = int(request.POST.get('product_qty'))
-                selected_size = int(request.POST.get('size'))  # Get the selected size from the POST data
+        prod_id = int(request.POST.get('prod_id'))
+        product_check = Product.objects.get(id=prod_id)
+            
+        if product_check:
+            prod_qty = int(request.POST.get('product_qty'))
+            selected_size = int(request.POST.get('size'))  # Get the selected size from the POST data
 
-                # Check if the same product with the same size already exists in the cart
-                cart_item = Cart.objects.filter(user=request.user, product_id=prod_id, selected_size=selected_size).first()
-
-                if cart_item:
-                    return JsonResponse({'status': "Product Already in Cart"})
-                else:
-                    # If the product with the selected size is not in the cart, create a new cart item
-                    if product_check.stock >= prod_qty:
-                        Cart.objects.create(
-                            user=request.user,
-                            product_id=prod_id,
-                            product_qty=prod_qty,
-                            selected_size=selected_size,
-                        )
-                        return JsonResponse({'status': "Product added successfully"})
-                    else:
-                        return JsonResponse({'status': "Only " + str(product_check.stock) + " quantity available"})
+            if request.user.is_authenticated:
+                user = request.user
             else:
-                return JsonResponse({'status': "No such product found"})
-        else:
-            return JsonResponse({'status': "Login to Continue"})
+                user = get_or_create_anonymous_user()
 
-    return redirect('addtocart')
+            # Check if the same product with the same size already exists in the cart
+            cart_item = Cart.objects.filter(user_id=user.id, product_id=prod_id, selected_size=selected_size).first()
+
+            if cart_item:
+                return JsonResponse({'status': "Product Already in Cart"})
+            else:
+                # If the product with the selected size is not in the cart, create a new cart item
+                if product_check.stock >= prod_qty:
+                    Cart.objects.create(
+                        user_id=user.id,
+                        product_id=prod_id,
+                        product_qty=prod_qty,
+                        selected_size=selected_size,
+                    )
+                    return JsonResponse({'status': "Product added successfully"})
+                else:
+                    return JsonResponse({'status': "Only " + str(product_check.stock) + " quantity available"})
+        else:
+            return JsonResponse({'status': "No such product found"})
+
 # Update cart quantity
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='signin')
@@ -109,7 +116,7 @@ def update_cart(request):
 
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
-@login_required(login_url='signin')
+# @login_required(login_url='signin')
 def deletecartitem(request, id):
     cart_id = request.POST.get(id)
     cart_items = Cart.objects.filter(id=id)
