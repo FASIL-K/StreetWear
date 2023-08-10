@@ -239,6 +239,7 @@ def signout(request):
     logout(request)
     return redirect('home')
 
+from django.contrib.auth.backends import ModelBackend  # Import the authentication backend
 
 
 def mobile_login(request):
@@ -249,7 +250,8 @@ def mobile_login(request):
             get_phone=request.POST.get('phone')
             user=User.objects.get(phone=get_phone)
             if int(get_otp)==Mobile_Otp.objects.filter(user=user).last().otp:
-                auth.login(request,user)
+                user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
+                login(request, user)
                 Mobile_Otp.objects.filter(user=user).delete()
                 return redirect('home')   
             else:

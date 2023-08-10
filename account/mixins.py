@@ -8,7 +8,7 @@ def display_cred():
 def send_otp_on_phone(phone_number,otp):
     client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
     message = client.messages.create(
-        from_='+17752442582',
+        from_='+12517276670',
         body=f'Hi, Welcome to Street wear your OTP is {otp}',
         to=phone_number
         )
