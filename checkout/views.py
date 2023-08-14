@@ -15,9 +15,11 @@ import re
 from django.forms import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
+from coupon.models import Coupon,CouponUsage
 
 # Create your views here.
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
+@login_required
 def checkout(request):
     cartitems = Cart.objects.filter(user= request.user)
     total_price = 0
@@ -27,12 +29,31 @@ def checkout(request):
         total_price = total_price + item.product.product_price * item.product_qty
         tax = total_price * 0.18
         grand_total = total_price + tax
+
+        
+    coupons = Coupon.objects.filter(is_active=True)
+    applied_coupon = None
+    grand_total = total_price 
+
+    if request.method == 'POST':
+        coupon_code =request.POST.get('coupon_code')
+        if coupon_code:
+            try:
+                applied_coupon = Coupon.objects.get(coupon_code=coupon_code,is_active=True)
+                grand_total= total_price-(total_price * (applied_coupon.discount / 100))
+            except:
+                pass
+
+
+
     address = Address.objects.filter(user = request.user)
     context = {
         'cartitems' : cartitems,
         'total_price' :total_price,
         'grand_total' : grand_total,
         'address' : address,
+        'coupons': coupons,
+        'CouponUsage': CouponUsage.objects.filter(user=request.user).last(),
 
     }
 

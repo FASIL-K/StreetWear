@@ -2,7 +2,7 @@ from django.db import models
 from userprofile.models import Address
 from products.models import Product,Size
 from django.contrib.auth.models import User
-
+from coupon.models import Coupon
 # # Create your models here.
 
 
@@ -16,7 +16,9 @@ class Order(models.Model):
     tracking_no = models.CharField(max_length=150,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
 
+    
     def __str__(self):
         return f"{self.id, self.tracking_no}"
     

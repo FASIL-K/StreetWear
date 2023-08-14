@@ -1,0 +1,181 @@
+{% extends 'adminside/adminbase.html' %}
+{% block content %}
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Coupon List</h2>
+            <p>All Coupons in Street Wear are listed here.</p>
+        </div>
+        <div>
+            <a type="button" class="btn btn-md rounded font-sm hover-up" style="margin-left: 10px;"
+                data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <i title="Add Category" class="fa fa-plus">Add Coupon</i>
+            </a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <!-- Search and Filters (if needed) -->
+        </header>
+        <!-- card-header end// -->
+        <div class="card-body">
+            {% include 'includes/alert.html' %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th scope="col">Coupon Name</th>
+                            <th scope="col">Coupon Code</th>
+                            <th scope="col">Discount</th>
+                            <th scope="col">Min price</th>
+                            <th scope="col">Valid from </th>
+                            <th scope="col">Valid Till</th>
+                            <th scope="col">is Active</th>
+                            <th scope="col" class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for coupon in coupons %}
+                        <tr>
+                            <td>{{ coupon.id }}</td>
+                            <td>{{ coupon.coupon }}</td>
+                            <td>{{ coupon.coupon_code }}</td>
+                            <td>{{ coupon.discount }}%</td>
+                            <td>{{ coupon.min_price }}</td>
+                            <td>{{ coupon.valid_from }}</td>
+                            <td><b>{{ coupon.valid_to }}</b></td>
+                            <td>{{ coupon.is_active }}</td>
+                            <td class="text-end">
+                                <!-- Add Edit button -->
+                                <button class="btn btn-md rounded font-sm hover-up" style="margin-left: 10px;"
+                                    data-bs-toggle="modal" data-bs-target="#editCategoryModal{{ category.id }}">
+                                    <i title="Edit Category" class="fa fa-edit">Edit category</i>
+                                </button>
+
+                                <!-- Add Delete button -->
+                                <a href="" class="btn btn-sm font-sm rounded btn-brand"
+                                    style="background-color: red; color: white;" onclick="return confirm('Are you sure you want to delete this category?');">
+                                    <i class="material-icons md-delete_forever"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- table-responsive //end -->
+        </div>
+        <!-- card-body end// -->
+    </div>
+    <!-- card end// -->
+</section>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Coupon</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'addcoupons' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>General info</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Coupon Name</label>
+                                <input type="text" placeholder="Type here" name="coupon"
+                                    class="form-control" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Coupon Code</label>
+                                <input type="text" placeholder="Type here" name="coupon_code"
+                                    class="form-control" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Discount</label>
+                                <input type="number" placeholder="Type here" name="discount"
+                                    class="form-control" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Min price</label>
+                                <input type="text" placeholder="Type here" name="min_price"
+                                    class="form-control" required>
+                            </div>
+                            <div class="mb-4">Valid from</label>
+                                <input type="date" placeholder="Type here" name="valid_from"
+                                    class="form-control" required>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3cg">Valid Till</label>
+                                <input name="valid_to"  type="date" id="form3Example3cg" class="form-control form-control-lg" required/>
+                              </div>
+                            <div class="mb-4">
+                                <label class="form-label">Is Active</label>
+                                <input type="checkbox" name='is_active' >
+                            </div>
+                            <hr class="mb-4 mt-0">
+                            <div>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit" name="add_category">Create</button>
+                            </div>
+                        </div> <!-- col.// -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Add Category Modal -->
+
+{% for category in categories %}
+<!-- Edit Category Modal (for each category) -->
+<div class="modal fade" id="editCategoryModal{{ category.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Category</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'category_management' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="category_id" value="{{ category.id }}">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>General info</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Category Name</label>
+                                <input type="text" placeholder="Type here" name="category_name"
+                                    class="form-control" value="{{ category.name }}" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" name="category_description"
+                                    class="form-control" rows="4" required>{{ category.description }}</textarea>
+                            </div>
+                            <hr class="mb-4 mt-0">
+                            <div>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit" name="edit_category">Save Changes</button>
+                            </div>
+                        </div> <!-- col.// -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Edit Category Modal -->
+{% endfor %}
+
+
+
+
+{% endblock %}

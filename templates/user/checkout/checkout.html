@@ -2,9 +2,13 @@
 {% block title %}HOME{% endblock title %}
 {% block body %}
 {% load static %}
+{% load mathfilters %}
+<link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.9.55/css/materialdesignicons.min.css">
 
 
-<main class="main" style="padding-bottom: 150px;">
+
+
+<main class="main product_data" style="padding-bottom: 150px;" >
     <div class="page-header text-center" style="background-image: url('{% static '/user/assets/images/page-header-bg.jpg' %}')">
         <div class="container">
             <h1 class="page-title">Checkout<span>Shop</span></h1>
@@ -29,7 +33,7 @@
         <a href="{%url 'shop'%}" class="btn btn-primary font-weight-bold">Continue Shopping</a>
     </div>
     {% else %}
-    <div class="form-outline mb-4">
+    <div class="form-outline mb-4 ">
       <div class="input-group">
         <select class="form-select form-select-sm input-small-width input-increased-height couponCode" style="height: 40px; width:25%; font-size: 13px; margin-left: 55px;" id="checkout-discount-input" aria-label=".form-select-sm example" name="coupon_code">
           <option >No Coupon Applied</option>
@@ -359,101 +363,106 @@
       
       
                                   </div>
-                              <aside class="col-lg-6 product_data" >
+                              <aside class="col-lg-6 " >
                                
                                   <div class="summary " style="float:right">
                                    
                                       <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
       
-                                      <table class="table table-summary col-lg-6 tabledata">
+                                      <table class="table table col-lg-12 tabledata" style="font-weight: bolder;" >
                                         <thead>
-                                            <tr>
-                                                <th>Product</th>
-                                                <th></th>
-                                                <th>Quantity</th>
-                                                <th>Price</th>
-                                            </tr>
+                                          <tr>
+                                            <th>Product</th>
+                                            <th></th>
+                                        
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th></th>
+                                          </tr>
                                         </thead>
                                         <tbody>
-                                            {% for i in cartitems %}
-                                            <tr>
-                                                <td><a href="#">{{ i.product }}</a></td>
+                                          {% for i in cartitems %}
+                                          <tr>
+                                            <td><a href="#">{{ i.product }}</a></td>
+                                            <td></td> 
+                                            <td>{{ i.product_qty }}</td>
+                                            <td class="column-3">
+                                              {% if i.product.offer or i.product.brand.offer %}
+                                                  <del class="text-danger">₹ {{ i.product.product_price }}</del>
+                                                  ₹ {{ i.product.get_offer }}
+                                              {% else %}
+                                                  ₹ {{ i.product.product_price }}
+                                              {% endif %}
+                                          </td>
+                                          
+                                          </tr>
+                                          {% endfor %}
+                                          <tr class="summary-subtotal">
+                                            <td>Subtotal:</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ total_price }}</td>
+                                          </tr>
+                                          <tr>
+                                            <td>Shipping:</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Free shipping</td>
+                                          </tr>
+                                          <div class="cartdata">
+                                          <tr class="summary-coupon">
+                                            {% if CouponUsage %}
+                                                <td>Coupon Applied:</td>
                                                 <td></td>
-                                                <td>{{ i.product_qty }}</td>
-                                                <td class="column-3">
-                                                    {% if i.product.offer or i.product.brand.offer %}
-                                                    <del class="text-danger">₹ {{ i.product.product_price }}</del>
-                                                    ₹ {{ i.product.get_offer }}
-                                                    {% else %}
-                                                    ₹ {{ i.product.product_price }}
-                                                    {% endif %}
+                                                <td>{{ CouponUsage.coupon.coupon }}</td>
+                                                <td>
+                                                     -{{ CouponUsage.coupon.discount }}%
                                                 </td>
-                                            </tr>
-                                            {% endfor %}
-                                            <tr class="summary-subtotal">
-                                                <td colspan="3" class="text-end">Subtotal:</td>
-                                                <td>₹{{ total_price }}.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="3" class="text-end">Shipping:</td>
-                                                <td>Free shipping</td>
-                                            </tr>
-                                            <div class="cartdata">
-                                                <tr class="summary-coupon">
-                                                    {% if CouponUsage %}
-                                                    <td colspan="3" class="text-end">Coupon Applied:</td>
-                                                    <td>
-                                                        {{ CouponUsage.coupon.coupon }} -{{ CouponUsage.coupon.discount }}%
-                                                        <a href="#" class="remove-coupon" data-coupon-code="{{ CouponUsage.coupon.coupon_code }}">X</a>
-                                                    </td>
-                                                    {% else %}
-                                                    <td colspan="3" class="text-end">Coupon:</td>
-                                                    <td>No Coupon Applied</td>
-                                                    {% endif %}
-                                                </tr>
-                                                <tr class="summary-tax">
-                                                    <td colspan="3" class="text-end">Tax:</td>
-                                                    <td contenteditable="true">(Included in MRP)</td>
-                                                </tr>
-                                    
-                                                {% if CouponUsage %}
-                                                <tr>
-                                                    <td colspan="3" class="text-end">Discount:</td>
-                                                    <td><span id="discount">- ₹{{ coupon_discount }}</span></td>
-                                                </tr>
-                                                <tr class="summary-total">
-                                                    <td colspan="3" class="text-end">Total:</td>
-                                                    <td><span id="discounted_price">₹{{ CouponUsage.total_price }}</span></td>
-                                                </tr>
-                                                {% else %}
-                                                <tr>
-                                                    <td colspan="3" class="text-end">Total:</td>
-                                                    <td>₹{{grand_total | floatformat:2}}</td>
-                                                </tr>
-                                                {% endif %}
-                                                <input type="hidden" class="grand_total" id="grand_total_display" value="{{ grand_total }}">
-                                            </div>
-                                        </tbody>
-                                    </table>
-                                    
-                                      <!-- <div class="cartdata">
-                                        <ul class="checkout__total__all">
-                                            <li>Subtotal <span>₹{{total_price}}</span></li>
-                                            {%if usercoupon%}
-                                            <li>Discount <span id="discount">{{ usercoupon.coupon.discount }}</span>%</li>
-                                            <li>Total <span id="grand_total">₹{{usercoupon.total_price}}</span></li>
+                                                <td>
+                                                    <a href="#" class="remove-coupon" data-coupon-code="{{ CouponUsage.coupon.coupon_code }}"><i style="font-size: 20px; margin-right: 5px;" class="mdi mdi-close"></i></a>
+                                                </td>
                                             {% else %}
-                                            <li>Total <span id="grand_total">₹{{grand_total}}</span></li>
+                                                <td>Coupon:</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>No Coupon Applied</td>
                                             {% endif %}
-                                            <input type="hidden" class="grand_total" id="grand_total" value="{{grand_total}}">
-                                        </ul></div> -->
-                                      <!-- {%if usercoupon%}
-                                      <li>Discount <span id="discount">{{ usercoupon.coupon.discount }}</span>%</li>
-                                      <li>Total <span id="grand_total">₹{{usercoupon.total_price}}</span></li>
-                                      {% else %}
-                                      <li>Total <span id="grand_total">₹{{grand_total}}</span></li>
-                                      {% endif %}
-                                      <input type="hidden" class="grand_total" id="grand_total" value="{{grand_total}}"> -->
+                                        </tr>
+                                          <tr class="summary-tax">
+                                            <td>Tax:</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td contenteditable="true">(Included in MRP)</td>
+                                          </tr>
+                                         
+                                          {% if CouponUsage %}
+                                          <!-- <tr>
+                                            <td >Discount:</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><span id="discount">- ₹{{ discount}}</span></td>
+                                          </tr> -->
+                                          <tr class="summary-total">
+                                            <td>Total:</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><span id="discounted_price">₹{{ CouponUsage.total_price }}</span>
+                                          </tr>
+                                          {% else %}
+                                          <tr>
+                                            <td>Total:</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td >₹{{ grand_total }}</td>
+                                          </tr>
+                                          {% endif %}
+                                          <input type="hidden" class="grand_total" id="grand_total_display" value="{{ grand_total }}">
+                                        </div>
+                                          
+                                        </tbody>
+                                      </table>
+                                    
+                                     
                                       
       
                                       <div class="accordion-summary" id="accordion-payment">
@@ -507,7 +516,7 @@
                                                     <a class="collapsed" role="button" data-toggle="collapse"
                                                         href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
                                                         Credit Card 
-                                                        <img src="{% static 'cart/payments-summary.png' %}"
+                                                        <img src=""
                                                             alt="payments cards">
                                                     </a>
                                                 </h2>
@@ -683,8 +692,87 @@
             });
         </script>
     {% endfor %}
-</main>
+
+<script>
+  $(document).ready(function() {
+    // Existing code...
+
+    // Add a click event for the remove coupon link
+    $('.remove-coupon').click(function(e) {
+      e.preventDefault();
+      var token = $("[name='csrfmiddlewaretoken']").val();
+      var couponCode = $(this).data('coupon-code'); // Assuming you have a data attribute to store the coupon code
+      console.log(couponCode,'daxooooooooo')
+      $.ajax({
+        method: "POST",
+        url: "{% url 'remove_coupon' %}",
+        data: {
+          csrfmiddlewaretoken: token,
+          coupon_code: couponCode // Pass the coupon code to remove
+        },
+        dataType: 'json',
+        success: function(response) {
+          swal("Coupon Removed", "Coupon has been removed.", "success");
+          // Redirect to refresh the page and update the displayed coupon info
+          window.location.href = "{% url 'checkout' %}";
+        },
+        error: function(xhr, errmsg, err) {
+          swal("Error!", "An error occurred.", "error");
+          console.log('AJAX error:', err);
+        }
+      });
+    });
+  });
+</script>
+
+
+
+<script>
+  $(function() {
+    $('.coupon-form').click(function(e) {
+      e.preventDefault();
+ 
+    var grand_total = $(this).closest('.product_data').find('.grand_total').val();
+    var couponCode = $(this).closest('.product_data').find('.couponCode').val();
+    console.log(couponCode,'daxooo')
+    console.log(grand_total,'daxooo grand_total')
+
+    var token = $('input[name=csrfmiddlewaretoken]').val();
+    
+    $.ajax({
+      method: "POST",
+      url: "{%url 'apply_coupon'%}", 
+      data: {
+        'coupon_code': couponCode,
+        'grand_total' :grand_total,
       
+        csrfmiddlewaretoken: '{{csrf_token}}',
+        
+      },
+      success: function (response){
+        console.log(response)
+      if (response.status === 'Field is blank' || response.status === 'Coupon does not exist' || response.status === 'Coupon already used!' || response.status === 'You are not eligible for this coupon') {
+          swal("Error!", response.status, "error")
+          $('.cartdata').load(location.href + " .cartdata");
+      }else if (response.status === 'Coupon added successfully'){
+        swal("Congratulations!.", response.status, "success")
+          $('.cartdata').load(location.href + " .cartdata");
+      }else{
+        swal("Error!", response.status, "error")
+        $('.cartdata').load(location.href + " .cartdata");
+      }
+      var discounted_price = document.getElementById('discounted_price').value
+      discounted_price.textContent=response.grand_total
+      document.getElementById('discount').textContent = (response.discount).toFixed(2);
+    }
+    });
+  });
+  });
+  
+  </script> 
+</main>
+
+
       
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
