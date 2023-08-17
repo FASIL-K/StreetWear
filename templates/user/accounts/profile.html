@@ -5,6 +5,46 @@
 {% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
 {% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"> {% endcomment %}
 
+<style>
+  .wallet-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    overflow: hidden;
+    width: 300px;
+    margin: 0 auto;
+    float: right;
+    margin-top: -109px;
+}
+
+.card-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.wallet-info {
+    text-align: center;
+}
+
+.wallet-balance {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff;
+}
+</style>
+
 <main class="main" style="font-size: 16px;">
     <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
         <div class="container">
@@ -35,7 +75,7 @@
                                 <a class="nav-link" id="tab-orders-link"  href="{% url 'orders' %}" >Orders</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads" role="tab" aria-controls="tab-downloads" aria-selected="false">Downloads</a>
+                                <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads" role="tab" aria-controls="tab-downloads" aria-selected="false">Wallet</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Adresses</a>
@@ -58,7 +98,27 @@
                                 </h5>
 
                                 {% endif %}                      
-                                 <br>
+                                 <br> 
+                                <div class="wallet-card">
+                                  <div class="card-header">
+                                      <h3>Welcome, {{ user.username }}!</h3>
+                                  </div>
+                                  <div class="card-body">
+                                      <div class="wallet-info">
+                                       
+  
+                                          <p>Your Wallet Balance:</p>
+                                          <p class="wallet-balance">₹{{ wallet.wallet }}</p>
+                                          {% if wallets %}
+                                          {% for wallet in wallets %}
+                                          Available Balance:₹  <p class="wallet-balance">₹{{ wallet.wallet }}</p>
+                                          {% endfor %}
+                                          {% else %}
+                                          Available Balance:₹ 0.00
+                                          {% endif %}
+                                      </div>
+                                  </div>
+                              </div>
                                 From your account dashboard you can view your <a href="#tab-orders" class="tab-trigger-link link-underline">recent orders</a>, manage your <a href="#tab-address" class="tab-trigger-link">shipping and billing addresses</a>, and <a href="#tab-account" class="tab-trigger-link">edit your password and account details</a>.</p>
                             </div><!-- .End .tab-pane -->
 
@@ -68,8 +128,26 @@
                             </div><!-- .End .tab-pane -->
 
                             <div class="tab-pane fade" id="tab-downloads" role="tabpanel" aria-labelledby="tab-downloads-link">
-                                <p>No downloads available yet.</p>
-                                <a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
+                              <div class="wallet-card" style="float: left; margin-top: -54px;">
+                                <div class="card-header">
+                                    <h3>Welcome, {{ user.username }}!</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="wallet-info">
+                                     
+
+                                        <p>Your Wallet Balance:</p>
+                                        <p class="wallet-balance">₹{{ wallet.wallet }}</p>
+                                        {% if wallets %}
+                                        {% for wallet in wallets %}
+                                        Available Balance:₹  <p class="wallet-balance">₹{{ wallet.wallet }}</p>
+                                        {% endfor %}
+                                        {% else %}
+                                        Available Balance:₹ 0.00
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                             </div><!-- .End .tab-pane -->
 
                             <div class="tab-pane fade" id="tab-address" role="tabpanel"
@@ -481,11 +559,14 @@
                                 </div><!-- End .col-lg-6 -->
                             </div><!-- .End .tab-pane -->
                         </div>
+                        
                     </div><!-- End .col-lg-9 -->
                 </div><!-- End .row -->
             </div><!-- End .container -->
         </div><!-- End .dashboard -->
     </div><!-- End .page-content -->
+
+ 
 </main><!-- End .main -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 

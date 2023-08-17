@@ -11,6 +11,7 @@ import re
 from django.forms import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
+from .models import Wallet
 
 # Create your views here.
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -21,6 +22,8 @@ def userprofile(request):
     context = {
         'user1': user,
         'address': address,
+        'wallets': Wallet.objects.filter(user=request.user),
+
     }
     return render(request, 'user/accounts/profile.html', context)
 

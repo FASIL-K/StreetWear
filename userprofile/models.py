@@ -18,3 +18,7 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.id}"
+
+class Wallet(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    wallet = models.PositiveIntegerField(null=True)

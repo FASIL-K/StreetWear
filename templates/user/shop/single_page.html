@@ -35,13 +35,13 @@
                     <div class="col-md-6">
                         
                         <div class="product-gallery">
-                            <figure class="product-main-image"  style="width: 70%;" >
+                            <figure class="product-main-image" style="width: 70%;">
                                 {% if product.image1 %}
                                 <img id="product-zoom" src="{{ product.image1.url }}" data-zoom-image="{{ product.image1.url }}" alt="product image">
                                 {% else %}
                                 <img id="product-zoom" src="{% static '/user/img/no-image-icon-15.png' %}" data-zoom-image="{% static '/user/img/no-image-icon-15.png' %}" alt="product image">
                                 {% endif %}
-
+                            
                                 <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                     <i class="icon-arrows"></i>
                                 </a>
@@ -330,26 +330,66 @@
  <script src="{%static 'single/vendor/select2/select2.min.js'%}"></script> {% endcomment %}
  
 
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+ <!-- Include ElevateZoom library -->
+ <script src="https://cdn.jsdelivr.net/npm/elevatezoom.js"></script>
 
 
 
-{% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  {% endcomment %}
+
+<!-- Add the necessary JavaScript libraries if not already loaded -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/elevatezoom.js"></script>
+
 <script>
     $(document).ready(function() {
-        // Function to update the main product image when an additional image is clicked
-        $('.product-gallery-item').on('click', function(e) {
-            e.preventDefault();
+        // Initialize ElevateZoom on the main product image
+        $('.product-main-image a').elevateZoom({
+            zoomType: "inner",
+            cursor: "crosshair",
+            gallery: 'product-zoom-gallery',
+            galleryActiveClass: 'active',
+            responsive: true,
+            loadingIcon: 'https://cdn.rawgit.com/elevateweb/elevatezoom/8dbf7c4/src/images/spinner.gif' // Optional loading icon
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Initialize ElevateZoom on hover over thumbnail images
+        $('.product-gallery-item').mouseenter(function() {
             const mainImage = $('#product-zoom');
             const newImageSrc = $(this).data('image');
             const newZoomImageSrc = $(this).data('zoom-image');
 
             mainImage.attr('src', newImageSrc);
             mainImage.data('zoom-image', newZoomImageSrc);
+
+            // Reinitialize ElevateZoom on the updated main image
+            mainImage.elevateZoom({
+                zoomType: "inner",
+                cursor: "crosshair",
+                easing: true,
+                scrollZoom: false,
+                responsive: true
+            });
+        });
+
+        // Initialize ElevateZoom on the default main image
+        $('#product-zoom').elevateZoom({
+            zoomType: "inner",
+            cursor: "crosshair",
+            easing: true,
+            scrollZoom: false,
+            responsive: true
         });
     });
 </script>
 
-{% comment %} <script src="{%static 'single/vendor/perfect-scrollbar/perfect-scrollbar.min.js'%}"></script> {% endcomment %}
+
+ <script src="{%static 'single/vendor/perfect-scrollbar/perfect-scrollbar.min.js'%}"></script> 
 
 
 

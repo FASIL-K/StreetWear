@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 import os
 from django.conf import settings
+from django.http import JsonResponse
+
 # Create your views here.
 @staff_member_required(login_url='admin_login')
 def product_management(request):
@@ -195,3 +197,22 @@ def edit_product(request, editproduct_id):
     return render(request, 'adminside/product/product_management.html', context)
 
 
+def product_list(request):
+    products = Product.objects.filter(is_available=True).values_list('product_name', flat=True)
+    productList = list(products)
+    return  JsonResponse(productList,safe=False)
+
+def searchproduct(request):
+    if request.method == 'POST':
+        searchedterm = request.POST.get('productsearch')
+        if searchedterm == "":
+            return redirect(request.META.get('HTTP_REFERER'))
+        else:
+            product = Product.objects.filter(product_name__contains=searchedterm).first()
+            if product:
+                return redirect('product_detalis', product_id=product.id)  # Use the correct URL name and pass product ID
+            else:
+                messages.info(request, 'No product matched your search')
+                return redirect(request.META.get('HTTP_REFERER'))
+            
+    return redirect(request.META.get('HTTP_REFERER'))

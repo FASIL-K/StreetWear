@@ -8,6 +8,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.http.response import JsonResponse
 from products.models import Size,Product
 from .models import *
+from userprofile.models import Wallet
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 
 
@@ -138,7 +140,12 @@ def orderreturn(request,return_id):
         total_p = orderitem_id.price
         orderitem_id.save()
         returnorder = Orderreturn.objects.create(user = request.user, order = order_id, options=options, reason=reason)
-        
+        try :
+            wallet = Wallet.objects.get(user=request.user)
+            wallet.wallet += total_p
+            wallet.save()
+        except Wallet.DoesNotExist:
+            wallet = Wallet.objects.create(user=request.user,wallet=total_p)
         orderitem_id.quantity = 0
         orderitem_id.price = 0
         orderitem_id.save()

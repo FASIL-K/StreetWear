@@ -9,7 +9,7 @@
 
 
 <main class="main product_data" style="padding-bottom: 150px;" >
-    <div class="page-header text-center" style="background-image: url('{% static '/user/assets/images/page-header-bg.jpg' %}')">
+    <div class="page-header text-center">
         <div class="container">
             <h1 class="page-title">Checkout<span>Shop</span></h1>
         </div><!-- End .container -->
@@ -54,11 +54,11 @@
       {% for item in coupons %}
         <div class="accordion-item">
           <h2 class="accordion-header" id="flush-heading{{ forloop.counter }}">
-            <button class="accordion-button collapsed" style="height: 40px;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="flush-collapse{{ forloop.counter }}">
+            <button class="accordion-button collapsed" style="height: 40px; margin-left: 80px; font-size: small;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="flush-collapse{{ forloop.counter }}">
               <span class="text-dark" style="font-size: 13px;">{{forloop.counter}}.</span> <b>-{{item.discount}}% Off {{item.coupon}} </b>
             </button>
           </h2>
-          <div id="flush-collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{ forloop.counter }}" data-bs-parent="#accordionFlushExample">
+          <div id="flush-collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{ forloop.counter }}" data-bs-parent="#accordionFlushExample" style="margin-left: 50px;">
             <div class="accordion-body">
               <p><b>*</b>Applicable only for order price more than <b>{{item.min_price}}\-</b></p>
           <span class="ml-3">Coupon Code: <b class="text-danger">{{item.coupon_code}}</b></span>
@@ -86,6 +86,7 @@
                             <div class="modal-content">
                               <div class="modal-header">
                                 <h4 class="modal-title fs-5" id="exampleModalLabel">Add Address</h4>
+                                <div id="phoneWarning" class="text-danger"></div>
                                 <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
                                   <i class="fa fa-times"></i>
                                 </button>
@@ -97,48 +98,49 @@
                                       <div class="col-lg-6">
                                           <div class="checkout__input">
                                           <p>First Name<span>*</span></p>
-                                          <input type="text" name="firstname" class="form-control">
+                                          <input type="text" name="firstname" class="form-control" required>
                                           </div>
                                       </div>
                                       <div class="col-lg-6">
                                           <div class="checkout__input">
                                           <p>Last Name<span>*</span></p>
-                                          <input type="text" name="lastname" class="form-control">
+                                          <input type="text" name="lastname" class="form-control" required>
                                           </div>
                                       </div>
                                       </div>
                   
                                       <div class="checkout__input mb-1">
                                           <p>Country<span>*</span></p>
-                                          <input type="text" name="country" class="form-control">
+                                          <input type="text" name="country" class="form-control" required>
                                           </div>
                                           <div class="checkout__input mb-1">
                                           <p>Address<span>*</span></p>
-                                          <input type="text" class="checkout__input__add form-control" name="address">
+                                          <input type="text" class="checkout__input__add form-control" name="address" required>
                                           </div>
                                           <div class="checkout__input mb-1">
                                           <p>Town/City<span>*</span></p>
-                                          <input type="text" name="city" class="form-control">
+                                          <input type="text" name="city" class="form-control" required>
                                           </div>
                                           <div class="checkout__input mb-1">
                                           <p>State<span>*</span></p>
-                                          <input type="text" name="state" class="form-control">
+                                          <input type="text" name="state" class="form-control" required>
                                           </div>
                                           <div class="checkout__input mb-1">
                                           <p>Postcode / ZIP<span>*</span></p>
-                                          <input type="text" name="pincode" class="form-control">
+                                          <input type="text" name="pincode" class="form-control" required>
                                           </div>
                                           <div class="row mb-1">
                                           <div class="col-lg-6">
                                               <div class="checkout__input">
                                               <p>Phone<span>*</span></p>
-                                              <input type="text" name="phone" class="form-control">
+                                              <input type="text" name="phone" id="phoneInput" class="form-control" required>
+
                                               </div>
                                           </div>
                                           <div class="col-lg-6">
                                               <div class="checkout__input">
                                               <p>Email<span>*</span></p>
-                                              <input type="text" name="email" class="form-control">
+                                              <input type="text" name="email" class="form-control" required>
                                               </div>
                                           </div>
                                           </div>
@@ -371,8 +373,8 @@
       
                                       <table class="table table col-lg-12 tabledata" style="font-weight: bolder;" >
                                         <thead>
-                                          <tr>
-                                            <th>Product</th>
+                                          <tr style="text-align: center;">
+                                            <th>Product</th >
                                             <th></th>
                                         
                                             <th>Quantity</th>
@@ -380,9 +382,9 @@
                                             <th></th>
                                           </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody style="text-align: center;">
                                           {% for i in cartitems %}
-                                          <tr>
+                                          <tr style="text-align: center;">
                                             <td><a href="#">{{ i.product }}</a></td>
                                             <td></td> 
                                             <td>{{ i.product_qty }}</td>
@@ -511,24 +513,19 @@
                                         </div><!-- End .card -->
     
                                         <div class="card">
-                                            <div class="card-header" id="heading-5">
-                                                <h2 class="card-title">
-                                                    <a class="collapsed" role="button" data-toggle="collapse"
-                                                        href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
-                                                        Credit Card 
-                                                        <img src=""
-                                                            alt="payments cards">
-                                                    </a>
-                                                </h2>
-                                            </div><!-- End .card-header -->
-                                            <div id="collapse-5" class="collapse" aria-labelledby="heading-5"
-                                                data-parent="#accordion-payment">
-                                                <div class="card-body"> Donec nec justo eget felis facilisis fermentum.Lorem
-                                                    ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque
-                                                    volutpat mattis eros. Lorem ipsum dolor sit ame.
-                                                </div><!-- End .card-body -->
-                                            </div><!-- End .collapse -->
-                                        </div><!-- End .card -->
+                                          <div class="card-header" id="heading-111">
+                                              <h2 class="card-title">
+                                                  <a class="collapsed" id="payment" data-payment-method="wallet" role="button" data-toggle="collapse" href="#collapse-111" aria-expanded="false" aria-controls="collapse-111">
+                                                     Wallet 
+                                                  </a>
+                                              </h2>
+                                          </div><!-- End .card-header -->
+                                          <div id="collapse-111" class="collapse" aria-labelledby="heading-111" data-parent="#accordion-payment">
+                                              <div class="card-body">
+                                                  Nullam malesuada erat ut turpis.
+                                              </div>
+                                           </div>
+                                      </div><!-- End .card -->
                                     </div><!-- End .accordion -->
                                     
                                     <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block purchase placeorder" id="orderform">
@@ -566,6 +563,31 @@
           <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.all.min.js"></script>
           <script>
             $(document).ready(function() {
+              // Add event listener to the form submission
+              $("form").submit(function(event) {
+                // Get the entered phone number
+                var phoneNumber = $("#phoneInput").val();
+                
+                // Check if the phone number is less than 10 or greater than 10 characters
+                if (phoneNumber.length < 10 || phoneNumber.length > 10 || isNaN(phoneNumber)) {
+                  // Prevent the form from submitting
+                  event.preventDefault();
+                  
+                  // Display the warning message
+                  $("#phoneWarning").text("Please enter a 10-digit valid phone number.");
+                } else {
+                  // Clear the warning message
+                  $("#phoneWarning").text("");
+                }
+              });
+            });
+            </script>
+            
+
+
+
+          <script>
+            $(document).ready(function() {
                 $('.purchase').click(function(e) {
                     e.preventDefault();
         
@@ -576,6 +598,7 @@
                     var token = $("[name='csrfmiddlewaretoken']").val();
                     var selectedAddress = $("input[name='address']:checked").val();
                     var paymentMethod = $("a[data-toggle='collapse'][aria-expanded='true']").data('payment-method');
+                    console.log(paymentMethod,'daxoooooooo')
         
                     if (!selectedAddress) {
                         Swal.fire("Alert!", "Address field is mandatory!", "error");
@@ -599,7 +622,56 @@
                    
         
                     // Check the selected payment method and execute the corresponding AJAX request
-                    if (paymentMethod === "cod") {
+                    
+                    if (paymentMethod === "wallet") {
+                      $.ajax({
+                          method: "POST",
+                          url: "{% url 'placeorder' %}",
+                          data: data,
+                          dataType: 'json'
+                      }).done(function(response) {
+                          console.log("Response received:", response);
+          
+                          if (response.status === 'Your wallet amount is very low') {
+                              console.log("Wallet amount is low. Showing error Swal...");
+                              Swal.fire({
+                                  title: "Error!",
+                                  text: response.status,
+                                  icon: "error",
+                                  timer: 3000
+                              }).then(() => {
+                                  console.log("Error Swal closed.");
+                              });
+                          } else if (response.status === 'Your order has been placed successfully') {
+                              console.log("Order placed successfully. Showing success Swal...");
+                              Swal.fire({
+                                  title: "Congratulations!",
+                                  text: response.status,
+                                  icon: "success",
+                                  timer: 3000
+                              }).then(() => {
+                                  console.log("Success Swal closed. Redirecting to shop...");
+                                  window.location.href = '{% url 'shop' %}';
+                              });
+                          } else {
+                              console.log("Other response status. Showing error Swal...");
+                              Swal.fire({
+                                  title: "Error!",
+                                  text: response.status,
+                                  icon: "error",
+                                  timer: 3000
+                              }).then(() => {
+                                  console.log("Error Swal closed.");
+                                  window.location.href = '{% url 'shop' %}';
+                              });
+                          }
+          
+                      }).fail(function(xhr, errmsg, err) {
+                          alert('Error: ' + errmsg);
+                          console.log(xhr.responseText);
+                          console.log(err);
+                      });
+                  }else if (paymentMethod === "cod") {
                         $.ajax({
                             method: "POST",
                             url: "{% url 'placeorder' %}",

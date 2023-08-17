@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from products.models import Product
 from category.models import *
 from products.models import *
+from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
+
 # Create your views here.
 
 
@@ -43,6 +45,10 @@ def shop(request):
         
     else:
         product =Product.objects.filter(is_available = True)
+        paginator = Paginator(product,2)
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)
+
 
 
     categories = Category.objects.all()
@@ -53,7 +59,7 @@ def shop(request):
     context ={
         'categories' : categories,
         'brands' : brands,
-        'products': product,
+        'products': paged_products,
         'size':size,
         'pricerange':pricerange,
         'product_count':product_count,

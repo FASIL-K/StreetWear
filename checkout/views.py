@@ -16,6 +16,7 @@ from django.forms import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
 from coupon.models import Coupon,CouponUsage
+from userprofile.models import Wallet
 
 # Create your views here.
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
@@ -87,6 +88,29 @@ def placeorder(request):
             cart_total_price += tax
 
         neworder.total_price = cart_total_price
+        payment_mode = request.POST.get('payment_method')
+        if payment_mode == 'wallet':
+            try:
+                wallet = Wallet.objects.get(user=request.user)
+            except Wallet.DoesNotExist:
+                wallet = Wallet.objects.create(user=request.user, wallet=0)  # Create a new Wallet object if it doesn't exist
+                
+            if wallet.wallet >= cart_total_price:
+                wallet.wallet -= cart_total_price
+                wallet.save()
+            else:
+                return JsonResponse({'status': "Your wallet amount is very low"})
+            
+
+        user=request.user
+        coupon = CouponUsage.objects.filter(user=user,used=True).first()
+        if coupon:
+            # Calculate the discounted price if a coupon is applied
+            discount = cart_total_price * (coupon.coupon.discount / 100)
+            cart_total_price -= discount
+            
+        neworder.total_price = cart_total_price
+
         trackno = random.randint(1111111, 9999999)
         while Order.objects.filter(tracking_no=trackno).exists():
             trackno = random.randint(1111111, 9999999)
@@ -118,6 +142,10 @@ def placeorder(request):
         if payment_mode == 'cod':
             Cart.objects.filter(user=request.user).delete()
             return JsonResponse({'status': 'Your order has been placed successfully'})
+        return JsonResponse({'status': 'Your order has been placed successfully'})
+
+        
+
 
         Cart.objects.filter(user=request.user).delete()
     return redirect('checkout')

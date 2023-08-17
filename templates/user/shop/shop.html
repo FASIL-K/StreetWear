@@ -91,8 +91,33 @@
                     {% endfor %}
                 </div><!-- End .row -->
               
-
+                
                 <div class="load-more-container text-center">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {% if products.has_other_pages %}
+                            <div class="product__pagination">
+                                {% if products.has_previous%}
+                                <a class="" href="?page={{products.previous_page_number}}">prv</a>
+                                {% else %}
+                                <a class="page-item disabled" href="?page=#">Prv</a>
+                                {% endif %}
+                                {% for j in products.paginator.page_range %}
+                                {% if products.number == j %}
+                                <a class="active" href="">{{j}}</a>
+                                {% else %}
+                                <a class="" href="?page={{j}}">{{j}}</a>
+                                {% endif %}
+                                {% endfor %}
+                                {% if products.has_next%}
+                                <a href="?page={{products.next_page_number}}">Nxt</a>
+                                {% else %}
+                                <a class="disabled" href="">Nxt</a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                     <a href="#" class="btn btn-outline-darker btn-load-more">More Products <i class="icon-refresh"></i></a>
                 </div><!-- End .load-more-container -->
             </div><!-- End .products -->

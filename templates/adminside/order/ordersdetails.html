@@ -206,6 +206,54 @@
 </div>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+      $(document).on('change', '.changestatus', function(e) {
+        e.preventDefault();
+    
+        var orderitem_id = $(this).closest('.product_data').find('.orderitem_id').val();
+        var status = $(this).val();
+    
+        // Show a confirmation dialog
+        if (confirm("Are you sure you want to change the status?")) {
+          // User confirmed, proceed with the status change
+    
+          $.ajax({
+            method: "POST",
+            url: "{% url 'changestatus' %}",
+            data: {
+              'orderitem_id': orderitem_id,
+              'order_status': status,
+              csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+              console.log(response);
+              // Reload the updated content after the change
+              $('.cartdata').load(location.href + " .cartdata", function() {
+                // Callback function executed after the content is loaded
+                // Additional code or actions can be performed here if needed
+              });
+            },
+            error: function(xhr, status, error) {
+              console.log(xhr.responseText);
+              // Handle error case
+            }
+          });
+        } else {
+          // User cancelled the change, reset the select element to the previous value
+          $(this).val($(this).data("previous-value"));
+        }
+      });
+    
+      // Save the previous value of the select element when it's focused
+      $(".changestatus").focus(function() {
+        $(this).data("previous-value", $(this).val());
+      });
+    });
+    </script>
 <script>
 $(document).ready(function() {
 $(document).on('click', '.changestatus', function(e) {
