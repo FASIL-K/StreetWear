@@ -1,0 +1,143 @@
+{% extends 'adminside/basedashboard.html' %}
+{% block title %}User_management{% endblock %}
+{% load static %}
+{% block dashbody %}
+<div>
+    <br><br>
+<h2 class="text-dark font-weight-bold" style="margin-left: 10px;"> Sales Report </h2>
+
+<section class="section dashboard" >
+    <div class="row">
+        <!-- Left side columns -->
+        <div class="col-lg-12" >
+            <div class="row">
+                <!-- Recent Sales -->
+                <div class="col-12">
+                    <div class="card recent-sales overflow-auto">
+                        <div class="card-body">
+                            <form style="margin-left: 20%; font-size: large; " method="get" action="{% url 'sales_report' %}">
+                                <label for="start_date">Start Date:</label>
+                                <input type="date" id="start-date" name="start_date" value="{{ sales_report.start_date }}" required>
+                                <label for="end_date">End Date:</label>
+                                <input type="date" id="end-date" name="end_date" value="{{ sales_report.end_date }}" required>
+
+                                <!-- <button type="submit" name="all_sales" class="btn btn-primary">All Sales</button> -->
+                                <button type="submit" class="btn btn-primary">Generate Report</button>
+                                
+
+                                  
+                            </form>
+
+                            <div style="display: flex;  padding:5%; justify-content: space-evenly;">
+                            <h4>Total Sales: ₹{{ sales_report.total_sales|floatformat:2 }}</h4>
+                            <h4>Total Orders: {{ sales_report.total_orders }}</h4>
+                        </div>
+                            <h2 style="margin-left: 40%;">Sales by Status</h2>
+                            <div >
+                            <ul style="display: flex;justify-content: space-evenly; font-weight: bold; margin-top: 5%; ">
+                                <li>Pending: {{ sales_report.sales_by_status.Pending }}</li>
+                                <li>Processing: {{ sales_report.sales_by_status.Processing }}</li>
+                                <li>Shipped: {{ sales_report.sales_by_status.Shipped }}</li>
+                                <li>Delivered: {{ sales_report.sales_by_status.Delivered }}</li>
+                                <li>Cancelled: {{ sales_report.sales_by_status.Cancelled }}</li>
+                                <li>Return: {{ sales_report.sales_by_status.Return }}</li>
+                              
+                            </ul>
+                        </div>
+                            <h2 style="margin-top: 5%;">{% if sales_report.start_date and sales_report.end_date %}All Orders{% else %}Recent Orders{% endif %}</h2>
+                            {% if sales_report.start_date and sales_report.end_date %}
+                            <a href="{% url 'export_csv' %}" class="btn btn-success">
+                                Download CSV <i class="mdi mdi-file-excel" style="font-size: x-large;"></i>
+                              </a>
+                              <a href="{% url 'generate_pdf' %}" class="btn btn-danger" >
+                                Download PDF <i class="mdi mdi-file-pdf" style="font-size: x-large;"></i>
+                              </a>
+                              {% endif %}
+                            <div class="table-responsive">
+                            <table id="example" class="display nowrap mt-5 table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Tracking Number</th>
+                                        <th>Total Price</th>
+                                        <th>Status</th>
+                                        <th>Created At</th>
+                                        {% if sales_report.start_date and sales_report.end_date %}
+                                        <th>Items</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in sales_report.recent_orders %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>{{ order.tracking_no }}</td>
+                                        <td>${{ order.total_price }}</td>
+                                        <td>{{ order.order_status }}</td>
+                                        <td>{{ order.created_at }}</td>
+                                        {% if sales_report.start_date and sales_report.end_date %}
+                                        <td>
+                                            <ul>
+                                                {% for item in order.orderitem_set.all %}
+                                                <li>{{ item.variant.product.product_name }} </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                            
+                            
+                            
+                            <script>
+                                const startDate = document.getElementById("start-date");
+                                const endDate = document.getElementById("end-date");
+
+                                endDate.addEventListener("change", function() {
+                                    if (endDate.value < startDate.value) {
+                                        alert("End date cannot be before the start date.");
+                                        endDate.value = '';
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+<script>
+    setTimeout(function() {
+        $('#message').fadeOut('slow');
+    }, 2000);
+
+    $(document).ready(function() {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+    });
+</script>
+
+
+
+</script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+
+{% endblock %}

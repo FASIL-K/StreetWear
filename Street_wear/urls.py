@@ -37,6 +37,8 @@ urlpatterns = [
     path('',include('orders.urls')),
     path('',include('wishlist.urls')),
     path('',include('coupon.urls')),
+    path('',include('banner.urls')),
+
     path('login/',views.login, name='login'),
     path('logout/',auth_views.LogoutView.as_view(),name='logut'),
     # path('social-auth/',include('social_django.urls'), namespace='social'),

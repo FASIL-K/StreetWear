@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'wishlist',
     'twilio',
     'coupon',
+    'banner',
 
     # 'django.contrib.sites',
     # 'allauth',

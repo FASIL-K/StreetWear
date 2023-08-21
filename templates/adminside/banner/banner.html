@@ -1,0 +1,242 @@
+{% extends 'adminside/adminbase.html' %}
+
+{% block content %}
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Banner List</h2>
+                        
+                    </div>
+                    <div>
+                        <a type="button" class="btn btn-md rounded font-sm hover-up" style="margin-left: 10px;"
+                            data-bs-toggle="modal" data-bs-target="#addproductsModal">
+                            <i title="Add Category" class="fa fa-plus">Add Banner</i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <header class="card-header">
+                        <div class="row align-items-center">
+                            
+                            <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                                <select class="form-select">
+                                    <option selected>All category</option>
+                                    <option>Electronics</option>
+                                    <option>Clothes</option>
+                                    <option>Automobile</option>
+                                </select>
+                            </div>
+                            {% comment %} <div class="col-md-2 col-6">
+                                <input type="date" value="02.05.2021" class="form-control" />
+                            </div> {% endcomment %}
+                            {% comment %} <div class="col-md-2 col-6">
+                                <select class="form-select">
+                                    <option selected>Status</option>
+                                    <option>Active</option>
+                                    <option>Disabled</option>
+                                    <option>Show all</option>
+                                </select>
+                            </div> {% endcomment %}
+                        </div>
+                    </header>
+                     <!-- card-header end// -->
+                    
+                    {% include 'includes/alert.html' %}
+
+     
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    
+                                    <th scope="col">id</th>
+                                    <th scope="col">image</th>
+                                    <th scope="col">Banner name</th>
+                                    <th scope="col">Discription</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for c in banner %}
+                                <tr>
+                                    <td>{{c.id}}</td>
+                                    <td>
+                                        <a class="itemside" href="#">
+                                            <div class="left">
+                                                
+                                                <img src="{{c.banners_image.url}}" class="img-sm img-thumbnail" alt="Item" />
+                                            
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td>{{c.banner_name}}</td>
+
+                                    <td>{{c.banner_discription}}</td>
+                                    <td>{{c.category}}</td>
+                                    
+                                    
+                                    <td class="text-end">
+                                        <!-- Add Edit button -->
+                                        <button class="btn btn-md rounded font-sm hover-up" style="margin-left: 10px;"
+                                            data-bs-toggle="modal" data-bs-target="#editCategoryModal{{ c.id }}">
+                                            <i title="Edit Category" class="fa fa-edit">Edit category</i>
+                                        </button>
+        
+                                        <!-- Add Delete button -->
+                                        <a href="{% url 'deletebanner' c.id %}" class="btn btn-sm font-sm rounded btn-brand"
+                                            style="background-color: red; color: white;" onclick="return confirm('Are you sure you want to delete this category?');">
+                                            <i class="material-icons md-delete_forever"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                    <!-- card-body end// -->
+                </div>
+                <!-- card end// -->
+  
+            </section>
+            <!-- content-main end// -->
+            
+<!-- Add Product Modal -->
+<div class="modal fade" id="addproductsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'createbanner'%}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>General info</h6>
+                        </div>
+                        {% comment %} <div style="width: 100px;" class="card-header category-img position-relative overflow-hidden bg-transparent border p-0">
+                            <img class="img-fluid w-100" alt="">
+                          </div>  {% endcomment %}
+                          
+                          <div class="form-outline mb-4">
+                            <input name="image" type="file" accept="image/png, image/jpeg, image/wep" class="form-control" id="image-input"/>
+                            <small id="image-error" class="text-danger text-center"></small>
+                          </div>
+
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Banner Name</label>
+                                <input type="text" placeholder="Type here" name="banner_name"
+                                    class="form-control" required>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3cg">Category</label>
+                                <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="category" placeholder='Type here'>
+                                  {% for c in category %}
+                                  <option value="{{ c.id }}">{{ c.name}}</option>
+                                  {% endfor %}
+                              </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" name="banner_discription"
+                                    class="form-control" rows="4" required></textarea>
+                            </div>
+                            
+                            <hr class="mb-4 mt-0">
+                            <div>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit" name="add_category">Create</button>
+                            </div>
+                        </div> <!-- col.// -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Add product Modal -->
+{% for c in banner %}
+<!-- Edit product Modal -->
+<div class="modal fade" id="editCategoryModal{{ c.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'editbanner' c.id %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ c.id }}">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>General info</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <!-- Rest of the form fields -->
+                            <div style="width: 100px;" class="card-header category-img position-relative overflow-hidden bg-transparent border p-0 ">
+                                <img class="img-fluid w-100" src="{{c.banners_image.url}} " alt="" id="image">
+                              </div> 
+              
+                              <div class="form-outline mb-4">
+                                <input name="image" type="file" accept="image/png, image/jpeg, image/svg" class="form-control" id="image-inputs"/>
+                                <small id="image-errors" class="text-danger text-center"></small>
+                              </div>
+
+
+                            <div class="mb-4">
+                                <label class="form-label">Banner Name</label>
+                                <input type="text" placeholder="Type here" name="banner_name" class="form-control" value="{{c.banner_name}}" required>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3cg">Category</label>
+                                <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="category">
+                                  {% for c in category %}
+                                  <option value="{{ c.id }}" {% if c.id == c.category.id %}selected{% endif %}>{{ c.name }}</option>
+                                  {% endfor %}
+                              </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" name="banner_discription" class="form-control" value="{{c.banner_discription}}" rows="4" required>{{ product.product_description }}</textarea>
+                            </div>
+
+                            
+                             
+                             
+                           
+                            
+
+                            
+
+                            <!-- ... (rest of the image fields) ... -->
+
+                            <!-- ... (rest of the form fields) ... -->
+                           
+
+                            <hr class="mb-4 mt-0">
+                            <div>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit" name="edit_product">Save Changes</button>
+                            </div>
+                        </div> <!-- col.// -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Edit Product Modal -->
+{% endfor %}
+
+{% comment %} <script>
+    function removeImage(imagePreviewId) {
+        const imagePreview = document.getElementById(imagePreviewId);
+        imagePreview.src = ''; // Clear the image source to remove the image
+    }
+</script> {% endcomment %}
+{% endblock %}
