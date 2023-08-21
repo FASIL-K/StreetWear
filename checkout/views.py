@@ -25,11 +25,10 @@ def checkout(request):
     cartitems = Cart.objects.filter(user= request.user)
     total_price = 0
     grand_total = 0
-    tax = 0
     for item in cartitems:
         total_price = total_price + item.product.product_price * item.product_qty
-        tax = total_price * 0.18
-        grand_total = total_price + tax
+        
+        grand_total = total_price 
 
         
     coupons = Coupon.objects.filter(is_active=True)
@@ -81,11 +80,9 @@ def placeorder(request):
         neworder.payment_id = request.POST.get('payment_id')
         cart = Cart.objects.filter(user=request.user)
         cart_total_price = 0
-        tax = 0
+        
         for item in cart:
             cart_total_price += item.product.product_price * item.product_qty
-            tax = cart_total_price * 0.18
-            cart_total_price += tax
 
         neworder.total_price = cart_total_price
         payment_mode = request.POST.get('payment_method')
@@ -139,6 +136,9 @@ def placeorder(request):
             prod.save()
 
         payment_mode = request.POST.get('payment_method')
+        if payment_mode == 'wallet':
+            Cart.objects.filter(user=request.user).delete()
+            return JsonResponse({'status': 'Your order has been placed successfully'})
         if payment_mode == 'cod':
             Cart.objects.filter(user=request.user).delete()
             return JsonResponse({'status': 'Your order has been placed successfully'})
@@ -240,8 +240,7 @@ def razarypaycheck(request):
     total_price = 0
     for item in cart:
         total_price = total_price + item.product.product_price * item.product_qty
-        tax = total_price * 0.18
-        total_price = total_price + tax
+        
         
     
     return JsonResponse({'total_price': total_price})

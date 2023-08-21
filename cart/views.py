@@ -31,13 +31,11 @@ def cart(request):
             item.selected_size = "Unknown Size"  # Handle the case where the size ID does not exist in the Size model
         
     total_price = sum(item.product.product_price * item.product_qty for item in cart)
-    tax = total_price * 0.18
-    grand_total = total_price + tax
+    grand_total = total_price 
 
     context = {
         'cart': cart,
         'total_price': total_price,
-        'tax': tax,
         'grand_total': grand_total,
     }
     return render(request, 'user/cart/cart.html', context)

@@ -1,7 +1,7 @@
-{% extends 'adminside/basedashboard.html' %}
+{% extends 'adminside/adminbase.html' %}
 {% block title %}User_management{% endblock %}
 {% load static %}
-{% block dashbody %}
+{% block content %}
 <div>
     <br><br>
 <h2 class="text-dark font-weight-bold" style="margin-left: 10px;"> Sales Report </h2>
@@ -60,34 +60,31 @@
                                         <th>Order ID</th>
                                         <th>Tracking Number</th>
                                         <th>Total Price</th>
-                                        <th>Status</th>
                                         <th>Created At</th>
                                         {% if sales_report.start_date and sales_report.end_date %}
-                                        <th>Items</th>
+                                        <th>Items & Status</th>
                                         {% endif %}
                                     </tr>
                                 </thead>
-                                <tbody>
+                                 <tbody>
                                     {% for order in sales_report.recent_orders %}
                                     <tr>
                                         <td>{{ order.id }}</td>
                                         <td>{{ order.tracking_no }}</td>
-                                        <td>${{ order.total_price }}</td>
-                                        <td>{{ order.order_status }}</td>
+                                        <td>₹{{ order.total_price }}</td>
                                         <td>{{ order.created_at }}</td>
-                                        {% if sales_report.start_date and sales_report.end_date %}
                                         <td>
                                             <ul>
                                                 {% for item in order.orderitem_set.all %}
-                                                <li>{{ item.variant.product.product_name }} </li>
+                                                <li>{{ item.product.product_name }} - {{ item.get_status_display }}</li>
                                                 {% endfor %}
                                             </ul>
                                         </td>
-                                        {% endif %}
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            
                         </div>
                             
                             

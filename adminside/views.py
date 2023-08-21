@@ -55,16 +55,17 @@ def user_block(request,user_id):
 
 
 
+@login_required(login_url='admin_login1')
 def sales_report(request):
     if not request.user.is_superuser:
-        return redirect('admin_login1')
+        return redirect('admin_login')
 
-    if request.method=='GET':
-        start_date = request.GET.get('start_date')
-        end_date = request.GET.get('end_date')
-    
-        if start_date and end_date:
-            # Filter orders based on the selected date range
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    orders = Order.objects.all()
+
+    if start_date and end_date:
+        try:
             start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
             if start_date > end_date:
@@ -73,31 +74,28 @@ def sales_report(request):
             if end_date > date.today():
                 messages.error(request, "End date cannot be in the future.")
                 return redirect('sales_report')
-
             orders = Order.objects.filter(created_at__date__range=(start_date, end_date))
-            recent_orders = orders.order_by('-created_at')
-        else:
-            # If no date range is selected, fetch recent 10 orders
-            recent_orders = Order.objects.order_by('-created_at')[:10]
-            orders = Order.objects.all()
-  
-    # Calculate total sales and total orders
+        except ValueError:
+            messages.error(request, "Invalid date format.")
+            return redirect('sales_report')
+
+    recent_orders = orders.order_by('-created_at')[:15]
     total_sales = sum(order.total_price for order in orders)
     total_orders = orders.count()
 
-    # Calculate sales by status
+    order_items = OrderItem.objects.all()
     sales_by_status = {
-        'Pending': orders.filter(order_status= 1).count(),
-        'Processing': orders.filter(order_status=2).count(),
-        'Shipped': orders.filter(order_status=3).count(),
-        'Delivered': orders.filter(order_status=4).count(),
-        'Cancelled': orders.filter(order_status=5).count(),
-        'Return': orders.filter(order_status=6).count(),
+        'Pending': order_items.filter(status='Pending').count(),
+        'Processing': order_items.filter(status='Processing').count(),
+        'Shipped': order_items.filter(status='Shipped').count(),
+        'Delivered': order_items.filter(status='Delivered').count(),
+        'Cancelled': order_items.filter(status='Cancelled').count(),
+        'Return': order_items.filter(status='Return').count(),
     }
-    # Prepare data for rendering the template
+
     sales_report = {
-        'start_date': start_date.strftime('%Y-%m-%d') if start_date else '',
-        'end_date': end_date.strftime('%Y-%m-%d') if end_date else '',
+        'start_date': start_date,
+        'end_date': end_date,
         'total_sales': total_sales,
         'total_orders': total_orders,
         'sales_by_status': sales_by_status,
@@ -105,6 +103,7 @@ def sales_report(request):
     }
 
     return render(request, 'adminside/salesreport/salesreport.html', {'sales_report': sales_report})
+
 
 @login_required(login_url='admin_login1')
 def export_csv(request):
@@ -119,7 +118,7 @@ def export_csv(request):
 
     orders = Order.objects.all()
     for order in orders:
-        order_items = OrderItem.objects.filter(order=order).select_related('variant')  # Use select_related to optimize DB queries
+        order_items = OrderItem.objects.filter(order=order).select_related('product')  # Use select_related to optimize DB queries
         grouped_order_items = groupby(order_items, key=lambda x: x.order_id)
         for order_id, items_group in grouped_order_items:
             items_list = list(items_group)
@@ -130,7 +129,7 @@ def export_csv(request):
                     order.payment_mode if order_item == items_list[0] else "",
                     order.tracking_no if order_item == items_list[0] else "",
                     order.created_at if order_item == items_list[0] else "",  # Only include date in the first row
-                    order_item.variant.product.product_name,  # Replace 'product_name' with the actual attribute in your Product model
+                    order_item.product.product_name,  # Replace 'product_name' with the actual attribute in your Product model
                     order_item.price,
                     order_item.quantity,
                 ])
@@ -138,10 +137,12 @@ def export_csv(request):
     return response
 
 
+from django.db.models import Prefetch
+
 @login_required(login_url='admin_login1')
 def generate_pdf(request):
     if not request.user.is_superuser:
-        return redirect('admin_login1')
+        return redirect('admin_login')
     
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=Expenses' + \
@@ -162,7 +163,7 @@ def generate_pdf(request):
     # Table Data
     data = [['User', 'Total Price', 'Payment Mode', 'Tracking No', 'Ordered At', 'Product Name', 'Product Price', 'Product Quantity']]
     orders = Order.objects.all().prefetch_related(
-        Prefetch('orderitem_set', queryset=OrderItem.objects.select_related('variant'))
+        Prefetch('orderitem_set', queryset=OrderItem.objects.select_related('product'))
     )
     for order in orders:
         order_items = order.orderitem_set.all()
@@ -173,7 +174,7 @@ def generate_pdf(request):
                 order.payment_mode if index == 0 else "",
                 order.tracking_no if index == 0 else "",
                 str(order.created_at.date()) if index == 0 else "",
-                order_item.variant.product.product_name,
+                order_item.product.product_name,
                 order_item.price,
                 order_item.quantity,
             ])

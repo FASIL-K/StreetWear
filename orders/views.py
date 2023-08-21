@@ -98,20 +98,28 @@ def changestatus(request):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='signin')
 def ordercancel(request):
-    ordrderid = int(request.POST.get('order_id'))
+    order_id = int(request.POST.get('order_id'))
     orderitem_id = request.POST.get('orderitem_id')
     orderitem = OrderItem.objects.filter(id=orderitem_id).first()
+    order = Order.objects.filter(id=order_id).first()
 
-    order = Order.objects.filter(id=ordrderid).first()
     qty = orderitem.quantity
     pid = orderitem.selected_size.id
     product = Product.objects.filter(id=pid).first()
 
     product.stock = product.stock + qty
     product.save()
+
     orderitem.quantity = 0
     orderitem.status = 'Cancelled'
     orderitem.save()
+
+    # Refund money to wallet if payment mode is wallet or razorpay
+    if order.payment_mode in ['wallet', 'razorpay']:
+        wallet = Wallet.objects.get_or_create(user=request.user)[0]
+        wallet.wallet += order.total_price
+        wallet.save()
+
     return redirect('orders')
 
 
