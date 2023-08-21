@@ -16,6 +16,10 @@ import re
 from . import mixins
 from django.core.exceptions import ValidationError
 from social_core.backends.google import GoogleOAuth2
+from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth import login
+
+
 
 # Create your views here.
 
@@ -30,17 +34,18 @@ def signin(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
         if username and password:
             user = authenticate(username=username, password=password)
             if user is not None:
-                login(request, user)
+                # Explicitly specify the authentication backend when calling login
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('home')
             else:
                 messages.error(request, 'Invalid username or password')
                 return render(request, 'user/accounts/registration.html')
 
     return render(request, 'user/accounts/registration.html')
+
 
 def validateEmail(email):
     from django.core.validators import validate_email
@@ -93,6 +98,7 @@ def signup(request):
                         phone = userotp.phone,
                         
                     )
+                    user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'  # Set the backend
                     user.save()
                     auth.login(request, user)
                     userotp.delete()  # Remove the used OTP record
@@ -204,6 +210,7 @@ def signup(request):
 
             # If everything is valid, proceed with OTP generation and sending
             user_otp = random.randint(100000, 999999)
+            print(user_otp,'daxoooooooo')
             usr = UserOTP.objects.create(
                 first_name=firstname,
                 last_name=lastname,

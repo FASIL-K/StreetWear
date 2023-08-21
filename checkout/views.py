@@ -17,6 +17,12 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
 from coupon.models import Coupon,CouponUsage
 from userprofile.models import Wallet
+from django.http import HttpResponse
+from django.conf import settings
+import os
+from xhtml2pdf import pisa
+from django.template.loader import render_to_string
+from django.core.mail import send_mail, EmailMessage
 
 # Create your views here.
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
@@ -118,7 +124,7 @@ def placeorder(request):
             neworder.payment_id = generate_random_payment_id(10)
 
         neworder.save()
-
+        generate_invoice_pdf(request, neworder.id)
         neworderitems = Cart.objects.filter(user=request.user)
         for item in neworderitems:
             size = Size.objects.get(id=item.selected_size)
@@ -146,8 +152,10 @@ def placeorder(request):
 
         
 
+        # Call a function to generate invoice PDF (implement this function separately)
+    
 
-        Cart.objects.filter(user=request.user).delete()
+        # Cart.objects.filter(user=request.user).delete()
     return redirect('checkout')
 
 
@@ -258,3 +266,48 @@ def validatepassword(new_password):
         return True
     except  ValidationError:
         return  False
+    
+
+
+def generate_invoice_pdf(request, order_id):
+    
+    try:
+        order = Order.objects.get(id=order_id) 
+        order_items = OrderItem.objects.filter(order=order)
+    except Order.DoesNotExist:
+        # Handle the case if the order does not exist
+        return HttpResponse("Order not found", status=404)
+
+    # Render the XHTML template with dynamic data
+    context = {
+        'order': order,
+        'order_items': order_items,
+    }
+    rendered_template = render_to_string('user/orders/invoice.html', context)
+
+    # Convert the XHTML content to PDF
+    pdf_file = os.path.join(settings.BASE_DIR, 'invoice.pdf')
+    with open(pdf_file, 'wb') as pdf:
+        pisa.CreatePDF(rendered_template, dest=pdf)
+
+    # Send the email with both the PDF attachment and the order confirmation
+    subject = "Welcome to Street Wear, Your Order is Placed!!!"
+    message = f'''
+        Your order has been placed successfully.
+        Hello {order.user.username},
+        Your Order has been placed successfully.
+        Thank you for choosing Street Wear!
+        Payment mode: {order.payment_mode}
+        Your Payment ID is {order.payment_id}
+        Your Order Tracking ID: {order.tracking_no}
+    '''
+    from_email = settings.EMAIL_HOST_USER
+    to_email = [order.user.email]
+
+    email = EmailMessage(subject, message, from_email, to_email)
+    email.attach_file(pdf_file)  # Attach the PDF to the email
+    email.send()
+
+    # Delete the temporary PDF file
+    os.remove(pdf_file)
+    return redirect('placeorder')

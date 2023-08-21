@@ -12,5 +12,5 @@ def home(request):
     }
     return render(request,'user\home\home.html',context)
 
-def login(request):
+def custom_login(request):
     return render(request,'user/accounts/registration.html')
