@@ -52,7 +52,7 @@
         <div class="invoice-details">
             <p>Hello {{order.user.username}},</p>
             <p>Your Order has been placed successfully.</p>
-            <p>Thank you for choosing Molla Books!</p>
+            <p>Thank you for choosing Street Wear!</p>
             <p>Payment mode: {{order.payment_mode}}</p>
             <p>Payment ID: {{order.payment_id}}</p>
             <p>Order Tracking ID: {{order.tracking_no}}</p>
@@ -74,7 +74,7 @@
               
                 {% for item in order_items %}
                 <tr>
-                    <td><img src="{{ item.product.product_image.path }}"  width="50"> </td>
+                    <td><img src="{{ item.product.image1.path  }}"  width="50"> </td>
                     <td>{{ item.product.product_name }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.product.product_price }}</td>
@@ -94,4 +94,4 @@
         </div>
     </div>
 </body>
-</html>
+</html>v

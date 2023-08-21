@@ -124,7 +124,10 @@ def placeorder(request):
             neworder.payment_id = generate_random_payment_id(10)
 
         neworder.save()
-        generate_invoice_pdf(request, neworder.id)
+
+        
+        
+
         neworderitems = Cart.objects.filter(user=request.user)
         for item in neworderitems:
             size = Size.objects.get(id=item.selected_size)
@@ -140,12 +143,13 @@ def placeorder(request):
             prod = Product.objects.filter(id=item.product.id).first()
             prod.stock = prod.stock - item.product_qty
             prod.save()
-
+            Cart.objects.filter(user=request.user).delete()
+        generate_invoice_pdf(request,neworder.id)
         payment_mode = request.POST.get('payment_method')
         if payment_mode == 'wallet':
             Cart.objects.filter(user=request.user).delete()
             return JsonResponse({'status': 'Your order has been placed successfully'})
-        if payment_mode == 'cod':
+        elif payment_mode == 'cod':
             Cart.objects.filter(user=request.user).delete()
             return JsonResponse({'status': 'Your order has been placed successfully'})
         return JsonResponse({'status': 'Your order has been placed successfully'})
@@ -269,11 +273,12 @@ def validatepassword(new_password):
     
 
 
-def generate_invoice_pdf(request, order_id):
-    
+def generate_invoice_pdf(request,order_id):
+
     try:
-        order = Order.objects.get(id=order_id) 
+        order = Order.objects.get(id=order_id)  
         order_items = OrderItem.objects.filter(order=order)
+        
     except Order.DoesNotExist:
         # Handle the case if the order does not exist
         return HttpResponse("Order not found", status=404)
