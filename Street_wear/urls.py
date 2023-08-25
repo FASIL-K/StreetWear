@@ -38,6 +38,8 @@ urlpatterns = [
     path('',include('wishlist.urls')),
     path('',include('coupon.urls')),
     path('',include('banner.urls')),
+    path('',include('offer.urls')),
+
 
     path('login/',views.custom_login, name='custom_login'),
     path('logout/',auth_views.LogoutView.as_view(),name='logut'),

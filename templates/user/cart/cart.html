@@ -136,7 +136,14 @@
                                             </h3><!-- End .product-title -->
                                         </div><!-- End .product -->
                                     </td>
-                                    <td class="price-col">₹{{cart_item.product.product_price}}</td>
+                                    <td class="column-3">
+                                        {% if cart_item.product.offer  %}
+                                            <del class="text-danger">₹ {{ cart_item.product.product_price }}</del> <br>
+                                            ₹{{ cart_item.product.get_offer }}
+                                        {% else %}
+                                            ₹ {{ cart_item.product.product_price }}
+                                        {% endif %}
+                                    </td>
                                     <td class="size-col">
                                         <div class="details-filter-row details-row-size">
                                             <label for="size">Size:</label>
@@ -164,7 +171,7 @@
                                     </td>
                                     {% with counter=forloop.counter %}
                                     <td class="column-5 cart__price total">
-                                        <span class="changeQuantity" id="single_product_total{{cart_item.product.id}}{{cart_item.selected_size}}">₹{{ cart_item.product.product_price | mul:cart_item.product_qty | floatformat:2 }}</span>
+                                        <span class="changeQuantity" id="single_product_total{{cart_item.product.id}}{{cart_item.selected_size}}">₹{{ cart_item.product.get_offer | mul:cart_item.product_qty  | floatformat:2 }}</span>
                                     </td>
                                     {% endwith %}
                                     <td class="cart__close">
@@ -384,11 +391,9 @@
                         $("a.primary-btn").replaceWith(checkoutLink);
                     }
                     var sub_total = parseInt(response.sub_total)
-                    var gtotal = sub_total + (sub_total * 0.18)
-                    var tax=  sub_total * 0.18
+                    var gtotal = sub_total 
                     console.log(gtotal)
                     document.getElementById('sub_total').textContent = sub_total.toFixed(2)
-                    document.getElementById('tax').textContent = tax.toFixed(2)
                     document.getElementById('grand_total').textContent = gtotal.toFixed(2)
                     document.getElementById('single_product_total' + product_id+selected_size).textContent = (parseInt(response.product_price) * parseInt(response.quantity)).toFixed(2)
 

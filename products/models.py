@@ -2,6 +2,7 @@ from django.db import models
 from category.models import Brand,Category
 from django.utils.text import slugify
 from django.urls import reverse
+from offer.models import Offer
 
 # Create your models here.
 class price_range(models.Model):
@@ -26,6 +27,8 @@ class Product(models.Model):
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
     stock = models.PositiveIntegerField()
     product_description = models.TextField(blank=True)
+    offer = models.ForeignKey(Offer, on_delete=models.SET_NULL, null=True )
+
     is_available = models.BooleanField(default=False)
     slug = models.SlugField(max_length=250,unique=True)
     
@@ -37,5 +40,20 @@ class Product(models.Model):
         super(Product, self).save(*args, **kwargs)
     def __str__(self):
         return self.product_name
+    
+    def get_offer(self):
+        product_offer = self.offer
+        
+
+        
+        if product_offer:
+            # If only product has an offer
+            percentage_discount = (product_offer.discount_amount / 100) * self.product_price
+            discounted=self.product_price-percentage_discount
+            return discounted
+        
+        else:
+            # If neither product nor brand has an offer, return the original price
+            return self.product_price
     
     

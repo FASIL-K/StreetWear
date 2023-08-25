@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     'twilio',
     'coupon',
     'banner',
+    'offer',
+    
 
     # 'django.contrib.sites',
     # 'allauth',

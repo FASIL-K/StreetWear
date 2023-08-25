@@ -52,6 +52,7 @@
                                     <th>Product Name</th>
                                     <th>Price</th>
                                     <th>Stock</th>
+                                    <th scope="col">Offer</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -86,6 +87,11 @@
                                     </td>
                                     <td>{{product.product_price}}</td>
                                     <td>{{product.stock}}</td>
+                                    {% if product.offer %}
+                                    <td ><b>{{ product.offer.offer_name}}</td>
+                                    {% else %}    
+                                    <td ><b>No Offer</td>
+                                    {% endif %}
                                     <td>
                                         {% if product.is_available and product.stock > 0 %}
                                         <span class="badge rounded-pill alert-success">Available</span>
@@ -93,6 +99,7 @@
                                         <span class="badge rounded-pill alert-danger">Out of Stock</span>
                                         {% endif %}
                                     </td>
+                                    
                                     
                                     <td>{% if product.is_available %}
                                         <div>
@@ -167,6 +174,16 @@
                                   <option value="{{ c.id }}">{{ c.name}}</option>
                                   {% endfor %}
                               </select>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3cg">Offer</label>
+                                <select class="form-select" name="offer">
+                                    <option value="">No offer</option>
+                                    
+                                    {% for c in offer %}
+                                    <option value="{{c.id}}">{{c.offer_name}}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="form-outline mb-4">
                                 <label class="form-label">Available Sizes</label>
@@ -263,6 +280,26 @@
                                   <option value="{{ c.id }}" {% if c.id == product.category.id %}selected{% endif %}>{{ c.name }}</option>
                                   {% endfor %}
                               </select>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form3Example3cg">offer</label>
+                                <select class="form-select" name="offer">
+                                    {% if product.offer %}
+                                    {% for c in offer %}
+                                        {% if c.offer_name == product.offer.offer_name %}
+                                            <option value="{{ c.id }}" selected>{{ c.offer_name }}</option>    
+                                        {% else %}
+                                            <option value="{{ c.id }}">{{ c.offer_name }}</option>
+                                            <option value="">No offer</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% else %}
+                                    <option value="">No offer</option>
+                                    {% for c in offer %}
+                                    <option value="{{ c.id }}">{{ c.offer_name }}</option>
+                                    {% endfor %}
+                                    {% endif %}
+                                </select>
                             </div>
                             <div class="form-outline mb-4">
                                 <label class="form-label">Available Sizes</label>

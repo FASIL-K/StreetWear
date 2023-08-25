@@ -1,6 +1,7 @@
 {% extends 'user/home/base.html' %}
 {% block title %}HOME{% endblock title %}
 {% block body %}
+{% load mathfilters %}
 {% load static %}
 <main class="main">
     <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
@@ -72,9 +73,18 @@
                                     
                                 </div><!-- End .product-cat -->
                                 <h3 class="product-title"><a href="product.html">{{product.product_name}}</a></h3><!-- End .product-title -->
+                                {% if product.offer %}
                                 <div class="product-price">
-                                    ₹{{product.product_price}}
+                                    <del style="color: brown;">₹${{product.product_price }} </del>  <span style="color:white;">--</span> <span style="color: black;">₹ {{ product.get_offer }}</span>
                                 </div><!-- End .product-price -->
+                                {% else %}
+                                <div class="product-price" >
+                                    <span style="color: black;">₹{{product.product_price}}</span>
+                                </div><!-- End .product-price -->
+                                {% endif %}
+                                {% comment %} <div class="product-price">
+                                    ₹{{product.product_price}}
+                                </div><!-- End .product-price --> {% endcomment %}
                                 <div class="ratings-container">
                                     <div class="ratings">
                                         <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->

@@ -1,5 +1,6 @@
 {% extends 'user/home/base.html' %}
 {% block title %}HOME{% endblock title %}
+{% load mathfilters %}
 {% block body %}
 {% load static %}
 
@@ -87,10 +88,19 @@
                             </div><!-- End .ratings -->
                             <a class="ratings-text" href="#product-review-link" id="review-link">( 2 Reviews )</a>
                         </div><!-- End .rating-container --> {% endcomment %}
-
-                        <div class="product-price">
+                                {% if product.offer  %} 
+                                    <div class="product-price">
+                                    <del style="color: brown;">₹{{  product.product_price }} </del>  <span style="color:rgb(255, 255, 255);">--</span><span style="color:rgb(0, 0, 0);" >₹ {{ product.get_offer }}</span>
+                                   
+                                </div><!-- End .product-price -->
+                                {% else %}
+                                <div class="product-price">
+                                    ₹{{product.product_price}}
+                                </div><!-- End .product-price -->
+                                {% endif %}
+                        {% comment %} <div class="product-price">
                             ₹ {{product.product_price}}
-                        </div><!-- End .product-price -->
+                        </div><!-- End .product-price --> {% endcomment %}
 
                         <div class="product-content">
                             <p>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing. Sed lectus. </p>

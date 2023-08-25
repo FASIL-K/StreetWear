@@ -8,6 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 import os
 from django.conf import settings
 from django.http import JsonResponse
+from offer.models import Offer
 
 # Create your views here.
 @staff_member_required(login_url='admin_login')
@@ -22,6 +23,7 @@ def product_management(request):
         'category' : Category.objects.all(),
         'brand' : Brand.objects.all(),
         'available_sizes': available_sizes,
+        'offer' : Offer.objects.filter(is_available=True).order_by('id')
 
     }
     return render (request,'adminside/product/product_management.html',context)
@@ -58,6 +60,7 @@ def add_product(request):
         description = request.POST['product_description']
         stock = request.POST['stock']
         category_id = request.POST['category']
+        offer_id = request.POST.get('offer')
 
         if Product.objects.filter(product_name=name).exists():
             messages.error(request,'Product name already exists')
@@ -68,6 +71,10 @@ def add_product(request):
         if Product.objects.filter(product_name=name).exists():
             messages.error(request, 'Product name already exists')
             return redirect('product_management')
+        if offer_id == '':
+            offer_obj=None
+        else:    
+            offer_obj = Offer.objects.get(id=offer_id)
 
         try:
             is_availables = request.POST.get('checkbox', False)
@@ -86,7 +93,8 @@ def add_product(request):
             product_name=name,
             product_price=price,
             brand=brandid,
-            category=categoryid,
+            category=categoryid,            
+            offer=offer_obj,
             stock=stock,
             product_description=description,
             is_available=is_availables,
@@ -111,6 +119,7 @@ def add_product(request):
         'available_sizes': available_sizes,
         'category': Category.objects.all(),
         'brand': Brand.objects.all(),
+        'offer':Offer.objects.filter(is_availables=True).order_by('id'),
     }
 
     return render(request, 'adminside/product/product_management.html', context)
@@ -151,6 +160,7 @@ def edit_product(request, editproduct_id):
         pprice = request.POST.get('product_price')
         pdescription = request.POST.get('product_description')
         brandname = request.POST.get('brand')
+        offer_id = request.POST.get('offer')
         stock = request.POST.get('stock')
         category_id = request.POST.get('category')
         is_availables = request.POST.get('checkbox', False) == 'on'
@@ -158,6 +168,11 @@ def edit_product(request, editproduct_id):
         replace_image(product, 'image1', request.FILES.get('image1'), request.POST.get('delete_image1') == 'on')
         replace_image(product, 'image2', request.FILES.get('image2'), request.POST.get('delete_image2') == 'on')
         replace_image(product, 'image3', request.FILES.get('image3'), request.POST.get('delete_image3') == 'on')
+
+        if offer_id =='':
+            offer_obj =None
+        else:
+            offer_obj = Offer.objects.get(id=offer_id)   
 
         product.product_name = pname
         product.product_price = pprice
@@ -171,6 +186,8 @@ def edit_product(request, editproduct_id):
 
         product.brand = brand_obj
         product.category = category_obj
+        product.offer=offer_obj
+
 
         product.save()
 

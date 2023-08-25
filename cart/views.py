@@ -22,6 +22,9 @@ def cart(request):
         user = get_or_create_anonymous_user()
 
     cart = Cart.objects.filter(user_id=user.id).order_by('id')
+    total_price=0
+    
+    grand_total=0
     
     # Fetch size names based on the IDs in the cart items
     for item in cart:
@@ -29,8 +32,27 @@ def cart(request):
             item.selected_size = Size.objects.get(id=item.selected_size).name
         except Size.DoesNotExist:
             item.selected_size = "Unknown Size"  # Handle the case where the size ID does not exist in the Size model
+
+        product_price = item.product.product_price
+        product_offer = item.product.offer
         
-    total_price = sum(item.product.product_price * item.product_qty for item in cart)
+        if product_offer is None:
+            total_price += product_price * item.product_qty
+            a=product_price * item.product_qty
+        else:
+            if product_offer:
+                max_discount = product_offer.discount_amount
+
+            discount = (max_discount / 100) * product_price
+           
+            discounted_price = product_price - discount
+
+            total_price += discounted_price * item.product_qty
+         
+            a=discounted_price * item.product_qty
+
+
+    # total_price = sum(item.product.product_price * item.product_qty for item in cart)
     grand_total = total_price 
 
     context = {
@@ -95,15 +117,28 @@ def update_cart(request):
                 cart.save()
 
                 carts = Cart.objects.filter(user=request.user).order_by('id')
-                total_price = sum(item.product.product_price * item.product_qty for item in carts)
+                total_price =0 
+                for item in carts:
+                    product_price = item.product.product_price
+                    product_offer = item.product.offer
+
+                    if product_offer is None:
+                        total_price += product_price * item.product_qty
+                    else:
+                        if product_offer:
+                            max_discount = product_offer.discount_amount
+                    discount = (max_discount / 100) * product_price
+           
+                    discounted_price = product_price - discount
+
+                    total_price += discounted_price * item.product_qty
+
                 
-                tax = total_price * 0.18
-                grand_total = total_price + tax
+                grand_total = total_price
 
                 return JsonResponse({
                     'status': 'Updated successfully',
                     'sub_total': total_price,
-                    'tax': tax,
                     'grand_total': grand_total,
                     'product_price': cart.product.product_price,
                     'quantity': prod_qty
