@@ -80,7 +80,7 @@
 
                 <div class="col-md-6">
                     <div class="product-details">
-                        <h1 class="product-title"> {{product.product_name}} </h1><!-- End .product-title -->
+                        <h1 class="product-title"> {{product.product_name}} <br> {% if product.offer  %} <span style="color: red; font-size:x-large;">{{product.offer.discount_amount}}% Offer</span> {% else %} {% endif %}</h1><!-- End .product-title -->
 
                         {% comment %} <div class="ratings-container">
                             <div class="ratings">
@@ -90,7 +90,7 @@
                         </div><!-- End .rating-container --> {% endcomment %}
                                 {% if product.offer  %} 
                                     <div class="product-price">
-                                    <del style="color: brown;">₹{{  product.product_price }} </del>  <span style="color:rgb(255, 255, 255);">--</span><span style="color:rgb(0, 0, 0);" >₹ {{ product.get_offer }}</span>
+                                    <del style="color: brown;">₹{{  product.product_price }} </del>  <span style="color:rgb(255, 255, 255);">--</span><span style="color:rgb(0, 0, 0);" >₹ {{ product.get_offer }}  </span>
                                    
                                 </div><!-- End .product-price -->
                                 {% else %}
@@ -407,7 +407,7 @@
 <script>
     $('.addToCartBtn').click(function (e) {
         e.preventDefault();
-
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         var prod_id = $(this).closest('.product_data').find('.prod_id').val();
         var product_qty = $(this).closest('.product_data').find('.qty-input').val();
         var selected_size = $(this).closest('.product_data').find('#size').val(); // Get the selected size value

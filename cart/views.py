@@ -1,27 +1,53 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404, redirect, render
 from cart.models import Cart
-from products.models import Product,Size
+from products.models import Product,Size,Variation
 from django.http.response import JsonResponse
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
 
 # Create your views here.
 
-def get_or_create_anonymous_user():
-    anonymous_user, created = User.objects.get_or_create(username='anonymous_user')
-    return anonymous_user
+def _get_or_create_cart(request):
+    cart_id = request.session.get('cart_id')
+    if not cart_id:
+        cart_id = request.session.create()
+
+        request.session['cart_id'] = cart_id
+    return cart_id
+
+def create_guest_cart_items(session_cart_items):
+    cart_items = []
+
+    for cart_item in session_cart_items:
+        product = Product.objects.get(id=cart_item['prod_id'])
+        cart_item_instance = Cart(
+            product=product,
+            product_qty=cart_item['prod_qty'],
+            selected_size=cart_item['selected_size'],
+        )
+        cart_items.append(cart_item_instance)
+
+    return cart_items
+
+
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def cart(request):
     if request.user.is_authenticated:
         user = request.user
+        cart = Cart.objects.filter(user_id=user.id).order_by('id')
     else:
-        user = get_or_create_anonymous_user()
+        cart_id = request.session.get('session_key')
+        if cart_id:
+            cart_items = request.session.get('cart_items', [])
 
-    cart = Cart.objects.filter(user_id=user.id).order_by('id')
+            cart = create_guest_cart_items(cart_items)
+        else:
+            cart = []
     total_price=0
     
     grand_total=0
@@ -62,38 +88,57 @@ def cart(request):
     }
     return render(request, 'user/cart/cart.html', context)
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def addtocart(request):
     if request.method == 'POST':
+        session_key = request.session.session_key
         prod_id = int(request.POST.get('prod_id'))
         product_check = Product.objects.get(id=prod_id)
-            
-        if product_check:
-            prod_qty = int(request.POST.get('product_qty'))
-            selected_size = int(request.POST.get('size'))  # Get the selected size from the POST data
+        prod_qty = int(request.POST.get('product_qty'))
+        selected_size = int(request.POST.get('size'))
 
+        if product_check:
             if request.user.is_authenticated:
                 user = request.user
-            else:
-                user = get_or_create_anonymous_user()
+                cart_item = Cart.objects.filter(user_id=user.id, product_id=prod_id, selected_size=selected_size).first()
 
-            # Check if the same product with the same size already exists in the cart
-            cart_item = Cart.objects.filter(user_id=user.id, product_id=prod_id, selected_size=selected_size).first()
-
-            if cart_item:
-                return JsonResponse({'status': "Product Already in Cart"})
-            else:
-                # If the product with the selected size is not in the cart, create a new cart item
-                if product_check.stock >= prod_qty:
-                    Cart.objects.create(
-                        user_id=user.id,
-                        product_id=prod_id,
-                        product_qty=prod_qty,
-                        selected_size=selected_size,
-                    )
-                    return JsonResponse({'status': "Product added successfully"})
+                if cart_item:
+                    return JsonResponse({'status': "Product Already in Cart"})
                 else:
-                    return JsonResponse({'status': "Only " + str(product_check.stock) + " quantity available"})
+                    # Add the product to the authenticated user's cart
+                    if product_check.stock >= prod_qty:
+                        Cart.objects.create(
+                            user_id=user.id,
+                            product_id=prod_id,
+                            product_qty=prod_qty,
+                            selected_size=selected_size,
+                        )
+                        return JsonResponse({'status': "Product added successfully"})
+                    else:
+                        return JsonResponse({'status': "Only " + str(product_check.stock) + " quantity available"})
+            else:
+                session_key = request.session.session_key
+                if not session_key:
+                    request.session.create()
+                    session_key = request.session.session_key
+                    print("Session created:", session_key)
+                cart_items = request.session.get('cart_items', [])
+                existing_item = next((item for item in cart_items if item['prod_id'] == prod_id and item['selected_size'] == selected_size), None)
+
+                if existing_item:
+                    return JsonResponse({'status': "Product Already in Cart"})
+                else:
+                    cart_item = {
+                        'prod_id': prod_id,
+                        'prod_qty': prod_qty,
+                        'selected_size': selected_size,
+                    }
+                    cart_items.append(cart_item)
+                    request.session['cart_items'] = cart_items
+                    request.session.save()
+                    
+
+                    
+                    return JsonResponse({'status': "Product added successfully"})
         else:
             return JsonResponse({'status': "No such product found"})
 
@@ -105,11 +150,13 @@ def update_cart(request):
         product_id = request.POST.get('product_id')
         selected_size = request.POST.get('selected_size')
         cart_id = request.POST.get('cart_id')
+        max_discount=0
         
         
         if (Cart.objects.get(id=cart_id)):
 
             prod_qty = request.POST.get('product_qty')
+            print(prod_qty,'faxoo')
             cart = Cart.objects.get(id=cart_id)
             cartes = cart.product.stock
             if int(cartes) >= int(prod_qty):

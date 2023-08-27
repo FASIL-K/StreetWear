@@ -56,4 +56,12 @@ class Product(models.Model):
             # If neither product nor brand has an offer, return the original price
             return self.product_price
     
-    
+class Variation(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    variation_category = models.CharField(max_length=100)
+    variation_value = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    created_date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.variation_value
