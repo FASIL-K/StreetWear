@@ -265,62 +265,6 @@
 </script>
 
 
-{% comment %} <script>
-    $(document).ready(function () {
-        // Listen for changes in the size dropdown
-        $('.select-size').on('change', function () {
-            var selectedSize = $(this).val();
-            var product_id = $(this).data('productid');
-            var selectedSizeSpan = $('span[data-productid="' + product_id + '"]');
-            selectedSizeSpan.text(selectedSize); // Update the <span> element with the selected size
-        });
-
-        // Rest of your existing JavaScript code...
-    });
-</script> {% endcomment %}
-{% comment %} <script>
-    function changeQuantity(product_id, newQty) {
-        var data = {
-            'product_id': product_id,
-            'product_qty': newQty,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        };
-
-        $.post("{% url 'update_cart' %}", data)
-            .done(function (response) {
-                if (response.status === 'Not allowed this Quantity') {
-                    swal("Error!", response.status, "error");
-                } else {
-                    // Update the cart prices and totals here
-                    var subTotal = parseFloat(response.sub_total).toFixed(2);
-                    var tax = parseFloat(response.tax).toFixed(2);
-                    var grandTotal = parseFloat(response.grand_total).toFixed(2);
-
-                    document.getElementById('sub_total').textContent = subTotal;
-                    document.getElementById('tax').textContent = tax;
-                    document.getElementById('grand_total').textContent = grandTotal;
-                    document.getElementById('single_product_total' + product_id).textContent = parseFloat(response.product_price * response.quantity).toFixed(2);
-                }
-            })
-            .fail(function () {
-                swal("Error!", "Something went wrong, please try again later.", "error");
-            });
-    }
-</script>
-<script>
-    $('.btn-num-product-down').on('click', function(){
-        var numProduct = Number($(this).next().val());
-        if(numProduct > 1) $(this).next().val(numProduct - 1);
-    });
-
-    $('.btn-num-product-up').on('click', function(){
-        var numProduct = Number($(this).prev().val());
-        $(this).prev().val(numProduct + 1);
-    });
-    
-      
-</script> {% endcomment %}
-
 <script>
     $(document).ready(function() {
         $(document).on('change', '.select-size', function(e) {

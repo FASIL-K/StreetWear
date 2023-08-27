@@ -31,10 +31,21 @@ def checkout(request):
     cartitems = Cart.objects.filter(user= request.user)
     total_price = 0
     grand_total = 0
+    max_discount = 0
     for item in cartitems:
-        total_price = total_price + item.product.product_price * item.product_qty
-        
-        grand_total = total_price 
+        product_price = item.product.product_price
+        product_offer = item.product.offer
+
+        if product_offer is None:
+            total_price += product_price * item.product_qty
+        else:
+            if product_offer:
+                max_discount = product_offer.discount_amount
+                    
+                discount = (max_discount / 100) * product_price
+                discounted_price = product_price - discount
+
+                total_price += discounted_price * item.product_qty
 
         
     coupons = Coupon.objects.filter(is_active=True)
@@ -69,6 +80,7 @@ def checkout(request):
 @login_required(login_url='signin')
 def placeorder(request):
     if request.method == 'POST':
+        max_discount = 0
         neworder = Order()
         neworder.user = request.user
         address_id = request.POST.get('address')
@@ -87,8 +99,19 @@ def placeorder(request):
         cart = Cart.objects.filter(user=request.user)
         cart_total_price = 0
         
+        
         for item in cart:
-            cart_total_price += item.product.product_price * item.product_qty
+            product_price = item.product.product_price
+            product_offer = item.product.offer
+            if product_offer is None:
+                cart_total_price += product_price * item.product_qty
+            else:
+                if product_offer:
+                    max_discount = product_offer.discount_amount
+            
+                    discount = (max_discount / 100) * product_price
+                    discounted_price = product_price - discount
+                    cart_total_price += discounted_price * item.product_qty
 
         neworder.total_price = cart_total_price
         payment_mode = request.POST.get('payment_method')
@@ -125,6 +148,7 @@ def placeorder(request):
 
         neworder.save()
 
+
         
         
 
@@ -144,7 +168,7 @@ def placeorder(request):
             prod.stock = prod.stock - item.product_qty
             prod.save()
             Cart.objects.filter(user=request.user).delete()
-        generate_invoice_pdf(request,neworder.id)
+        
         payment_mode = request.POST.get('payment_method')
         if payment_mode == 'wallet':
             Cart.objects.filter(user=request.user).delete()
@@ -160,6 +184,8 @@ def placeorder(request):
     
 
         # Cart.objects.filter(user=request.user).delete()
+    generate_invoice_pdf(request,neworder.id)
+
     return redirect('checkout')
 
 

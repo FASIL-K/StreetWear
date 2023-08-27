@@ -26,28 +26,37 @@ def shop(request):
     sort = request.GET.get('sort')
     pricerange = request.GET.get('pricerange')
     if category:
-         product =Product.objects.filter(is_available = True,category=category)
+        product =Product.objects.filter(is_available = True,category=category)
+        paginator = Paginator(product,2)
+
     elif brand:
         product =Product.objects.filter(is_available = True,brand=brand)
+        paginator = Paginator(product,2)
     elif size:
         product =Product.objects.filter(is_available = True,sizes=size)
+        paginator = Paginator(product,2)
     elif sort == 'atoz':
         product =Product.objects.filter(is_available = True).order_by('product_name')
+        paginator = Paginator(product,2)
     elif sort=='ztoa':
         product =Product.objects.filter(is_available = True).order_by('-product_name')
+        paginator = Paginator(product,2)
     elif sort=='ltoh':
         product =Product.objects.filter(is_available = True).order_by('product_price')
+        paginator = Paginator(product,2)
     elif sort=='htol':
         product =Product.objects.filter(is_available = True).order_by('-product_price')
+        paginator = Paginator(product,2)
+
     elif pricerange:
         price_ranges = price_range.objects.get(id=pricerange)
         product = Product.objects.filter(is_available=True, product_price__gte=price_ranges.low,product_price__lte=price_ranges.high)
-        
+        paginator = Paginator(product,2)  
     else:
         product =Product.objects.filter(is_available = True)
         paginator = Paginator(product,2)
-        page = request.GET.get('page')
-        paged_products = paginator.get_page(page)
+    page = request.GET.get('page')
+    paged_products = paginator.get_page(page)
 
 
 
