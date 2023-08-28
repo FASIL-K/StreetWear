@@ -175,7 +175,7 @@
                                     </td>
                                     {% endwith %}
                                     <td class="cart__close">
-                                        <a class="text-danger"   href="{% url 'deletecartitem' cart_item.id%}" >Remove</a>
+                                        {% comment %} <a class="text-danger"   href="{% url 'deletecartitem' cart_item.id%}" >Remove</a> {% endcomment %}
                                     </td>
                                 </tr>
                                 {% endfor %}

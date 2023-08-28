@@ -32,7 +32,11 @@ def create_guest_cart_items(session_cart_items):
         cart_items.append(cart_item_instance)
 
     return cart_items
-
+    
+def get_guest_cart(request, session_key):
+    cart_items = request.session.get('cart_items', [])
+    cart = create_guest_cart_items(cart_items)
+    return cart
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -41,11 +45,9 @@ def cart(request):
         user = request.user
         cart = Cart.objects.filter(user_id=user.id).order_by('id')
     else:
-        cart_id = request.session.get('session_key')
-        if cart_id:
-            cart_items = request.session.get('cart_items', [])
-
-            cart = create_guest_cart_items(cart_items)
+        session_key = request.session.session_key
+        if session_key:
+            cart = get_guest_cart(request, session_key)
         else:
             cart = []
     total_price=0
