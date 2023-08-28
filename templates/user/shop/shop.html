@@ -3,7 +3,12 @@
 {% block body %}
 {% load mathfilters %}
 {% load static %}
-<main class="main">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+
+<main class="main " >
     <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
         <div class="container-fluid">
             <h1 class="page-title">SHOP</h1>
@@ -47,7 +52,7 @@
                 <div class="row">
                     {% for product in products %}
                     <div class="col-6 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-                        <div class="product">
+                        <div class="product product_data">
                             <figure class="product-media">
                                 <span class="product-label label-new">New</span>
                                 <a href="{% url 'product_detalis' product.id %}">
@@ -59,11 +64,15 @@
                                 </a>
 
                                 <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{product.id}}"class="prod_id" >
+                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable addToWishlist"><span>add to wishlist</span></a>
                                 </div><!-- End .product-action -->
 
                                 <div class="product-action action-icon-top">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <input type="hidden" value="{{product.id}}" class="prod_id" data-productid="product.id" >
+
+                                    <a href="#" class="btn-product btn-cart addToCartBtn"><span>{% if product.stock > 0  %}add to cart{% else %}Out of stok{% endif %}</span></a>
                                     
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
@@ -257,4 +266,79 @@
         </div><!-- End .container-fluid -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/elevatezoom.js"></script>
+<script>
+    $('.addToCartBtn').click(function (e) {
+        e.preventDefault();
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        var prod_id = $(this).closest('.product_data').find('.prod_id').val();
+        var product_qty = 1;
+        var selected_size =2; // Get the selected size value
+        console.log(prod_id,'fazzzzzzzzzzzzz')
+        $.ajax({
+            method: "POST",
+            url: "{% url 'addtocart' %}",
+            data: {
+                'product_qty': product_qty,
+                'prod_id': prod_id,
+                'size': selected_size, // Include the selected size in the data
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (response) {
+                console.log(response);
+
+                switch (response.status) {
+                    case 'Product already in Cart':
+                    case 'No such product found':
+                    case 'Only few quantity available':
+                        alertify.error(response.status);
+                        break;
+                    case 'Product added successfully':
+                        // Show a success notification without redirecting
+                        alertify.success(response.status);
+                        break;
+                    default:
+                        alertify.error('Product Already in Cart.');
+                        break;
+                }
+            },
+            error: function (xhr, status, error) {
+                alertify.error('An error occurred while processing the request. Please try again later.');
+                console.log(xhr.responseText);
+            }
+        });
+    });
+</script>
+
+<script>
+    $('.addToWishlist').click(function (e) {
+        e.preventDefault();
+        var prod_id = $(this).closest('.product_data').find('.prod_id').val();
+        console.log(prod_id, 'daxooooooooooo')
+  
+        $.ajax({
+          method: "POST",
+          url: "{% url 'add_wishlist' %}",
+          data: {
+            'prod_id': prod_id,
+            csrfmiddlewaretoken: '{{csrf_token}}'
+          },
+          success: function (response) {
+            console.log(response);
+            if (response.status === 'Product already in wishlist' || response.status === 'No such product' || response.status === 'Login to continue') {
+              alertify.error(response.status);
+              $('.cartdata').load(location.href + " .cartdata");
+            } else if (response.status === 'Product Added to in wishlist') {
+              alertify.success(response.status);
+              $('.cartdata').load(location.href + " .cartdata");
+            } else {
+              alertify.error(response.status);
+              $('.cartdata').load(location.href + " .cartdata");
+            }
+          }
+        });
+    });
+</script>
 {% endblock body %}
+

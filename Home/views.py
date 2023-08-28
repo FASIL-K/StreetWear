@@ -5,6 +5,8 @@ from banner.models import *
 from social_core.backends.google import GoogleOAuth2
 from cart.views import transfer_guest_cart_to_authenticated_user
 from django.contrib.auth import get_user_model
+from social_django.models import UserSocialAuth
+from django.contrib.auth import login
 
 
 # Create your views here.
@@ -25,11 +27,17 @@ def custom_login(request):
     user = request.user  # Get the authenticated user
     print(user,'google auth')
     if user.is_authenticated:
-        transfer_guest_cart_to_authenticated_user(request, user)
-        return redirect('home')  # Redirect to the home page after successful login
-    else:
-        # Handle case where user is not authenticated (optional)
-        # For example, redirect them to the login page
-        return redirect('login')
+        try:
+            social_auth = user.social_auth.get(provider='google-oauth2')
+            print("User has Google OAuth authentication")
 
+        except UserSocialAuth.DoesNotExist:
+            social_auth = None
+        
+        if social_auth:
+            transfer_guest_cart_to_authenticated_user(request, user)
+            login(request, user)
+            return redirect('home')
+    else:
+        return redirect('signin')
 

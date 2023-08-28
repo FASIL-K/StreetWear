@@ -20,6 +20,7 @@ from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import login
 from cart.views import transfer_guest_cart_to_authenticated_user
 from cart.models import Cart
+from social_django.models import UserSocialAuth
 
 
 # Create your views here.
@@ -27,25 +28,37 @@ from cart.models import Cart
 ## this for google login 
 User = get_user_model()  # Get the user model
 
-
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def signin(request):
     if request.user.is_authenticated:
+        print("User is authenticated:", request.user.username)
+
         return redirect('home')
     
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-        if username and password:
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                # Check if the user is a guest before transferring cart items
-                transfer_guest_cart_to_authenticated_user(request, user)
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return redirect('home')
-            else:
-                messages.error(request, 'Invalid username or password')
-                return render(request, 'user/accounts/registration.html')
+        user = authenticate(username=username, password=password)
+        
+        if user is not None:
+            transfer_guest_cart_to_authenticated_user(request, user)
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid username or password')
+    
+    user = request.user
+    if user.is_authenticated:
+        try:
+            social_auth = user.social_auth.get(provider='google-oauth2')
+
+        except UserSocialAuth.DoesNotExist:
+            social_auth = None
+        
+        if social_auth:
+            transfer_guest_cart_to_authenticated_user(request, user)
+            login(request, user)
+            return redirect('home')
 
     return render(request, 'user/accounts/registration.html')
 
