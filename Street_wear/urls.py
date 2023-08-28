@@ -21,6 +21,8 @@ from django .conf import settings
 from django.contrib.auth import views as auth_views
 from account import views
 from Home import views
+from Home import views as home_views  # Import the home view
+
 
 
 urlpatterns = [
@@ -41,11 +43,9 @@ urlpatterns = [
     path('',include('offer.urls')),
 
 
-    path('login/',views.custom_login, name='custom_login'),
-    path('logout/',auth_views.LogoutView.as_view(),name='logut'),
-    # path('social-auth/',include('social_django.urls'), namespace='social'),
-    # Corrected line without the namespace argument
+    path('login/', views.custom_login, name='custom_login'),  # Custom login view
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('social-auth/', include('social_django.urls', namespace='social')),
-    path("", views.home, name='home'),
-] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+    path('', home_views.home, name='home'),  # Home view
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

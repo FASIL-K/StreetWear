@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth import authenticate,login,logout,get_user_model
 from django.views.decorators.cache import cache_control
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
@@ -18,12 +18,14 @@ from django.core.exceptions import ValidationError
 from social_core.backends.google import GoogleOAuth2
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import login
-
+from cart.views import transfer_guest_cart_to_authenticated_user
+from cart.models import Cart
 
 
 # Create your views here.
 
 ## this for google login 
+User = get_user_model()  # Get the user model
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -37,7 +39,8 @@ def signin(request):
         if username and password:
             user = authenticate(username=username, password=password)
             if user is not None:
-                # Explicitly specify the authentication backend when calling login
+                # Check if the user is a guest before transferring cart items
+                transfer_guest_cart_to_authenticated_user(request, user)
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('home')
             else:
@@ -45,6 +48,9 @@ def signin(request):
                 return render(request, 'user/accounts/registration.html')
 
     return render(request, 'user/accounts/registration.html')
+
+from cart.models import Cart
+
 
 
 def validateEmail(email):

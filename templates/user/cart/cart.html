@@ -145,6 +145,8 @@
                                         {% endif %}
                                     </td>
                                     <td class="size-col">
+                                        {% if user.is_authenticated %}
+
                                         <div class="details-filter-row details-row-size">
                                             <label for="size">Size:</label>
                                             <div class="select-custom">
@@ -156,26 +158,44 @@
                                                 
                                             </div><!-- End .select-custom -->
                                         </div><!-- End .details-filter-row -->
+                                        {% endif %}
                                     </td>
                                     <td id='changesizename{{cart_item.id}}'>{{cart_item.selected_size}}</td>
                                     <td class="quantity-col">
+                                        {% if user.is_authenticated %}
+
                                         <div class="wrap-num-product">
-                                            <div class="btn-num-product-down changeQuantity" data-productid="{{cart_item.product.id}}" data-cart_id="{{cart_item.id}}" data-price="{{cart_item.product.product_price}}">
+                                            <div class="btn-num-product-down changeQuantity" data-productid="{{ cart_item.product.id }}" data-cart_id="{{ cart_item.id }}" data-guestcartid="{{ guest_cart_identifier }}" data-price="{{ cart_item.product.product_price }}">
                                                 <i class="fa fa-minus"></i>
                                             </div>
-                                            <input readonly class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="{{cart_item.product_qty}}" data-productid="{{cart_item.product.id}}" data-size="{{cart_item.selected_size}}">
-                                            <div class="btn-num-product-up changeQuantity" data-productid="{{cart_item.product.id}}" data-cart_id="{{cart_item.id}}" data-price="{{cart_item.product.product_price}}">
+                                            <input readonly class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="{{ cart_item.product_qty }}" data-productid="{{ cart_item.product.id }}" data-size="{{ cart_item.selected_size }}">
+                                            <div class="btn-num-product-up changeQuantity" data-productid="{{ cart_item.product.id }}" data-cart_id="{{ cart_item.id }}" data-guestcartid="{{ guest_cart_identifier }}" data-price="{{ cart_item.product.product_price }}">
                                                 <i class="fa fa-plus"></i>
                                             </div>
                                         </div>
+                                        {% else %}
+                                        <div style="display: flex; align-items: center; justify-content: center;">1</div>
+
+                                        {% endif %}
                                     </td>
+                                    
                                     {% with counter=forloop.counter %}
                                     <td class="column-5 cart__price total">
                                         <span class="changeQuantity" id="single_product_total{{cart_item.product.id}}{{cart_item.selected_size}}">₹{{ cart_item.product.get_offer | mul:cart_item.product_qty  | floatformat:2 }}</span>
                                     </td>
                                     {% endwith %}
+                                    
                                     <td class="cart__close">
-                                        {% comment %} <a class="text-danger"   href="{% url 'deletecartitem' cart_item.id%}" >Remove</a> {% endcomment %}
+                                        {% if user.is_authenticated %}
+
+                                        <a class="text-danger" href="{% url 'deletecartitem' cart_item.id %}">Remove</a>
+                                        {% else %}
+                                        {% for guest_item in guest_cart_items %}
+                                            <!-- Display guest user cart item details here -->
+                                            <a class="text-danger" href="{% url 'remove_guest_cart_item' prod_id=item.prod_id selected_size=item.selected_size %}">Remove</a>
+                                            {% endfor %}
+                                        {% endif %}
+
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -309,8 +329,12 @@
             e.preventDefault();
             var product_id = $(this).data('productid');
             var cart_id = $(this).data('cart_id');
+            var guest_cart_id = $(this).data('guestcartid'); // Retrieve guest cart identifier
             var selected_size = $(this).siblings('input').data('size');
             var product_qty = $(this).siblings('input').val();
+            console.log(cart_id,'faxooooo')
+            console.log(guest_cart_id ,'faxooooo')
+
         
 
             $.ajax({
@@ -319,6 +343,7 @@
                 data: {
                     'product_id': product_id,
                     'cart_id':cart_id,
+                    'guest_cart_id': guest_cart_id, // Pass guest cart identifier
                     'product_qty': product_qty,
                     'selected_size': selected_size,
                     csrfmiddlewaretoken: '{{csrf_token}}'

@@ -145,28 +145,32 @@ def addtocart(request):
             return JsonResponse({'status': "No such product found"})
 
 # Update cart quantity
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
-@login_required(login_url='signin')
 def update_cart(request):
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
         selected_size = request.POST.get('selected_size')
         cart_id = request.POST.get('cart_id')
-        max_discount=0
-        
-        
-        if (Cart.objects.get(id=cart_id)):
+        print(cart_id,'cart_id---------------')
+        max_discount = 0
 
-            prod_qty = request.POST.get('product_qty')
-            print(prod_qty,'faxoo')
+        try:
             cart = Cart.objects.get(id=cart_id)
-            cartes = cart.product.stock
-            if int(cartes) >= int(prod_qty):
-                cart.product_qty = prod_qty
-                cart.save()
+        except Cart.DoesNotExist:
+            return JsonResponse({'status': 'Cart item not found'}, status=404)
 
-                carts = Cart.objects.filter(user=request.user).order_by('id')
-                total_price =0 
+        prod_qty = request.POST.get('product_qty')
+        cartes = cart.product.stock
+
+        if int(cartes) >= int(prod_qty):
+            cart.product_qty = prod_qty
+            cart.save()
+
+            # Calculate total price for both guest and authenticated users
+            user = request.user
+            total_price = 0
+
+            if user.is_authenticated:
+                carts = Cart.objects.filter(user=user).order_by('id')
                 for item in carts:
                     product_price = item.product.product_price
                     product_offer = item.product.offer
@@ -176,34 +180,63 @@ def update_cart(request):
                     else:
                         if product_offer:
                             max_discount = product_offer.discount_amount
-                    discount = (max_discount / 100) * product_price
-           
-                    discounted_price = product_price - discount
 
-                    total_price += discounted_price * item.product_qty
+                        discount = (max_discount / 100) * product_price
+                        discounted_price = product_price - discount
 
-                
-                grand_total = total_price
-
-                return JsonResponse({
-                    'status': 'Updated successfully',
-                    'sub_total': total_price,
-                    'grand_total': grand_total,
-                    'product_price': cart.product.product_price,
-                    'quantity': prod_qty
-                })
+                        total_price += discounted_price * item.product_qty
             else:
-                return JsonResponse({'status': 'Not allowed this Quantity'})
+                session_key = request.session.session_key
+                if session_key:
+                    carts = get_guest_cart(request, session_key)
+                    for item in carts:
+                        product_price = item.product.product_price
+                        total_price += product_price * item.product_qty
+
+            grand_total = total_price
+
+            return JsonResponse({
+                'status': 'Updated successfully',
+                'sub_total': total_price,
+                'grand_total': grand_total,
+                'product_price': cart.product.product_price,
+                'quantity': prod_qty
+            })
+        else:
+            return JsonResponse({'status': 'Not allowed this Quantity'})
+
     return HttpResponse('Something went wrong, reload page')
 
+def transfer_guest_cart_to_authenticated_user(request, user):
+    session_key = request.session.session_key
+    if session_key:
+        cart_items = request.session.get('cart_items', [])
+        
+        for cart_item in cart_items:
+            product_id = cart_item['prod_id']
+            product_qty = cart_item['prod_qty']
+            selected_size = cart_item['selected_size']
+            
+            # Create Cart instance for the authenticated user
+            Cart.objects.create(
+                user=user,
+                product_id=product_id,
+                product_qty=product_qty,
+                selected_size=selected_size,
+            )
+        
+        # Clear guest cart data from session
+        del request.session['cart_items']
+        request.session.save()
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 # @login_required(login_url='signin')
 def deletecartitem(request, id):
-    cart_id = request.POST.get(id)
     cart_items = Cart.objects.filter(id=id)
+    
     if cart_items.exists():
         cart_items.delete()
+    
     return redirect('cart')
 
 def update_cart_item_size(request):
