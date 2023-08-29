@@ -73,4 +73,4 @@ def shop(request):
         'pricerange':pricerange,
         'product_count':product_count,
     }
-    return render(request,'user\shop\shop.html',context)
+    return render(request,'user/shop/shop.html',context)
