@@ -18,7 +18,7 @@ def home(request):
         'products':products
 
     }
-    return render(request,'user\home\home.html',context)
+    return render(request,'user/home/home.html',context)
 
 # def custom_login(request):
 #     transfer_guest_cart_to_authenticated_user(request, user)
