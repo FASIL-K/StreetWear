@@ -118,9 +118,9 @@ WSGI_APPLICATION = 'Street_wear.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Streetwear',
-        'USER': 'postgres',
-        'PASSWORD': 'Fasil@123',
+        'NAME': config('dbname'),
+        'USER': config('dbuser'),
+        'PASSWORD': config('dbpass'),
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -194,13 +194,13 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.ERROR: 'danger',}
 
 #Manually added email configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'copyc195@gmail.com' 
-EMAIL_HOST_PASSWORD = 'bazbycgwmhkvgten'
-DEFAULT_FROM_EMAIL = 'fasilmlm10@gmail.com'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 
 
@@ -218,8 +218,8 @@ LOGOUT_REDIRECT_URL = 'home'
 
 
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '629191591850-a3esupqi858drpe9kkg5vvivamfndili.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET ='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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_BACKEND = 'social_core.backends.google.GoogleOAuth2'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']

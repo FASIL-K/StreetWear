@@ -12,8 +12,11 @@ from django.contrib.auth import login
 # Create your views here.
 def home(request):
     banner = Banner.objects.all()
+    products =Product.objects.all()
     context={
         'banners':banner,
+        'products':products
+
     }
     return render(request,'user\home\home.html',context)
 

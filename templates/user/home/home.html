@@ -2,7 +2,10 @@
 {% block title %}HOME{% endblock title %}
 {% block body %}
 {% load static %}
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
 <main class="main">
    
     <div class="intro-slider-container">
@@ -91,7 +94,6 @@
                 <a class="nav-link" id="products-top-link" data-toggle="tab" href="#products-top-tab" role="tab" aria-controls="products-top-tab" aria-selected="false">Top Rated</a>
             </li>
         </ul>
-
         <div class="tab-content tab-content-carousel">
             <div class="tab-pane p-0 fade show active" id="products-featured-tab" role="tabpanel" aria-labelledby="products-featured-link">
                 <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl" 
@@ -120,18 +122,29 @@
                             }
                         }
                     }'>
-                    <div class="product product-2">
+                    {% for product in products %}
+
+                    <div class="product product-2 product_data">
+                        
+
                         <figure class="product-media">
-                            <a href="product.html">
-                                <img src="{% static '/user/assets/images/demos/demo-8/products/product-1-1.jpg' %}" alt="Product image" class="product-image">
-                            </a>
+                            <a href="{% url 'product_detalis' product.id %}">
+                            {% if product.image1 %}
+                            <img src="{{product.image1.url}}" alt="Product image" class="product-image">
+                            {% else %}
+                            <img src=" {% static '/user/img/no-image-icon-15.png' %} " alt="Product image" class="product-image">
+                            {% endif %}
 
                             <div class="product-action-vertical">
-                                <a href="#" class="btn-product-icon btn-wishlist btn-expandable" title="Add to wishlist"><span>add to wishlist</span></a>
+                                {% csrf_token %}
+
+                                <a href="#" class="btn-product-icon btn-wishlist btn-expandable addToWishlist" title="Add to wishlist"><span>add to wishlist</span></a>
                             </div><!-- End .product-action -->
 
                             <div class="product-action ">
-                                <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                <input type="hidden" value="{{product.id}}" class="prod_id" data-productid="product.id" >
+
+                                <a href="#" class="btn-product btn-cart addToCartBtn"><span>{% if product.stock > 0  %}add to cart{% else %}Out of stok{% endif %}</span></a>
                             </div><!-- End .product-action -->
                         </figure><!-- End .product-media -->
 
@@ -139,19 +152,22 @@
                             <div class="product-cat">
                                 
                             </div><!-- End .product-cat -->
-                            <h3 class="product-title"><a href="product.html">NIKE</a></h3><!-- End .product-title -->
+                            <h3 class="product-title"><a href="product.html">{{product.product_name}}</a></h3><!-- End .product-title -->
                             <div class="product-price">
-                                $19.99
+                                ₹{{product.product_price}}
                             </div><!-- End .product-price -->
                             <div class="product-nav product-nav-thumbs">
                     
                             </div>
                         </div><!-- End .product-body -->
+
                     </div><!-- End .product -->
+                    {% endfor %}
 
                     
 
                 </div><!-- End .owl-carousel -->
+
             </div><!-- .End .tab-pane -->
             <div class="tab-pane p-0 fade" id="products-sale-tab" role="tabpanel" aria-labelledby="products-sale-link">
                 <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl" 
@@ -280,7 +296,7 @@
                 <h3 class="banner-title text-white">New League</h3><!-- End .banner-title -->
                 <p class="d-none d-lg-block text-white">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.<br>Donec odio. Quisque volutpat mattis eros. </p> 
 
-                <a href="category.html" class="btn btn-primary-white"><span>Shop Now</span><i class="icon-long-arrow-right"></i></a>
+                <a href="{% url 'shop' %}" class="btn btn-primary-white"><span>Shop Now</span><i class="icon-long-arrow-right"></i></a>
             </div><!-- End .banner-content -->
         </div><!-- End .banner -->
     </div>
@@ -291,7 +307,7 @@
 
     <div class="mb-5"></div><!-- End .mb-5 -->
         <div class="more-container text-center mt-3 mb-3">
-            <a href="category.html" class="btn btn-outline-dark-3 btn-more"><span>View More</span><i class="icon-long-arrow-right"></i></a>
+            <a href="{% url 'shop' %}" class="btn btn-outline-dark-3 btn-more"><span>View More</span><i class="icon-long-arrow-right"></i></a>
         </div><!-- End .more-container -->
     </div><!-- End .container -->
 
@@ -336,4 +352,79 @@
             </div><!-- End .col-lg-4 col-sm-6 -->
         </div><!-- End .row -->
     </div><!-- End .container -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/elevatezoom.js"></script>
+<script>
+    $('.addToCartBtn').click(function (e) {
+        e.preventDefault();
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        var prod_id = $(this).closest('.product_data').find('.prod_id').val();
+        var product_qty = 1;
+        var selected_size =2; // Get the selected size value
+        console.log(prod_id,'fazzzzzzzzzzzzz')
+        $.ajax({
+            method: "POST",
+            url: "{% url 'addtocart' %}",
+            data: {
+                'product_qty': product_qty,
+                'prod_id': prod_id,
+                'size': selected_size, // Include the selected size in the data
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (response) {
+                console.log(response);
+
+                switch (response.status) {
+                    case 'Product already in Cart':
+                    case 'No such product found':
+                    case 'Only few quantity available':
+                        alertify.error(response.status);
+                        break;
+                    case 'Product added successfully':
+                        // Show a success notification without redirecting
+                        alertify.success(response.status);
+                        break;
+                    default:
+                        alertify.error('Product Already in Cart.');
+                        break;
+                }
+            },
+            error: function (xhr, status, error) {
+                alertify.error('An error occurred while processing the request. Please try again later.');
+                console.log(xhr.responseText);
+            }
+        });
+    });
+</script>
+
+<script>
+    $('.addToWishlist').click(function (e) {
+        e.preventDefault();
+        var prod_id = $(this).closest('.product_data').find('.prod_id').val();
+        console.log(prod_id, 'daxooooooooooo')
+  
+        $.ajax({
+          method: "POST",
+          url: "{% url 'add_wishlist' %}",
+          data: {
+            'prod_id': prod_id,
+            csrfmiddlewaretoken: '{{csrf_token}}'
+          },
+          success: function (response) {
+            console.log(response);
+            if (response.status === 'Product already in wishlist' || response.status === 'No such product' || response.status === 'Login to continue') {
+              alertify.error(response.status);
+              $('.cartdata').load(location.href + " .cartdata");
+            } else if (response.status === 'Product Added to in wishlist') {
+              alertify.success(response.status);
+              $('.cartdata').load(location.href + " .cartdata");
+            } else {
+              alertify.error(response.status);
+              $('.cartdata').load(location.href + " .cartdata");
+            }
+          }
+        });
+    });
+</script>
 {% endblock body %}

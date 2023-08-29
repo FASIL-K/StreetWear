@@ -126,9 +126,16 @@
                                     <td class="product-col">
                                         <div class="product">
                                             <figure class="product-media">
+                                                
                                                 <a href="#">
+                                                    {% if cart_item.product.image1.url  %}
                                                     <img src="{{cart_item.product.image1.url}}" alt="Product image">
+                                                    {% else %}
+                                                    <img src=" {% static '/user/img/no-image-icon-15.png' %} " alt="Product image" class="product-image">
+                                                    {% endif %}
                                                 </a>
+                                                
+
                                             </figure>
                             
                                             <h3 class="product-title">
