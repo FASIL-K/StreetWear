@@ -26,7 +26,7 @@ from django.core.mail import send_mail, EmailMessage
 
 # Create your views here.
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
-@login_required
+@login_required(login_url='signin')
 def checkout(request):
     cartitems = Cart.objects.filter(user= request.user)
     total_price = 0
