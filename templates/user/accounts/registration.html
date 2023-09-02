@@ -23,13 +23,14 @@
                     <form class="row login_form mt-5" action="{%url 'signup'%}" method="post" id="contactForm" novalidate="novalidate">
                         {% csrf_token %}
                         <div class="col-md-12 form-group">
-                            <input type="text" class="form-control" id="name" name="otp" placeholder="otp" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
+                            <input type="text" class="form-control" id="name" name="otp" placeholder="otp" onfocus="this.placeholder = ''" onblur="this.placeholder = 'otp'" required>
                         </div>
                         <input type="hidden" value="{{usr.email}}" name='email'>
                         <div class="col-md-12 form-group">
                             <button type="submit" value="submit" class="btn btn-outline-primary-2">Sign In</button>
-                            <a href="{% url 'signin' %}">Something wrong? Login</a>
+                            
                         </div>
+                        <a href="{% url 'signin' %}">Something wrong? Login</a>
                     </form>
                     {% else %}
                     {% include 'includes/alert.html' %}
@@ -51,7 +52,7 @@
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label for="singin-email-2">Username *</label>
-                                    <input type="text" class="form-control" id="singin-email-2" name="username" required>
+                                    <input type="text" class="form-control" id="singin-email-2" value="" name="username" required>
                                 </div><!-- End .form-group -->
 
                                 <div class="form-group">
@@ -100,23 +101,23 @@
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label for="register-email-2">FirstName *</label>
-                                    <input type="text" class="form-control" id="register-email-2" name="firstname" required>
+                                    <input type="text" class="form-control" id="register-email-2" value="{{pre_firstname}}" name="firstname" required>
                                 </div><!-- End .form-group -->
                                 <div class="form-group">
                                     <label for="register-email-2">Last Name *</label>
-                                    <input type="text" class="form-control" id="register-email-2" name="lastname" required>
+                                    <input type="text" class="form-control" id="register-email-2" value="{{pre_lastname}}" name="lastname" required>
                                 </div><!-- End .form-group -->
                                 <div class="form-group">
                                     <label for="register-email-2">Username *</label>
-                                    <input type="text" class="form-control" id="register-email-2" name="name" required>
+                                    <input type="text" class="form-control" id="register-email-2" value="{{pre_name}}" name="name" required>
                                 </div><!-- End .form-group -->
                                 <div class="form-group">
                                     <label for="register-email-2">Your email address *</label>
-                                    <input type="email" class="form-control" id="register-email-2" name="email" required>
+                                    <input type="email" class="form-control" id="register-email-2" value="{{pre_email}}" name="email" required>
                                 </div><!-- End .form-group -->
                                 <div class="form-group">
                                     <label for="register-email-2">Phone *</label>
-                                    <input type="text" class="form-control" id="register-email-2" name="phone"  required>
+                                    <input type="text" class="form-control" id="register-email-2" value="{{ pre_phone }}" name="phone"  required>
                                 </div><!-- End .form-group -->
 
                                 <div class="form-group">

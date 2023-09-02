@@ -10,6 +10,7 @@ from products.models import Size,Product
 from .models import *
 from userprofile.models import Wallet
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http import HttpResponse
 
 
 
@@ -98,29 +99,45 @@ def changestatus(request):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='signin')
 def ordercancel(request):
-    order_id = int(request.POST.get('order_id'))
-    orderitem_id = request.POST.get('orderitem_id')
-    orderitem = OrderItem.objects.filter(id=orderitem_id).first()
-    order = Order.objects.filter(id=order_id).first()
+    if request.method == 'POST':
+        order_id = int(request.POST.get('order_id'))
+        orderitem_id = request.POST.get('orderitem_id')
 
-    qty = orderitem.quantity
-    pid = orderitem.selected_size.id
-    product = Product.objects.filter(id=pid).first()
+        # Fetch order and order item
+        order = Order.objects.filter(id=order_id).first()
+        orderitem = OrderItem.objects.filter(id=orderitem_id).first()
 
-    product.stock = product.stock + qty
-    product.save()
+        if not order or not orderitem:
+            return HttpResponse("Order or order item not found.", status=404)
 
-    orderitem.quantity = 0
-    orderitem.status = 'Cancelled'
-    orderitem.save()
+        qty = orderitem.quantity
+        pid = orderitem.selected_size.id
+        product = Product.objects.filter(id=pid).first()
 
-    # Refund money to wallet if payment mode is wallet or razorpay
-    if order.payment_mode in ['wallet', 'razorpay']:
-        wallet = Wallet.objects.get_or_create(user=request.user)[0]
-        wallet.wallet += order.total_price
-        wallet.save()
+        if not product:
+            return HttpResponse("Product not found.", status=404)
 
-    return redirect('orders')
+        # Update product stock
+        product.stock = product.stock + qty
+        product.save()
+
+        # Update order item status and quantity
+        orderitem.quantity = 0
+        orderitem.status = 'Cancelled'
+        orderitem.save()
+
+        # Refund money to wallet if payment mode is wallet or razorpay
+        if order.payment_mode in ['wallet', 'razorpay']:
+            wallet, created = Wallet.objects.get_or_create(user=request.user)
+            if created:
+                wallet.wallet = 0  # Initialize wallet balance if it's a new wallet
+
+            wallet.wallet += order.total_price
+            wallet.save()
+
+        return redirect('orders')
+    else:
+        return HttpResponse("Invalid request method.", status=400)
 
 
 def orderreturn(request,return_id):

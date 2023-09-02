@@ -26,7 +26,6 @@ from social_django.models import UserSocialAuth
 # Create your views here.
 
 ## this for google login 
-User = get_user_model()  # Get the user model
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def signin(request):
@@ -131,13 +130,13 @@ def signup(request):
 
         # User registration validation
         else:
-            firstname = request.POST['firstname']   
-            lastname = request.POST['lastname']  
-            name = request.POST['name']
-            phone=request.POST['phone']
-            email = request.POST['email']
-            password1 = request.POST['password1']
-            password2 = request.POST['password2']
+            firstname = request.POST.get('firstname', '')
+            lastname = request.POST.get('lastname', '')
+            name = request.POST.get('name','')
+            phone=request.POST.get('phone','')
+            email = request.POST.get('email','')
+            password1 = request.POST.get('password1','')
+            password2 = request.POST.get('password2','')
 
             # Null values checking
             check = [name, email, password1, password2,phone]
@@ -187,7 +186,7 @@ def signup(request):
                     'pre_name': name,
                     'pre_email': email,
                 }
-                messages.info(request, 'Enter a strong password')
+                messages.warning(request, 'Enter a strong password')
                 return render(request, 'user/accounts/registration.html', context)
 
             # Check if the email already exists in the User model
@@ -229,7 +228,6 @@ def signup(request):
 
             # If everything is valid, proceed with OTP generation and sending
             user_otp = random.randint(100000, 999999)
-            print(user_otp,'daxoooooooo')
             usr = UserOTP.objects.create(
                 first_name=firstname,
                 last_name=lastname,
