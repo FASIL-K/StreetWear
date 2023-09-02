@@ -111,8 +111,9 @@ def ordercancel(request):
             return HttpResponse("Order or order item not found.", status=404)
 
         qty = orderitem.quantity
-        pid = orderitem.selected_size.id
+        pid = orderitem.product.id
         product = Product.objects.filter(id=pid).first()
+        print(product.product_name,product.id,'daxooooo')
 
         if not product:
             return HttpResponse("Product not found.", status=404)
