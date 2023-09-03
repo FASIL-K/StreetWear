@@ -87,6 +87,6 @@ def editbanner(request,banner_id):
 def deletebanner(request,banner_id):
     if not request.user.is_superuser:
         return redirect('adminsignin')
-    ban = Banner.objects.get(id = banner_id)
+    ban = Banner.objects.get(id=banner_id)
     ban.delete()
     return redirect('banner')

@@ -4,11 +4,6 @@
 {% load static %}
 {% load mathfilters %}
 
-<<!-- jQuery CDN -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- SweetAlert CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
 
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
 <!-- Add this at the end of the body section of your HTML -->
@@ -62,7 +57,7 @@
 </style>
 
 <main class="main" >
-    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+    <div class="page-header text-center" >
         <div class="container">
             <h1 class="page-title">Shopping Cart<span>Shop</span></h1>
             {% include 'includes/alert.html' %}
@@ -261,6 +256,11 @@
     </div><!-- End .page-content -->
 </main><!-- End .main -->
 {% endif %}
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- SweetAlert CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
 
 
 <script>

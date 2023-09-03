@@ -145,6 +145,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
+# settings.py
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 26214400  # 25 MB (in bytes)
 
 
 
