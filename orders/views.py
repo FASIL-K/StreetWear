@@ -102,6 +102,7 @@ def ordercancel(request):
     if request.method == 'POST':
         order_id = int(request.POST.get('order_id'))
         orderitem_id = request.POST.get('orderitem_id')
+        print(orderitem_id,'checking')
 
         # Fetch order and order item
         order = Order.objects.filter(id=order_id).first()
@@ -112,6 +113,10 @@ def ordercancel(request):
 
         qty = orderitem.quantity
         pid = orderitem.product.id
+        products = orderitem.product
+        # Calculate the refund amount for this specific product
+        refund_amount = (products.product_price * qty)
+
         product = Product.objects.filter(id=pid).first()
         print(product.product_name,product.id,'daxooooo')
 
@@ -133,7 +138,7 @@ def ordercancel(request):
             if created:
                 wallet.wallet = 0  # Initialize wallet balance if it's a new wallet
 
-            wallet.wallet += order.total_price
+            wallet.wallet += refund_amount
             wallet.save()
 
         return redirect('orders')
