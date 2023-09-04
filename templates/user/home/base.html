@@ -71,6 +71,7 @@
 }
 
     </style>
+   
 </head>
 <header>
     <div class="page-wrapper">
@@ -90,21 +91,20 @@
                     </div>
                     <div class="header-center">
                         <nav class="main-nav">
-                            <ul class="menu sf-arrows">
-                                <li class="megamenu-container active">
+                            <ul class="menu sf-arrows" id="menu-list">
+                                <li class="megamenu-container " data-menu="home">
                                     <a href="{% url 'home' %}" class="">Home</a>
                                 </li>
-                                <li>
+                                <li class="" data-menu="shop">
                                     <a href="{% url 'shop' %}" class="">Shop</a>
-
                                 </li>
-                                <li>
+                                <li class="" data-menu="pages">
                                     <a href="#" class="">Pages</a>
                                 </li>
-                                <li>
+                                <li class="" data-menu="blog">
                                     <a href="#" class="">Blog</a>
                                 </li>
-                                <li>
+                                  <li class="" data-menu="elements">
                                     <a href="#" class="">Elements</a>
                                 </li>
                             </ul><!-- End .menu -->
@@ -513,6 +513,38 @@
             });
          }
     </script>
+    
+
+    <script>
+        // Get the menu list
+        const menuList = document.getElementById("menu-list");
+    
+        // Add a click event listener to the menu list
+        menuList.addEventListener("click", function(event) {
+            // Remove the "active" class from all menu items
+            const menuItems = menuList.querySelectorAll("li");
+            menuItems.forEach(item => {
+                item.classList.remove("active");
+            });
+    
+            // Add the "active" class to the clicked menu item
+            const clickedMenuItem = event.target.closest("li");
+            if (clickedMenuItem) {
+                clickedMenuItem.classList.add("active");
+            }
+        });
+    
+        // Set initial active menu item based on the current URL
+        const currentURL = window.location.pathname; // Get the path of the current URL
+        const menuItems = menuList.querySelectorAll("li");
+        menuItems.forEach(item => {
+            const menuName = item.getAttribute("data-menu");
+            if (currentURL.includes(menuName)) {
+                item.classList.add("active");
+            }
+        });
+    </script>
+    
 
 </body>
 

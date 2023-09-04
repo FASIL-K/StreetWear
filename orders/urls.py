@@ -9,6 +9,8 @@ urlpatterns = [
     path('changestatus',views.changestatus, name='changestatus'),
     path('ordercancel',views.ordercancel, name='ordercancel'),
     path('orderreturn/<int:return_id>/',views.orderreturn, name='orderreturn'),
+      path('order_search/',views.order_search,name='order_search'),
+
 
   
 ]

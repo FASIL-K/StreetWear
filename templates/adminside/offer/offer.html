@@ -2,10 +2,19 @@
 {% block content %}
 <section class="content-main">
     <div class="content-header">
+            
         <div>
             <h2 class="content-title card-title">Offers List</h2>
             <p>All Coupons in Street Wear are listed here.</p>
         </div>
+        <form action="{% url 'offer_search' %}" method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" placeholder="Search..." name="search" class="form-control" />
+                <button type="submit" class="btn btn-primary">Search<i class="ti ti-search"></i></button>
+            </div>
+        </form>
+    
         <div>
             <a type="button" class="btn btn-md rounded font-sm hover-up" style="margin-left: 10px;"
                 data-bs-toggle="modal" data-bs-target="#addCategoryModal">

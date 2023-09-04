@@ -11,6 +11,7 @@ from .models import *
 from userprofile.models import Wallet
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
+from django.db.models import Q
 
 
 
@@ -184,7 +185,17 @@ def orderreturn(request,return_id):
 
 
 
-
-
-
-
+def order_search(request):
+    search = request.POST.get('search')
+    if search is None or search.strip() == '':
+        messages.error(request,'Filed cannot empty!')
+        return redirect('order_management')
+    orders = Order.objects.filter(Q(user__first_name__icontains=search) | Q(created_at__icontains=search) |Q(total_price__icontains=search) )
+    context={'orders':orders,}
+    if orders :
+        pass
+    else:
+        order:False
+        messages.error(request,'Search not found!')
+        return redirect('order_management')
+    return render(request,'adminside/order/order_management.html',context)

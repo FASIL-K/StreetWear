@@ -7,5 +7,7 @@ urlpatterns = [
 #  path('offer_search/',views.offer_search,name='offer_search'),
  path('edit_offer/<int:offer_id>',views.edit_offer,name='edit_offer'),
  path('delete_offer/<int:delete_id>',views.delete_offer,name='delete_offer'),
+  path('offer_search/',views.offer_search,name='offer_search'),
+
   
 ]

@@ -19,7 +19,17 @@
                                     <option>Clothes</option>
                                     <option>Automobile</option>
                                 </select>
+                                
                             </div>
+
+                                <form action="{% url 'order_search' %}" method="POST">
+                                    {% csrf_token %}
+                                    <div class="input-group">
+                                        <input type="text" placeholder="Search..." name="search" class="form-control" />
+                                        <button type="submit" class="btn btn-primary">Search<i class="ti ti-search"></i></button>
+                                    </div>
+                                </form>
+                            
                             {% comment %} <div class="col-md-2 col-6">
                                 <input type="date" value="02.05.2021" class="form-control" />
                             </div> {% endcomment %}

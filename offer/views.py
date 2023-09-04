@@ -114,7 +114,7 @@ def offer_search(request):
          
     if offer :
         pass
-        return render (request,'adminside/offer.html',context)
+        return render (request,'adminside/offer/offer.html',context)
     else:
         offer:False
         messages.error(request,'Search not found!')
