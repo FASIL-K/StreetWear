@@ -84,7 +84,7 @@
                             <i class="icon-bars"></i>
                         </button>
                         
-                        <a href="index.html" class="logo">
+                        <a href="{% url 'home' %}" class="logo">
                             <img src="{% static '/user/assets/images/demos/demo-8/logo-no-background.svg' %}" alt="Molla Logo" width="150" height="80">
                         </a>
                     </div>
@@ -102,10 +102,10 @@
                                     <a href="#" class="">Pages</a>
                                 </li>
                                 <li>
-                                    <a href="blog.html" class="">Blog</a>
+                                    <a href="#" class="">Blog</a>
                                 </li>
                                 <li>
-                                    <a href="elements-list.html" class="">Elements</a>
+                                    <a href="#" class="">Elements</a>
                                 </li>
                             </ul><!-- End .menu -->
                         </nav><!-- End .main-nav -->
@@ -215,11 +215,11 @@
                         <h4 class="widget-title">Information</h4><!-- End .widget-title -->
 
                         <ul class="widget-list">
-                            <li><a href="about.html">About Streetwear</a></li>
+                            <li><a href="#">About Streetwear</a></li>
                             <li><a href="#">How to shop on Streetwear</a></li>
-                            <li><a href="faq.html">FAQ</a></li>
-                            <li><a href="contact.html">Contact us</a></li>
-                            <li><a href="login.html">Log in</a></li>
+                            <li><a href="#">FAQ</a></li>
+                            <li><a href="#">Contact us</a></li>
+                            <li><a href="{% url '' %}">Log in</a></li>
                         </ul><!-- End .widget-list -->
                     </div><!-- End .widget -->
                 </div><!-- End .col-sm-4 col-lg-3 -->
@@ -245,8 +245,8 @@
 
                         <ul class="widget-list">
                             <li><a href="#">Sign In</a></li>
-                            <li><a href="cart.html">View Cart</a></li>
-                            <li><a href="#">My Wishlist</a></li>
+                            <li><a href="{% url 'cart' %}">View Cart</a></li>
+                            <li><a href="{% url 'wishlist' %}">My Wishlist</a></li>
                             <li><a href="#">Track My Order</a></li>
                             <li><a href="#">Help</a></li>
                         </ul><!-- End .widget-list -->
@@ -308,72 +308,45 @@
             <li>
                 <a href="#">Pages</a>
                 <ul>
-                    <li>
-                        <a href="about.html">About</a>
-
-                        <ul>
-                            <li><a href="about.html">About 01</a></li>
-                            <li><a href="about-2.html">About 02</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="contact.html">Contact</a>
-
-                        <ul>
-                            <li><a href="contact.html">Contact 01</a></li>
-                            <li><a href="contact-2.html">Contact 02</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="login.html">Login</a></li>
-                    <li><a href="faq.html">FAQs</a></li>
-                    <li><a href="404.html">Error 404</a></li>
-                    <li><a href="coming-soon.html">Coming Soon</a></li>
+                    
                 </ul>
             </li>
             <li>
-                <a href="blog.html">Blog</a>
+                <a href="#">Blog</a>
 
                 <ul>
-                    <li><a href="blog.html">Classic</a></li>
-                    <li><a href="blog-listing.html">Listing</a></li>
+                    <li><a href="#">Classic</a></li>
+                    <li><a href="#">Listing</a></li>
                     <li>
                         <a href="#">Grid</a>
                         <ul>
-                            <li><a href="blog-grid-2cols.html">Grid 2 columns</a></li>
-                            <li><a href="blog-grid-3cols.html">Grid 3 columns</a></li>
-                            <li><a href="blog-grid-4cols.html">Grid 4 columns</a></li>
-                            <li><a href="blog-grid-sidebar.html">Grid sidebar</a></li>
+                           
                         </ul>
                     </li>
                     <li>
                         <a href="#">Masonry</a>
                         <ul>
-                            <li><a href="blog-masonry-2cols.html">Masonry 2 columns</a></li>
-                            <li><a href="blog-masonry-3cols.html">Masonry 3 columns</a></li>
-                            <li><a href="blog-masonry-4cols.html">Masonry 4 columns</a></li>
-                            <li><a href="blog-masonry-sidebar.html">Masonry sidebar</a></li>
+                            
                         </ul>
                     </li>
                     <li>
                         <a href="#">Mask</a>
                         <ul>
-                            <li><a href="blog-mask-grid.html">Blog mask grid</a></li>
-                            <li><a href="blog-mask-masonry.html">Blog mask masonry</a></li>
+                         
                         </ul>
                     </li>
                     <li>
                         <a href="#">Single Post</a>
                         <ul>
-                            <li><a href="single.html">Default with sidebar</a></li>
                             
                         </ul>
                     </li>
                 </ul>
             </li>
             <li>
-                <a href="elements-list.html">Elements</a>
+                <a href="#">Elements</a>
                 <ul>
-                    <li><a href="elements-products.html">Products</a></li>
+                    <li><a href="#">Products</a></li>
                     
                 </ul>
             </li>
