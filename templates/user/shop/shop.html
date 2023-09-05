@@ -80,7 +80,7 @@
                                 <div class="product-cat">
                                     
                                 </div><!-- End .product-cat -->
-                                <h3 class="product-title"><a href="product.html">{{product.product_name}} {% if product.offer %} <br> <span style="color: red;"> {{product.offer.discount_amount}}% Offer {% else %} {% endif %} </span></a></h3><!-- End .product-title -->
+                                <h3 class="product-title"><a href="#">{{product.product_name}} {% if product.offer %} <br> <span style="color: red;"> {{product.offer.discount_amount}}% Offer {% else %} {% endif %} </span></a></h3><!-- End .product-title -->
                                 {% if product.offer %}
                                 <div class="product-price">
                                     <del style="color: brown;">₹${{product.product_price }} </del>  <span style="color:white;">--</span> <span style="color: black;">₹ {{ product.get_offer }}</span>
