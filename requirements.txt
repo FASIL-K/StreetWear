@@ -14,7 +14,7 @@ colorama==0.4.6
 cryptography==41.0.2
 cssselect2==0.7.0
 defusedxml==0.7.1
-Django==4.2.3
+Django==3.2.22
 django-allauth==0.54.0
 django-form-utils==1.0.3
 django-mathfilters==1.0.0
