@@ -255,7 +255,7 @@ setInterval(updateDateTime, 1000);
 
 <script>
   const categorySalesData = {
-    labels: [{% for name in category_names %}'{{ name }}',{% endfor %}],
+    labels: [{% for name in category_names %}'{{  name  }}',{% endfor %}],
     datasets: [{
       label: 'Category Sales',
       data: [{% for value in category_sales_data %}{{ value }},{% endfor %}],
